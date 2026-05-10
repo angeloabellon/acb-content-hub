@@ -2,19 +2,19 @@ import { imageConfigDefault } from "next/dist/shared/lib/image-config";
 import ArticleCard from "../components/ArticleCard";
 const articles = [
   {
-    title: "UCAM Murcia",
-      image: "/logoUCAM.png",
-      category: "UCAM Murcia",
+    image: "/logoUCAM.png",
+    category: "UCAM Murcia",
+    url: "https://x.com/UCAMMurcia",
   },
   {
-    title: "CB Jairis",
-      image: "/logoJairis.png",
-      category: "CB Jairis",
+    image: "/logoJairis.png",
+    category: "CB Jairis",
+    url: "https://x.com/CBJairis"
   },
   {
-    title: "Unicaja Málaga",
     image: "/logoUnicaja.png",
     category: "Unicaja Málaga",
+    url: "https://x.com/unicajaCB",
   },
 ];
 
@@ -27,15 +27,23 @@ export default function NewsPage() {
         </h1>
       </section>
 
-      <section className="grid md:grid-cols-3 gap-8">
-        {articles.map((article) => (
-          <ArticleCard
-            key={article.title}
-            title={article.title}
-            image={article.image}
-            category={article.category}
-          />
-        ))}
+      <section className="mb-16">
+
+        <h2 className="text-2xl font-bold mb-8">
+          RRSS oficiales
+        </h2>
+
+        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
+          {articles.map((article) => (
+            <ArticleCard
+              key={article.category}
+              image={article.image}
+              category={article.category}
+              url={article.url}
+            />
+          ))}
+        </div>
+
       </section>
     </main>
   );
