@@ -30,6 +30,9 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <div className="bg-orange-500 text-white text-center text-sm py-2 font-semibold">
+          🚧 Sitio web actualmente en fase de construcción y pruebas...
+        </div>
         <Header />
         <div className="watermark"></div>
         {children}
