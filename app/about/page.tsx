@@ -55,28 +55,34 @@ export default function AboutPage() {
               href={member.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="group bg-[#e0131080] rounded-2xl p-8 hover:bg-white/5 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+              className="group relative block overflow-hidden bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 rounded-2xl p-8 border border-red-900/40 shadow-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
             >
 
-              <div className="relative w-20 h-20 mx-auto mb-6">
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-colors duration-300"></div>
 
-                <img
-                  src="/logoCTC.jpg"
-                  alt="Cast To Cast"
-                  className="absolute inset-0 w-full h-full object-contain transition-opacity duration-300 group-hover:opacity-0"
-                />
+              <div className="relative z-10">
 
-                <img
-                  src="/logo2526.png"
-                  alt="Cast To Cast"
-                  className="absolute inset-0 w-full h-full object-contain opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                />
+                <div className="relative w-20 h-20 mx-auto mb-6">
+
+                  <img
+                    src="/logoCTC.jpg"
+                    alt="Cast To Cast"
+                    className="absolute inset-0 w-full h-full object-contain transition-opacity duration-300 group-hover:opacity-0"
+                  />
+
+                  <img
+                    src="/logo2526.png"
+                    alt="Cast To Cast"
+                    className="absolute inset-0 w-full h-full object-contain opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  />
+
+                </div>
+
+                <h2 className="text-2xl font-bold text-center group-hover:text-orange-400 transition-colors">
+                  {member.name}
+                </h2>
 
               </div>
-
-              <h2 className="text-2xl font-bold text-center group-hover:text-orange-400 transition-colors">
-                {member.name}
-              </h2>
 
             </a>
           ))}

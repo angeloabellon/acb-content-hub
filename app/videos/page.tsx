@@ -10,18 +10,36 @@ async function getYouTubeVideos(): Promise<YouTubeVideo[]> {
   const apiKey = process.env.YOUTUBE_API_KEY;
   const channelId = process.env.YOUTUBE_CHANNEL_ID;
 
-  const response = await fetch(
-    `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet&order=date&maxResults=9&type=video`,
-    { next: { revalidate: 3600 } }
+  // 1. Obtener playlist de subidas del canal
+  const channelResponse = await fetch(
+    `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${apiKey}`,
+    { cache: "no-store" }
   );
 
-  const data = await response.json();
+  const channelData = await channelResponse.json();
 
-  return data.items.map((video: any) => ({
-    id: video.id.videoId,
-    title: he.decode(video.snippet.title),
-    thumbnail: video.snippet.thumbnails.high.url,
-    url: `https://www.youtube.com/watch?v=${video.id.videoId}`,
+  const uploadsPlaylistId =
+    channelData.items[0].contentDetails.relatedPlaylists.uploads;
+
+  // 2. Obtener vídeos de la playlist
+  const videosResponse = await fetch(
+    `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=9&key=${apiKey}`,
+    { cache: "no-store" }
+  );
+
+  const videosData = await videosResponse.json();
+
+  return videosData.items.map((item: any) => ({
+    id: item.snippet.resourceId.videoId,
+    title: he.decode(item.snippet.title),
+
+    thumbnail:
+      item.snippet.thumbnails.high?.url ||
+      item.snippet.thumbnails.medium?.url ||
+      item.snippet.thumbnails.default?.url ||
+      "/logo2526.png",
+
+    url: `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`,
   }));
 }
 export default async function VideosPage() {

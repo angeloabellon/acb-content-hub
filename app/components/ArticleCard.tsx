@@ -10,17 +10,25 @@ export default function ArticleCard({ image, category, url }: ArticleCardProps) 
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group block bg-[#e0131080] p-3 rounded-2xl hover:bg-white/5 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+      className="group relative block overflow-hidden bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 rounded-2xl p-3 border border-red-900/40 shadow-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
     >
-      <img
-        src={image}
-        alt={category}
-        className="w-full aspect-video object-cover rounded-xl mb-4 group-hover:opacity-80 transition-opacity"
-      />
 
-      <span className="uppercase text-xs font-bold tracking-widest text-orange-400 block">
-        {category}
-      </span>
+      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-colors duration-300"></div>
+
+      <div className="relative z-10">
+
+        <img
+          src={image}
+          alt={category}
+          className="w-full aspect-video object-cover rounded-xl mb-4 group-hover:opacity-80 transition-opacity"
+        />
+
+        <span className="uppercase text-xs font-bold tracking-widest text-white block group-hover:text-orange-400 transition-colors">
+          {category}
+        </span>
+
+      </div>
+
     </a>
   );
 }

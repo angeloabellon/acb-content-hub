@@ -1,16 +1,21 @@
 .site-header {
-  max-width: 800px;
+  max-width: 100%;
+  padding: 12px 24px;
+}
+
+.site-header-content {
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 32px 20px 0;
+
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 }
 
 .site-header h1 {
-  font-size: 40px;
-  color: rgb(223, 7, 7);
-  margin:auto;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
 }
 
 .site-header-image {
@@ -26,8 +31,9 @@ nav {
 nav a {
   color: white;
   text-decoration: none;
-  font-weight: bold;
-  margin-left: 20px;
+  font-weight: 700;
+  margin-left: 24px;
+  transition: color 0.2s ease;
 }
 
 nav a:hover {
@@ -54,7 +60,7 @@ nav a:hover {
 }
 
 .active-link {
-  color: #ed120a !important;
+  color: #e01310 !important;
 }
 
 .menu-button {
