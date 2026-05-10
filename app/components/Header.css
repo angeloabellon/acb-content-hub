@@ -31,7 +31,7 @@ nav a {
 }
 
 nav a:hover {
-  color: #ed120a;
+  color: #f97316;
 }
 
 @media (max-width: 640px) {
@@ -50,5 +50,40 @@ nav a:hover {
   nav a {
     margin-left: 0;
     font-size: 14px;
+  }
+}
+
+.active-link {
+  color: #ed120a !important;
+}
+
+.menu-button {
+  display: none;
+  font-size: 28px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .menu-button {
+    display: block;
+  }
+
+  nav {
+  display: none;
+  flex-direction: column;
+  width: 100%;
+  gap: 16px;
+  margin-top: 16px;
+  background-color: rgba(0, 0, 0, 0.55);
+  padding: 20px;
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+}
+
+  nav.nav-open {
+    display: flex;
   }
 }
