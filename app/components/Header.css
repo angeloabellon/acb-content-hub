@@ -33,3 +33,22 @@ nav a {
 nav a:hover {
   color: #ed120a;
 }
+
+@media (max-width: 640px) {
+  .site-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  nav a {
+    margin-left: 0;
+    font-size: 14px;
+  }
+}

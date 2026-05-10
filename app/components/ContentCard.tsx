@@ -1,17 +1,14 @@
 type ContentCardProps = {
   title: string;
-  description: string;
+  children: React.ReactNode;
 };
 
-export default function ContentCard({
-  title,
-  description,
-}: ContentCardProps) {
+export default function ContentCard({ title, children }: ContentCardProps) {
   return (
-    <section className="card">
-      <h2>{title}</h2>
+    <section className="bg-[#e0131080] p-6 rounded-2xl mt-8">
+      <h2 className="text-2xl font-bold mb-4">{title}</h2>
 
-      <p>{description}</p>
+      {children}
     </section>
   );
 }
