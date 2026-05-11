@@ -1,15 +1,14 @@
 async function getLatestYouTubeVideo() {
   const apiKey = process.env.YOUTUBE_API_KEY;
-  console.log(apiKey);
   const channelId = process.env.YOUTUBE_CHANNEL_ID;
-
+  console.log("YouTube API connected");
   const response = await fetch(
     `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet&order=date&maxResults=1&type=video`,
     { next: { revalidate: 3600 } }
   );
 
   const data = await response.json();
-  console.log(data);
+  console.log("YouTube videos fetched correctly");
 
   const video = data.items[0];
 
