@@ -8,8 +8,11 @@ async function getLatestYouTubeVideo() {
   );
 
   const data = await response.json();
+  console.log(data);
   console.log("YouTube videos fetched correctly");
-
+  if (!data.items || data.items.length === 0) {
+  return null;
+}
   const video = data.items[0];
 
   return {
@@ -95,6 +98,7 @@ export default async function Home() {
           <div className="grid lg:grid-cols-2 gap-8">
 
             <ContentCard title="Último episodio">
+              {latestVideo && (
               <a
                 href={latestVideo.url}
                 target="_blank"
@@ -115,6 +119,7 @@ export default async function Home() {
                 </p>
 
               </a>
+              )}
             </ContentCard>
 
             <ContentCard title="Último podcast">

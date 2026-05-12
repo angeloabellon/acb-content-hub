@@ -18,6 +18,8 @@ async function getYouTubeVideos(): Promise<YouTubeVideo[]> {
   );
 
   const channelData = await channelResponse.json();
+  console.log("CHANNEL ID:", channelId);
+console.log("CHANNEL DATA:", channelData);
 
   const uploadsPlaylistId =
     channelData.items[0].contentDetails.relatedPlaylists.uploads;
