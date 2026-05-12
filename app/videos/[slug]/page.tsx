@@ -1,6 +1,10 @@
-import he from "he";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import Link from "next/link";
+import {
+  getVideoIdFromSlug,
+  getYouTubeVideoById,
+} from "@/lib/youtube";
 
 type VideoPageProps = {
   params: Promise<{
@@ -8,31 +12,12 @@ type VideoPageProps = {
   }>;
 };
 
-async function getVideoData(videoId: string) {
-  const apiKey = process.env.YOUTUBE_API_KEY;
-
-  const response = await fetch(
-    `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${apiKey}`,
-    { cache: "no-store" }
-  );
-
-  const data = await response.json();
-
-  if (!data.items || data.items.length === 0) {
-    return null;
-  }
-
-  return data.items[0];
-}
-
 export async function generateMetadata({
   params,
 }: VideoPageProps): Promise<Metadata> {
   const { slug } = await params;
-
-  const videoId = slug.split("-").pop() || "";
-
-  const video = await getVideoData(videoId);
+  const videoId = getVideoIdFromSlug(slug);
+  const video = await getYouTubeVideoById(videoId);
 
   if (!video) {
     return {
@@ -40,32 +25,23 @@ export async function generateMetadata({
     };
   }
 
-  const title = he.decode(video.snippet.title);
-
-  const description = he
-    .decode(video.snippet.description || "")
-    .slice(0, 160);
-
-  const thumbnail =
-    video.snippet.thumbnails.maxres?.url ||
-    video.snippet.thumbnails.high?.url ||
-    video.snippet.thumbnails.medium?.url;
+  const description = video.description.slice(0, 160);
 
   return {
-    title: `${title} | Cast To Cast Baloncesto`,
+    title: `${video.title} | Cast To Cast Baloncesto`,
     description,
 
     openGraph: {
-      title,
+      title: video.title,
       description,
-      images: [thumbnail],
+      images: [video.thumbnail],
     },
 
     twitter: {
       card: "summary_large_image",
-      title,
+      title: video.title,
       description,
-      images: [thumbnail],
+      images: [video.thumbnail],
     },
   };
 }
@@ -74,44 +50,51 @@ export default async function VideoPage({
   params,
 }: VideoPageProps) {
   const { slug } = await params;
-
-  const videoId = slug.split("-").pop() || "";
-
-  const video = await getVideoData(videoId);
+  const videoId = getVideoIdFromSlug(slug);
+  const video = await getYouTubeVideoById(videoId);
 
   if (!video) {
     notFound();
   }
 
-  const title = he.decode(video.snippet.title);
-
   return (
     <main className="max-w-6xl mx-auto px-4 md:px-6 py-10">
+      <section className="mb-6">
+        <Link
+          href="/videos"
+          className="text-sm text-red-300 hover:text-orange-400 transition-colors"
+        >
+          ← Volver a vídeos
+        </Link>
+      </section>
 
-      <section className="bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 rounded-2xl p-3 md:p-5 border border-red-900/40 shadow-2xl">
-
-        <div className="aspect-video w-full overflow-hidden rounded-xl bg-black">
-
+      <section className="bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 rounded-3xl p-3 md:p-5 border border-red-900/40 shadow-2xl">
+        <div className="aspect-video w-full overflow-hidden rounded-2xl bg-black">
           <iframe
             className="w-full h-full"
-            src={`https://www.youtube.com/embed/${videoId}`}
-            title={title}
+            src={video.embedUrl}
+            title={video.title}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
           />
-
         </div>
-
       </section>
 
-      <section className="mt-6">
+      <section className="mt-8 max-w-4xl">
+        <p className="uppercase tracking-[0.18em] text-red-300/80 text-xs font-semibold mb-4">
+          Cast To Cast Baloncesto
+        </p>
 
-        <h1 className="text-2xl md:text-4xl font-bold leading-tight">
-          {title}
+        <h1 className="text-3xl md:text-5xl font-extrabold leading-tight mb-6">
+          {video.title}
         </h1>
 
+        {video.description && (
+          <p className="text-white/70 text-base md:text-lg leading-relaxed whitespace-pre-line line-clamp-6">
+            {video.description}
+          </p>
+        )}
       </section>
-
     </main>
   );
 }

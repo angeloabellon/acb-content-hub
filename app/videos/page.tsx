@@ -1,89 +1,37 @@
-import he from "he";
 import VideoCard from "../components/VideoCard";
+import { getLatestYouTubeVideos } from "@/lib/youtube";
 import type { Route } from "next";
-type YouTubeVideo = {
-  id: string;
-  title: string;
-  thumbnail: string;
-  url: string;
-};
-async function getYouTubeVideos(): Promise<YouTubeVideo[]> {
-  const apiKey = process.env.YOUTUBE_API_KEY;
-  const channelId = process.env.YOUTUBE_CHANNEL_ID;
 
-  // 1. Obtener playlist de subidas del canal
-  const channelResponse = await fetch(
-    `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${apiKey}`,
-    { cache: "no-store" }
-  );
-
-  const channelData = await channelResponse.json();
-  console.log("CHANNEL ID:", channelId);
-console.log("CHANNEL DATA:", channelData);
-
-  const uploadsPlaylistId =
-    channelData.items[0].contentDetails.relatedPlaylists.uploads;
-
-  // 2. Obtener vídeos de la playlist
-  const videosResponse = await fetch(
-    `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=9&key=${apiKey}`,
-    { cache: "no-store" }
-  );
-
-  const videosData = await videosResponse.json();
-
-  
-
-  return videosData.items.map((item: any) => ({
-    id: item.snippet.resourceId.videoId,
-    title: he.decode(item.snippet.title),
-
-    thumbnail:
-      item.snippet.thumbnails.high?.url ||
-      item.snippet.thumbnails.medium?.url ||
-      item.snippet.thumbnails.default?.url ||
-      "/logo2526.png",
-
-    url: `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`,
-  }));
-}
-function createSlug(title: string, id: string) {
-  return (
-    title
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "") +
-    "-" +
-    id
-  );
-}
 export default async function VideosPage() {
-  const videos = await getYouTubeVideos();
+  const videos = await getLatestYouTubeVideos(9);
 
   return (
-    
     <main className="max-w-6xl mx-auto px-6 py-16">
       <section className="text-center mb-14">
+        <p className="uppercase tracking-[0.18em] text-red-300/80 text-sm font-semibold mb-5">
+          Cast To Cast Baloncesto
+        </p>
 
-        <h1 className="text-4xl md:text-5xl font-bold mb-6">
+        <h1 className="text-4xl md:text-6xl font-extrabold mb-6">
           Últimos vídeos de CTC
         </h1>
+
+        <p className="text-white/70 max-w-2xl mx-auto text-lg">
+          Tertulias, análisis y contenido especial sobre el baloncesto de
+          Murcia, Málaga y sus protagonistas.
+        </p>
       </section>
 
       <section className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-  {videos.map((video: YouTubeVideo) => (
-    <VideoCard
-      key={video.id}
-      title={video.title}
-      thumbnail={video.thumbnail}
-      url={
-        `/videos/${createSlug(video.title, video.id)}` as Route
-      }
-    />
-  ))}
-</section>
+        {videos.map((video) => (
+          <VideoCard
+            key={video.id}
+            title={video.title}
+            thumbnail={video.thumbnail}
+            url={`/videos/${video.slug}` as Route}
+          />
+        ))}
+      </section>
     </main>
   );
 }
