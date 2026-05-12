@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "import-gallery": "node scripts/import-gallery.mjs"
   },
   "dependencies": {
     "he": "^1.2.0",
