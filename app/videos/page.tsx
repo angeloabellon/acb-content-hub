@@ -32,6 +32,8 @@ console.log("CHANNEL DATA:", channelData);
 
   const videosData = await videosResponse.json();
 
+  
+
   return videosData.items.map((item: any) => ({
     id: item.snippet.resourceId.videoId,
     title: he.decode(item.snippet.title),
@@ -45,10 +47,23 @@ console.log("CHANNEL DATA:", channelData);
     url: `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`,
   }));
 }
+function createSlug(title: string, id: string) {
+  return (
+    title
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "") +
+    "-" +
+    id
+  );
+}
 export default async function VideosPage() {
   const videos = await getYouTubeVideos();
 
   return (
+    
     <main className="max-w-6xl mx-auto px-6 py-16">
       <section className="text-center mb-14">
 
@@ -58,15 +73,17 @@ export default async function VideosPage() {
       </section>
 
       <section className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {videos.map((video: YouTubeVideo) => (
-          <VideoCard
-          key={video.id}
-          title={video.title}
-          thumbnail={video.thumbnail}
-          url={`/videos/${video.id}` as Route}
-        />
-        ))}
-      </section>
+  {videos.map((video: YouTubeVideo) => (
+    <VideoCard
+      key={video.id}
+      title={video.title}
+      thumbnail={video.thumbnail}
+      url={
+        `/videos/${createSlug(video.title, video.id)}` as Route
+      }
+    />
+  ))}
+</section>
     </main>
   );
 }

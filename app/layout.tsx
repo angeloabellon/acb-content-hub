@@ -14,39 +14,23 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata = {
+export const metadata: Metadata = {
   metadataBase: new URL("https://casttocast.es"),
 
-  title: "Cast To Cast Baloncesto",
+  title: {
+    default: "Cast To Cast Baloncesto",
+    template: "%s | Cast To Cast Baloncesto",
+  },
+
   description:
-    "Podcast y tertulias de baloncesto con especial atención al UCAM Murcia CB, CB Jairis, CB Cartagena y Unicaja Málaga.",
-
-  keywords: [
-    "baloncesto",
-    "UCAM Murcia",
-    "ACB",
-    "podcast baloncesto",
-    "CB Jairis",
-    "CB Cartagena",
-    "Unicaja Málaga",
-    "Basketball Champions League",
-  ],
-
-  authors: [{ name: "Cast To Cast Baloncesto" }],
+    "Actualidad, análisis y debate sobre baloncesto nacional, ACB y equipos de la Región de Murcia.",
 
   openGraph: {
     title: "Cast To Cast Baloncesto",
-    description: "Tertulias, actualidad y análisis del baloncesto nacional.",
+    description:
+      "Actualidad, análisis y debate sobre baloncesto nacional.",
     url: "https://casttocast.es",
     siteName: "Cast To Cast Baloncesto",
-    images: [
-      {
-        url: "/icon.png",
-        width: 512,
-        height: 512,
-        alt: "Cast To Cast Baloncesto",
-      },
-    ],
     locale: "es_ES",
     type: "website",
   },
@@ -54,8 +38,8 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Cast To Cast Baloncesto",
-    description: "Podcast y tertulias sobre baloncesto nacional y europeo.",
-    images: ["/icon.png"],
+    description:
+      "Actualidad, análisis y debate sobre baloncesto nacional.",
   },
 };
 
