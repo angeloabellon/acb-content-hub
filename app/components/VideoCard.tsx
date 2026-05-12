@@ -1,15 +1,16 @@
+import Link from "next/link";
+import type { Route } from "next";
+
 type VideoCardProps = {
   title: string;
   thumbnail: string;
-  url: string;
+  url: Route;
 };
 
 export default function VideoCard({ title, thumbnail, url }: VideoCardProps) {
   return (
-    <a
+    <Link
       href={url}
-      target="_blank"
-      rel="noopener noreferrer"
       className="group relative block overflow-hidden bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 rounded-2xl p-3 border border-red-900/40 shadow-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
     >
       <div className="relative overflow-hidden rounded-xl mb-4">
@@ -30,6 +31,6 @@ export default function VideoCard({ title, thumbnail, url }: VideoCardProps) {
       <p className="font-semibold text-sm md:text-base text-white group-hover:text-orange-400 transition-colors">
         {title}
       </p>
-    </a>
+    </Link>
   );
 }

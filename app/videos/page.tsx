@@ -1,5 +1,6 @@
 import he from "he";
 import VideoCard from "../components/VideoCard";
+import type { Route } from "next";
 type YouTubeVideo = {
   id: string;
   title: string;
@@ -57,11 +58,11 @@ export default async function VideosPage() {
       <section className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {videos.map((video: YouTubeVideo) => (
           <VideoCard
-            key={video.id}
-            title={video.title}
-            thumbnail={video.thumbnail}
-            url={video.url}
-          />
+          key={video.id}
+          title={video.title}
+          thumbnail={video.thumbnail}
+          url={`/videos/${video.id}` as Route}
+        />
         ))}
       </section>
     </main>

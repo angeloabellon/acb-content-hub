@@ -58,12 +58,30 @@ export default function Header() {
           </Link>
 
           <Link
+            href="/galeria"
+            onClick={() => setMenuOpen(false)}
+            className={pathname === "/galeria" ? "active-link" : ""}
+          >
+            Galería
+          </Link>
+
+          <Link
             href="/about"
             onClick={() => setMenuOpen(false)}
             className={pathname === "/about" ? "active-link" : ""}
           >
             Sobre nosotros
           </Link>
+
+          <Link
+            href="/contacto"
+            onClick={() => setMenuOpen(false)}
+            className={pathname === "/contacto" ? "active-link" : ""}
+          >
+            Contacto
+          </Link>
+
+          
         </nav>
       </div>
     </header>
