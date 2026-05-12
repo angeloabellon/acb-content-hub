@@ -1,4 +1,5 @@
 import ArticleCard from "../components/ArticleCard";
+import NewsSourceCard from "../components/NewsSourceCard";
 import { getBasketballNews } from "@/lib/news";
 
 const articles = [
@@ -54,37 +55,14 @@ export default async function NewsPage() {
 
       <section className="mt-20">
         <h2 className="text-2xl font-bold mb-8">
-          Actualidad del baloncesto
+          Fuentes de noticias
         </h2>
 
-        <div className="bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 rounded-2xl p-8 border border-red-900/40 shadow-2xl">
-          {basketballNews.length > 0 ? (
-            <div className="flex flex-col gap-4">
-              {basketballNews.map((news, index) => (
-                <a
-                  key={`${news.url}-${index}`}
-                  href={news.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group block bg-black/20 hover:bg-black/40 transition-colors rounded-xl p-4"
-                >
-                  <p className="text-white font-semibold group-hover:text-orange-400 transition-colors">
-                    {news.title}
-                  </p>
-
-                  <p className="text-sm text-white/60 mt-2">
-                    {news.source}
-                  </p>
-                </a>
-              ))}
-            </div>
-          ) : (
-            <p className="text-white/70">
-              No se han encontrado noticias recientes de baloncesto en las
-              fuentes configuradas.
-            </p>
-          )}
-        </div>
+        <NewsSourceCard
+          title="UCAM Murcia CB"
+          description="Últimas noticias publicadas por el club en su web oficial."
+          news={basketballNews}
+        />
       </section>
     </main>
   );

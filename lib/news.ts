@@ -1,5 +1,3 @@
-import Parser from "rss-parser";
-
 export type NewsItem = {
   title: string;
   url: string;
@@ -8,69 +6,61 @@ export type NewsItem = {
   pubDate: string;
 };
 
-const RSS_SOURCES = [
-  {
-    name: "SER Deportivos Región de Murcia",
-    url: "https://fapi-top.prisasd.com/podcast/playser/ser_deportivos_region_de_murcia/itunestfp/podcast.xml",
-  },
-];
+const UCAM_NEWS_URL = "https://www.ucamdeportes.com/ucamcb/noticias";
 
-const BASKETBALL_KEYWORDS = [
-  "ucam",
-  "ucam murcia",
-  "baloncesto",
-  "basket",
-  "liga endesa",
-  "acb",
-  "basketball champions league",
-  "bcl",
-  "jairis",
-  "cb jairis",
-  "cb cartagena",
-  "unicaja",
-  "feb",
-];
+function cleanText(text: string) {
+  return text
+    .replace(/<[^>]*>/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
-function isBasketballNews(title: string, content?: string) {
-  const text = `${title} ${content || ""}`.toLowerCase();
+function extractUcamNews(html: string): NewsItem[] {
+  const linkRegex =
+    /href="(\/ucamcb\/noticias\/[^"]+)"[^>]*>(.*?)<\/a>/g;
 
-  return BASKETBALL_KEYWORDS.some((keyword) =>
-    text.includes(keyword)
-  );
+  const matches = Array.from(html.matchAll(linkRegex));
+
+  const news = matches
+    .map((match) => {
+      const path = match[1];
+      const rawTitle = match[2];
+
+      return {
+        title: cleanText(rawTitle),
+        url: `https://www.ucamdeportes.com${path}`,
+        source: "UCAM Murcia CB",
+        content: "",
+        pubDate: "",
+      };
+    })
+    .filter((item) => item.title.length > 10)
+    .filter(
+      (item, index, self) =>
+        index === self.findIndex((n) => n.url === item.url)
+    )
+    .slice(0, 8);
+
+  return news;
 }
 
 export async function getBasketballNews(): Promise<NewsItem[]> {
-  const parser = new Parser();
-
   try {
-    const feeds = await Promise.allSettled(
-      RSS_SOURCES.map(async (source) => {
-        const feed = await parser.parseURL(source.url);
+    const response = await fetch(UCAM_NEWS_URL, {
+      next: {
+        revalidate: 3600,
+      },
+    });
 
-        return feed.items.map((item) => ({
-          title: item.title || "Noticia sin título",
-          url: item.link || "#",
-          source: source.name,
-          content: item.contentSnippet || item.content || "",
-          pubDate: item.pubDate || "",
-        }));
-      })
-    );
+    if (!response.ok) {
+      throw new Error("No se pudo cargar la página de noticias de UCAM");
+    }
 
-    return feeds
-      .flatMap((result) =>
-        result.status === "fulfilled" ? result.value : []
-      )
-      .filter((item) => isBasketballNews(item.title, item.content))
-      .sort((a, b) => {
-        const dateA = new Date(a.pubDate).getTime();
-        const dateB = new Date(b.pubDate).getTime();
+    const html = await response.text();
 
-        return dateB - dateA;
-      })
-      .slice(0, 8);
+    return extractUcamNews(html);
   } catch (error) {
-    console.error("Error cargando noticias RSS:", error);
+    console.error("Error cargando noticias UCAM:", error);
     return [];
   }
 }
