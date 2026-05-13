@@ -28,12 +28,27 @@ function createNewsSlug(title: string, externalUrl: string) {
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
+    .replace(/&nbsp;/g, " ")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 
-  const id = externalUrl.split("/").filter(Boolean).pop() || "noticia";
+  const url = new URL(externalUrl);
+  const pathParts = url.pathname.split("/").filter(Boolean);
+  const lastPathPart = pathParts[pathParts.length - 1] || "";
 
-  return `${cleanTitle}-${id}`;
+  const cleanId = lastPathPart
+    .replace(".html", "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  if (!cleanId || cleanTitle.includes(cleanId) || cleanId.includes(cleanTitle)) {
+    return cleanTitle;
+  }
+
+  return `${cleanTitle}-${cleanId}`;
 }
 
 function extractUcamNews(html: string): NewsItem[] {

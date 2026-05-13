@@ -1,33 +1,38 @@
 import { MetadataRoute } from "next";
+import { getLatestYouTubeVideos } from "@/lib/youtube";
+import { getBasketballNews } from "@/lib/news";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://casttocast.es";
 
+  const videos = await getLatestYouTubeVideos(20);
+  const news = await getBasketballNews();
+
+  const staticPages = [
+    "",
+    "/videos",
+    "/news",
+    "/galeria",
+    "/about",
+    "/contacto",
+  ].map((route) => ({
+    url: `${baseUrl}${route}`,
+    lastModified: new Date(),
+  }));
+
+  const videoPages = videos.map((video) => ({
+    url: `${baseUrl}/videos/${video.slug}`,
+    lastModified: new Date(),
+  }));
+
+  const newsPages = news.map((item) => ({
+    url: `${baseUrl}/news/${item.slug}`,
+    lastModified: new Date(),
+  }));
+
   return [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-    },
-    {
-      url: `${baseUrl}/videos`,
-      lastModified: new Date(),
-    },
-    {
-      url: `${baseUrl}/news`,
-      lastModified: new Date(),
-    },
-    {
-      url: `${baseUrl}/galeria`,
-      lastModified: new Date(),
-    },
-    {
-      url: `${baseUrl}/about`,
-      lastModified: new Date(),
-    },
-    {
-      url: `${baseUrl}/contacto`,
-      lastModified: new Date(),
-    },
-    
+    ...staticPages,
+    ...videoPages,
+    ...newsPages,
   ];
 }
