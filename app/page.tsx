@@ -1,109 +1,67 @@
 import Link from "next/link";
 import ContentCard from "./components/ContentCard";
-import Image from "next/image";
-
-function createVideoSlug(title: string, videoId: string) {
-  const cleanTitle = title
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-
-  return `${cleanTitle}-${videoId}`;
-}
-
-async function getLatestYouTubeVideo() {
-  const apiKey = process.env.YOUTUBE_API_KEY;
-  const channelId = process.env.YOUTUBE_CHANNEL_ID;
-
-  const response = await fetch(
-    `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet&order=date&maxResults=1&type=video`,
-    { next: { revalidate: 3600 } }
-  );
-
-  const data = await response.json();
-
-  if (!data.items || data.items.length === 0) {
-    return null;
-  }
-
-  const video = data.items[0];
-  const videoId = video.id.videoId;
-  const title = video.snippet.title;
-
-  return {
-    title,
-    videoId,
-    slug: createVideoSlug(title, videoId),
-    thumbnail: video.snippet.thumbnails.high.url,
-  };
-}
+import { getLatestYouTubeVideos } from "@/lib/youtube";
 
 export default async function Home() {
-  const latestVideo = await getLatestYouTubeVideo();
+  const [latestVideo] = await getLatestYouTubeVideos(1);
 
   return (
     <>
       <section className="max-w-6xl mx-auto px-6 mt-28 text-center">
+        <p className="uppercase tracking-[0.18em] text-red-300/80 text-sm font-semibold mb-5">
+          Cast To Cast Baloncesto
+        </p>
 
-  <p className="uppercase tracking-[0.18em] text-red-300/80 text-sm font-semibold mb-5">
-    Cast To Cast Baloncesto
-  </p>
-
-  <h2 className="text-5xl md:text-7xl font-extrabold leading-[1.05] mb-8">
-    El baloncesto en la Región de Murcia y en Málaga,
-    <span className="block text-red-500">
-      desde la perspectiva de sus aficionados
-    </span>
-  </h2>
-
-</section>
+        <h2 className="text-5xl md:text-7xl font-extrabold leading-[1.05] mb-8">
+          El baloncesto en la Región de Murcia y en Málaga,
+          <span className="block text-red-500">
+            desde la perspectiva de sus aficionados
+          </span>
+        </h2>
+      </section>
 
       <main>
         <section className="max-w-7xl mx-auto px-6 mt-20 flex flex-col gap-8">
           <Link
-  href="/videos/la-copa-del-96-IE6ztcN8mJ4"
-  className="group block bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 rounded-3xl p-6 md:p-8 border border-red-900/40 shadow-2xl overflow-hidden hover:border-orange-400/40 transition-all duration-300"
->
-  <div className="grid lg:grid-cols-2 gap-8 items-center">
+            href="/videos/la-copa-del-96-IE6ztcN8mJ4"
+            className="group block bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 rounded-3xl p-6 md:p-8 border border-red-900/40 shadow-2xl overflow-hidden hover:border-orange-400/40 transition-all duration-300"
+          >
+            <div className="grid lg:grid-cols-2 gap-8 items-center">
+              <div>
+                <p className="uppercase text-sm font-bold tracking-widest text-red-200 mb-4">
+                  Contenido destacado
+                </p>
 
-    <div>
-      <p className="uppercase text-sm font-bold tracking-widest text-red-200 mb-4">
-        Contenido destacado
-      </p>
+                <h2 className="text-2xl md:text-4xl font-bold mb-6 group-hover:text-orange-300 transition-colors">
+                  La Copa del 96
+                </h2>
 
-      <h2 className="text-2xl md:text-4xl font-bold mb-6 group-hover:text-orange-300 transition-colors">
-        La Copa del 96
-      </h2>
+                <p className="text-base md:text-lg text-red-100/90 leading-relaxed">
+                  Episodio especial dedicado a la Copa del Rey de 1996 celebrada
+                  en Murcia, con aficionados, periodistas y jugadores que
+                  vivieron de cerca aquel histórico torneo.
+                </p>
+              </div>
 
-      <p className="text-base md:text-lg text-red-100/90 leading-relaxed">
-        Episodio especial dedicado a la Copa del Rey de 1996 celebrada
-        en Murcia, con aficionados, periodistas y jugadores que vivieron
-        de cerca aquel histórico torneo.
-      </p>
-    </div>
+              <div className="relative overflow-hidden rounded-2xl">
+                <img
+                  src="https://i.ytimg.com/vi/IE6ztcN8mJ4/maxresdefault.jpg"
+                  alt="La Copa del 96"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
 
-    <div className="relative overflow-hidden rounded-2xl">
-      <img
-        src="https://i.ytimg.com/vi/IE6ztcN8mJ4/maxresdefault.jpg"
-        alt="La Copa del 96"
-        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-      />
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
 
-      <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
-
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-20 h-20 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform">
-          <span className="text-3xl text-white ml-1">
-            ▶
-          </span>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</Link>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-20 h-20 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform">
+                    <span className="text-3xl text-white ml-1">
+                      ▶
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Link>
 
           <div className="grid lg:grid-cols-2 gap-8">
             <ContentCard title="Último episodio">
