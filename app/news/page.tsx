@@ -43,7 +43,7 @@ const jairisNews = basketballNews.filter(
 
         <p className="text-white/70 max-w-2xl mx-auto">
           Actualidad seleccionada sobre baloncesto, UCAM Murcia, Unicaja,
-          Jairis, CB Cartagena, ACB, BCL y competiciones FEB.
+          Jairis, ACB y competiciones FEB.
         </p>
       </section>
 

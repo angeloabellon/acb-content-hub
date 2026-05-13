@@ -1,6 +1,5 @@
-import VideoCard from "../components/VideoCard";
 import { getLatestYouTubeVideos } from "@/lib/youtube";
-import type { Route } from "next";
+import VideoSearch from "../components/VideoSearch";
 
 export default async function VideosPage() {
   const videos = await getLatestYouTubeVideos(9);
@@ -18,20 +17,11 @@ export default async function VideosPage() {
 
         <p className="text-white/70 max-w-2xl mx-auto text-lg">
           Tertulias, análisis y contenido especial sobre el baloncesto de
-          Murcia, Málaga y sus protagonistas.
+          la Región de Murcia y Málaga.
         </p>
       </section>
 
-      <section className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {videos.map((video) => (
-          <VideoCard
-            key={video.id}
-            title={video.title}
-            thumbnail={video.thumbnail}
-            url={`/videos/${video.slug}` as Route}
-          />
-        ))}
-      </section>
+      <VideoSearch videos={videos} />
     </main>
   );
 }
