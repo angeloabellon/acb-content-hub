@@ -7,12 +7,14 @@ import type { NewsItem } from "@/lib/news";
 type NewsSourceCardProps = {
   title: string;
   description: string;
+  logo: string;
   news: NewsItem[];
 };
 
 export default function NewsSourceCard({
   title,
   description,
+  logo,
   news,
 }: NewsSourceCardProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,11 +30,12 @@ export default function NewsSourceCard({
   <div className="flex items-center gap-4">
     <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-white/10 flex-shrink-0">
       <Image
-        src="/logoUCAM.png"
-        alt="Logo UCAM Murcia CB"
-        fill
-        className="object-contain p-2"
-      />
+  src={logo}
+  alt={title}
+  fill
+  sizes="64px"
+  className="object-contain p-2"
+/>
     </div>
 
     <div>
@@ -59,8 +62,6 @@ export default function NewsSourceCard({
               <a
                 key={`${item.url}-${index}`}
                 href={item.url}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="group block bg-black/20 hover:bg-black/40 transition-colors rounded-xl p-4"
               >
                 <p className="text-white font-semibold group-hover:text-orange-400 transition-colors">

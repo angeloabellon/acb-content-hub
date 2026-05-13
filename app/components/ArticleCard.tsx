@@ -8,8 +8,6 @@ export default function ArticleCard({ image, category, url }: ArticleCardProps) 
   return (
     <a
       href={url}
-      target="_blank"
-      rel="noopener noreferrer"
       className="group relative block overflow-hidden bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 rounded-2xl p-3 border border-red-900/40 shadow-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
     >
 

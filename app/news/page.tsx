@@ -22,6 +22,17 @@ const articles = [
 
 export default async function NewsPage() {
   const basketballNews = await getBasketballNews();
+  const ucamNews = basketballNews.filter(
+  (news) => news.source === "UCAM Murcia CB"
+);
+
+const unicajaNews = basketballNews.filter(
+  (news) => news.source === "Unicaja Málaga"
+);
+
+const jairisNews = basketballNews.filter(
+  (news) => news.source === "Hozono Global Jairis"
+);
 
   return (
     <main className="max-w-6xl mx-auto px-6 py-16">
@@ -58,11 +69,29 @@ export default async function NewsPage() {
           Fuentes de noticias
         </h2>
 
-        <NewsSourceCard
-          title="UCAM Murcia CB"
-          description="Últimas noticias publicadas por el club en su web oficial."
-          news={basketballNews}
-        />
+        <div className="grid gap-8">
+<NewsSourceCard
+  title="UCAM Murcia CB"
+  description="Últimas noticias publicadas por el club en su web oficial."
+  logo="/logoUCAM.png"
+  news={ucamNews}
+/>
+
+<NewsSourceCard
+  title="Unicaja Málaga"
+  description="Últimas noticias publicadas por el club en su web oficial."
+  logo="/logoUnicaja.png"
+  news={unicajaNews}
+/>
+
+<NewsSourceCard
+  title="Hozono Global Jairis"
+  description="Últimas noticias publicadas por el club en su web oficial."
+  logo="/logoJairis.png"
+  news={jairisNews}
+/>
+
+</div>
       </section>
     </main>
   );
