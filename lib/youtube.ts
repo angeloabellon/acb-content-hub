@@ -7,6 +7,7 @@ export type YouTubeVideo = {
   thumbnail: string;
   slug: string;
   embedUrl: string;
+  publishedAt: string;
 };
 
 export function createVideoSlug(title: string, id: string) {
@@ -64,6 +65,7 @@ export async function getYouTubeVideoById(
     thumbnail,
     slug: createVideoSlug(title, videoId),
     embedUrl: `https://www.youtube.com/embed/${videoId}`,
+    publishedAt: item.snippet.publishedAt,
   };
 }
 
@@ -111,6 +113,7 @@ export async function getLatestYouTubeVideos(
       thumbnail,
       slug: createVideoSlug(title, id),
       embedUrl: `https://www.youtube.com/embed/${id}`,
+      publishedAt: item.snippet.publishedAt,
     };
   });
 }
