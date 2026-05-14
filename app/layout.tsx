@@ -42,6 +42,13 @@ export const metadata: Metadata = {
     description:
       "Actualidad, análisis y debate sobre baloncesto nacional.",
   },
+  manifest: "/manifest.webmanifest",
+  themeColor: "#7a0c0c",
+  appleWebApp: {
+    capable: true,
+    title: "Cast To Cast",
+    statusBarStyle: "black-translucent",
+  },
 };
 
 export default function RootLayout({
