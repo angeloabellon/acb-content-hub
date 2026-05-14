@@ -4,15 +4,9 @@ export default function ContactoPage() {
 
       <section className="text-center mb-20">
 
-        <h1 className="text-4xl md:text-6xl font-bold mb-6">
-          Contacto y Patrocinios
+        <h1 className="text-4xl md:text-6xl font-extrabold mb-6">
+          Contacto
         </h1>
-
-        <p className="text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed">
-          Cast To Cast Baloncesto es un espacio dedicado a la actualidad
-          del baloncesto nacional, con especial atención a los equipos
-          de la Región de Murcia y de Málaga.
-        </p>
 
       </section>
 

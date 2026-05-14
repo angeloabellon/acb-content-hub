@@ -37,8 +37,8 @@ const jairisNews = basketballNews.filter(
   return (
     <main className="max-w-6xl mx-auto px-6 py-16">
       <section className="text-center mb-14">
-        <h1 className="text-4xl md:text-5xl font-bold mb-6">
-          Noticias en la red
+        <h1 className="text-4xl md:text-6xl font-extrabold mb-6">
+          Noticias
         </h1>
 
         <p className="text-white/70 max-w-2xl mx-auto">

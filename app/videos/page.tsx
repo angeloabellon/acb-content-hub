@@ -12,7 +12,7 @@ export default async function VideosPage() {
         </p>
 
         <h1 className="text-4xl md:text-6xl font-extrabold mb-6">
-          Últimos vídeos de CTC
+          Vídeos
         </h1>
 
         <p className="text-white/70 max-w-2xl mx-auto text-lg">

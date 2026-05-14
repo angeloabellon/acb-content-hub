@@ -1,28 +1,12 @@
 import Link from "next/link";
-const teamMembers = [
+const socialLinks = [
   {
-    name: "Cast To Cast",
+    name: "X / Twitter",
     url: "https://x.com/casttocast2",
   },
   {
-    name: "Antonio",
-    url: "https://x.com/aluquillas",
-  },
-  {
-    name: "Ayala",
-    url: "https://x.com/JM8Ayala",
-  },
-  {
-    name: "David",
-    url: "https://x.com/david_seron",
-  },
-  {
-    name: "Fernando",
-    url: "https://x.com/DonMarcusH",
-  },
-  {
-    name: "Ángel",
-    url: "https://x.com/aoa2384",
+    name: "Instagram",
+    url: "https://instagram.com/casttocast2",
   },
 ];
 const collaborators = [
@@ -67,83 +51,54 @@ export default function AboutPage() {
 
       </section>
 
-      <section className="grid lg:grid-cols-2 gap-8 mb-20">
+      <section className="mb-20">
 
-        <div className="bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 rounded-3xl p-8 border border-red-900/40 shadow-2xl">
+  <div className="bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 rounded-3xl p-8 md:p-10 border border-red-900/40 shadow-2xl">
 
-          <h2 className="text-3xl font-bold mb-6">
-            Qué encontrarás aquí
-          </h2>
+    <h2 className="text-3xl md:text-4xl font-bold mb-8">
+      Un espacio creado por aficionados al baloncesto
+    </h2>
 
-          <ul className="space-y-4 text-white/80 leading-relaxed">
-            <li>
-              • Tertulias y análisis semanales
-            </li>
+    <div className="grid md:grid-cols-2 gap-5 text-white/80">
 
-            <li>
-              • Cobertura de actualidad ACB, BCL y competiciones FEB
-            </li>
+      <div className="bg-black/20 rounded-2xl p-5">
+        • Tertulias y análisis semanales
+      </div>
 
-            <li>
-              • Episodios especiales y entrevistas
-            </li>
+      <div className="bg-black/20 rounded-2xl p-5">
+        • Cobertura ACB, BCL y competiciones FEB
+      </div>
 
-            <li>
-              • Noticias de clubes y seguimiento diario
-            </li>
+      <div className="bg-black/20 rounded-2xl p-5">
+        • Episodios especiales y entrevistas
+      </div>
 
-            <li>
-              • Fotografía y contenido multimedia
-            </li>
-          </ul>
+      <div className="bg-black/20 rounded-2xl p-5">
+        • Noticias, fotografía y contenido multimedia
+      </div>
 
-        </div>
+    </div>
 
-        <div className="bg-black/30 rounded-3xl p-8 border border-white/10">
+  </div>
 
-          <h2 className="text-3xl font-bold mb-6">
-            Un proyecto hecho por aficionados
-          </h2>
-
-          <p className="text-white/70 text-lg leading-relaxed">
-            Cast To Cast nace desde la pasión por el baloncesto y el deseo
-            de crear un espacio cercano, independiente y centrado en la
-            conversación entre aficionados.
-          </p>
-
-          <p className="text-white/70 text-lg leading-relaxed mt-6">
-            Nuestro objetivo es construir una comunidad donde compartir
-            experiencias, opiniones, análisis y contenido alrededor de los
-            clubes y competiciones que seguimos cada semana.
-          </p>
-
-        </div>
-
-      </section>
+</section>
 
       <section className="mb-16">
 
         <div className="flex items-center justify-between mb-8">
 
           <h2 className="text-3xl font-bold">
-            Equipo y RRSS
+            Nuestras RRSS
           </h2>
-
-          <Link
-            href="/contacto"
-            className="hidden md:inline-flex bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 px-5 py-3 rounded-xl border border-red-900/40 text-sm font-semibold hover:text-orange-400 transition-colors"
-          >
-            Contacto y patrocinios
-          </Link>
 
         </div>
 
         <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
 
-          {teamMembers.map((member) => (
+          {socialLinks.map((social) => (
             <a
-              key={member.name}
-              href={member.url}
+              key={social.name}
+              href={social.url}
               target="_blank"
               rel="noopener noreferrer"
               className="group relative block overflow-hidden bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 rounded-2xl p-8 border border-red-900/40 shadow-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
@@ -170,7 +125,7 @@ export default function AboutPage() {
                 </div>
 
                 <h3 className="text-2xl font-bold text-center group-hover:text-orange-400 transition-colors">
-                  {member.name}
+                  {social.name}
                 </h3>
 
               </div>

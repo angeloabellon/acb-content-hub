@@ -50,6 +50,14 @@ export default function Header() {
           </Link>
 
           <Link
+            href="/podcasts"
+            onClick={() => setMenuOpen(false)}
+            className={pathname === "/podcasts" ? "active-link" : ""}
+          >
+            Podcasts
+          </Link>
+
+          <Link
             href="/news"
             onClick={() => setMenuOpen(false)}
             className={pathname === "/news" ? "active-link" : ""}

@@ -86,36 +86,15 @@ export default async function Home() {
             </ContentCard>
 
             <ContentCard title="Último podcast">
-  <div className="hidden md:block">
-    <iframe
-      src="https://www.ivoox.com/player_es_podcast_1580626_zp_1.html?c1=bc1515"
-      width="100%"
-      height="200"
-      allowFullScreen
-      loading="lazy"
-      className="rounded-xl"
-    ></iframe>
-  </div>
-
-  <a
-    href="https://www.ivoox.com/podcast-cast-to-cast-baloncesto_sq_f11580626_1.html"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="md:hidden group block bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 rounded-2xl p-6 border border-red-900/40 text-center"
-  >
-    <p className="text-lg font-bold text-white mb-3">
-      Escuchar Cast To Cast en Ivoox
-    </p>
-
-    <p className="text-sm text-red-100/80 mb-5">
-      En móvil, el reproductor de Ivoox abre mejor desde su app o web.
-    </p>
-
-    <span className="inline-flex bg-white text-black px-5 py-3 rounded-xl font-semibold group-hover:bg-orange-400 group-hover:text-white transition-colors">
-      Abrir podcast
-    </span>
-  </a>
-</ContentCard>
+              <iframe
+                src="https://www.ivoox.com/player_es_podcast_1580626_zp_1.html?c1=bc1515"
+                width="100%"
+                height="200"
+                allowFullScreen
+                loading="lazy"
+                className="rounded-xl"
+              ></iframe>
+            </ContentCard>
           </div>
         </section>
       </main>
