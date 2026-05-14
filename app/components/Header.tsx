@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { siteConfig } from "@/config/site";
+import Image from "next/image";
 
 export default function Header() {
   const pathname = usePathname();
@@ -27,8 +28,8 @@ export default function Header() {
       }`}
     >
       <div className="site-header-content">
-        <img src="/logoCTC.jpg" alt="Logo CTC" className="site-header-image" />
-        <img src="/ctc_transparente.png" alt="CTC" className="site-header-image" />
+        <Image src="/logoCTC.jpg" alt="Logo CTC" className="site-header-image" width={100} height={100} />
+        <Image src="/ctc_transparente.png" alt="CTC" className="site-header-image" width={100} height={100} />
 
         <button
           className="menu-button"
