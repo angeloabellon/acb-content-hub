@@ -70,7 +70,7 @@ li {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-  opacity: 0.15;
+  opacity: 0.20;
   pointer-events: none;
   z-index: -1;
 }
