@@ -49,6 +49,9 @@ export const metadata: Metadata = {
     title: "Cast To Cast",
     statusBarStyle: "black-translucent",
   },
+  icons: {
+  apple: "/icons/apple-touch-icon.png",
+},
 };
 
 export default function RootLayout({
