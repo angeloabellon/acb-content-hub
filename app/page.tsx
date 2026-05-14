@@ -1,9 +1,10 @@
 import Link from "next/link";
 import ContentCard from "./components/ContentCard";
 import { getLatestYouTubeVideos } from "@/lib/youtube";
-
+import { getLatestPodcastEpisode } from "@/lib/podcasts";
 export default async function Home() {
   const [latestVideo] = await getLatestYouTubeVideos(1);
+  const latestPodcast = await getLatestPodcastEpisode();
 
   return (
     <>
@@ -65,35 +66,70 @@ export default async function Home() {
 
           <div className="grid lg:grid-cols-2 gap-8">
             <ContentCard title="Último episodio">
-              {latestVideo && (
-                <Link
-                  href={`/videos/${latestVideo.slug}`}
-                  className="block group text-center"
-                >
-                  <div className="relative overflow-hidden rounded-xl mb-4">
-                    <img
-                      src={latestVideo.thumbnail}
-                      alt={latestVideo.title}
-                      className="w-2/3 mx-auto transition-transform duration-300 group-hover:scale-105"
-                    />
-                  </div>
+  {latestVideo && (
+    <div className="text-center">
 
-                  <p className="text-white font-semibold group-hover:text-orange-400 transition-colors">
-                    {latestVideo.title}
-                  </p>
-                </Link>
-              )}
-            </ContentCard>
+      <Link
+        href={`/videos/${latestVideo.slug}`}
+        className="block group"
+      >
+        <div className="relative overflow-hidden rounded-xl mb-4">
+          <img
+            src={latestVideo.thumbnail}
+            alt={latestVideo.title}
+            className="w-2/3 mx-auto transition-transform duration-300 group-hover:scale-105"
+          />
+        </div>
+
+        <p className="text-white font-semibold group-hover:text-orange-400 transition-colors mb-5">
+          {latestVideo.title}
+        </p>
+
+      </Link>
+
+      <Link
+        href="/videos"
+        className="inline-flex bg-white text-black px-5 py-3 rounded-xl font-semibold hover:bg-orange-400 hover:text-white transition-colors"
+      >
+        Ver todos los vídeos
+      </Link>
+
+    </div>
+  )}
+</ContentCard>
 
             <ContentCard title="Último podcast">
-              <iframe
-                src="https://www.ivoox.com/player_es_podcast_1580626_zp_1.html?c1=bc1515"
-                width="100%"
-                height="200"
-                allowFullScreen
-                loading="lazy"
-                className="rounded-xl"
-              ></iframe>
+              {latestPodcast && (
+                <div className="text-left">
+
+                  <h3 className="text-lg font-bold mb-3">
+                    {latestPodcast.title}
+                  </h3>
+
+                  {latestPodcast.pubDate && (
+                    <p className="text-sm text-white/60 mb-4">
+                      {new Date(latestPodcast.pubDate).toLocaleDateString("es-ES")}
+                    </p>
+                  )}
+
+                  <audio
+                    controls
+                    preload="none"
+                    className="w-full mb-5"
+                  >
+                    <source src={latestPodcast.audioUrl} />
+                    Tu navegador no soporta el reproductor de audio.
+                  </audio>
+
+                  <Link
+                    href="/podcasts"
+                    className="inline-flex bg-white text-black px-5 py-3 rounded-xl font-semibold hover:bg-orange-400 hover:text-white transition-colors"
+                  >
+                    Ver todos los podcasts
+                  </Link>
+
+                </div>
+              )}
             </ContentCard>
           </div>
         </section>

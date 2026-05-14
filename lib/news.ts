@@ -121,8 +121,6 @@ function extractJairisNews(html: string): NewsItem[] {
 
   const matches = Array.from(html.matchAll(titleRegex));
 
-  console.log("Noticias Jairis encontradas:", matches.length);
-
   return matches
     .map((match) => {
       const path = match[1];

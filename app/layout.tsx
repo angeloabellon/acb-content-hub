@@ -43,7 +43,6 @@ export const metadata: Metadata = {
       "Actualidad, análisis y debate sobre baloncesto nacional.",
   },
   manifest: "/manifest.webmanifest",
-  themeColor: "#7a0c0c",
   appleWebApp: {
     capable: true,
     title: "Cast To Cast",
@@ -52,6 +51,9 @@ export const metadata: Metadata = {
   icons: {
   apple: "/icons/apple-touch-icon.png",
 },
+};
+export const viewport = {
+  themeColor: "#7a0c0c",
 };
 
 export default function RootLayout({

@@ -7,10 +7,6 @@ export default async function VideosPage() {
   return (
     <main className="max-w-6xl mx-auto px-6 py-16">
       <section className="text-center mb-14">
-        <p className="uppercase tracking-[0.18em] text-red-300/80 text-sm font-semibold mb-5">
-          Cast To Cast Baloncesto
-        </p>
-
         <h1 className="text-4xl md:text-6xl font-extrabold mb-6">
           Vídeos
         </h1>

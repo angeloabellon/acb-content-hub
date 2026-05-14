@@ -32,3 +32,9 @@ export async function getPodcastEpisodes(): Promise<PodcastEpisode[]> {
     return [];
   }
 }
+
+export async function getLatestPodcastEpisode() {
+  const episodes = await getPodcastEpisodes();
+
+  return episodes[0] || null;
+}
