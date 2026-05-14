@@ -2,6 +2,7 @@ import Link from "next/link";
 import ContentCard from "./components/ContentCard";
 import { getLatestYouTubeVideos } from "@/lib/youtube";
 import { getLatestPodcastEpisode } from "@/lib/podcasts";
+import { featuredContent } from "@/data/featuredContent";
 export default async function Home() {
   const [latestVideo] = await getLatestYouTubeVideos(1);
   const latestPodcast = await getLatestPodcastEpisode();
@@ -24,7 +25,7 @@ export default async function Home() {
       <main>
         <section className="max-w-7xl mx-auto px-6 mt-20 flex flex-col gap-8">
           <Link
-            href="/videos/la-copa-del-96-IE6ztcN8mJ4"
+            href={featuredContent.href}
             className="group block bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 rounded-3xl p-6 md:p-8 border border-red-900/40 shadow-2xl overflow-hidden hover:border-orange-400/40 transition-all duration-300"
           >
             <div className="grid lg:grid-cols-2 gap-8 items-center">
@@ -34,20 +35,19 @@ export default async function Home() {
                 </p>
 
                 <h2 className="text-2xl md:text-4xl font-bold mb-6 group-hover:text-orange-300 transition-colors">
-                  La Copa del 96
+                  {featuredContent.title}
                 </h2>
 
                 <p className="text-base md:text-lg text-red-100/90 leading-relaxed">
-                  Episodio especial dedicado a la Copa del Rey de 1996 celebrada
-                  en Murcia, con aficionados, periodistas y jugadores que
+                  {featuredContent.description}
                   vivieron de cerca aquel histórico torneo.
                 </p>
               </div>
 
               <div className="relative overflow-hidden rounded-2xl">
                 <img
-                  src="https://i.ytimg.com/vi/IE6ztcN8mJ4/maxresdefault.jpg"
-                  alt="La Copa del 96"
+                  src={featuredContent.image}
+                  alt={featuredContent.title}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
 
