@@ -1,5 +1,30 @@
 import he from "he";
 
+type YouTubeThumbnail = {
+  url: string;
+  width?: number;
+  height?: number;
+};
+
+type YouTubeVideoItem = {
+  id?: {
+    videoId?: string;
+  };
+  snippet: {
+    title: string;
+    description?: string;
+    publishedAt: string;
+    resourceId?: {
+      videoId?: string;
+    };
+    thumbnails: YouTubeThumbnails;
+  };
+};
+
+type YouTubeSearchResponse = {
+  items: YouTubeVideoItem[];
+};
+
 export type YouTubeVideo = {
   id: string;
   title: string;
@@ -10,42 +35,6 @@ export type YouTubeVideo = {
   publishedAt: string;
 };
 
-type YouTubeThumbnail = {
-  url: string;
-};
-
-type YouTubeThumbnails = {
-  default?: YouTubeThumbnail;
-  medium?: YouTubeThumbnail;
-  high?: YouTubeThumbnail;
-  maxres?: YouTubeThumbnail;
-};
-
-type YouTubeVideoItem = {
-  snippet: {
-    title: string;
-    description?: string;
-    publishedAt: string;
-    thumbnails: YouTubeThumbnails;
-    resourceId?: {
-      videoId?: string;
-    };
-  };
-};
-
-type YouTubeVideosResponse = {
-  items?: YouTubeVideoItem[];
-};
-
-type YouTubeChannelResponse = {
-  items?: {
-    contentDetails: {
-      relatedPlaylists: {
-        uploads: string;
-      };
-    };
-  }[];
-};
 
 export function createVideoSlug(title: string, id: string) {
   return (
@@ -64,13 +53,22 @@ export function getVideoIdFromSlug(slug: string) {
   return slug.slice(-11);
 }
 
-function getBestThumbnail(thumbnails: YouTubeThumbnails) {
+type YouTubeThumbnails = {
+  default?: YouTubeThumbnail;
+  medium?: YouTubeThumbnail;
+  high?: YouTubeThumbnail;
+  standard?: YouTubeThumbnail;
+  maxres?: YouTubeThumbnail;
+};
+
+function getBestThumbnail(thumbnails: YouTubeThumbnails): string {
   return (
     thumbnails.maxres?.url ||
+    thumbnails.standard?.url ||
     thumbnails.high?.url ||
     thumbnails.medium?.url ||
     thumbnails.default?.url ||
-    "/logo2526.png"
+    ""
   );
 }
 
@@ -84,7 +82,7 @@ export async function getYouTubeVideoById(
     { next: { revalidate: 3600 } }
   );
 
-  const data = (await response.json()) as YouTubeVideosResponse;
+  const data = (await response.json()) as YouTubeSearchResponse;
 
   if (!data.items || data.items.length === 0) {
     return null;
@@ -117,7 +115,7 @@ export async function getLatestYouTubeVideos(
     { next: { revalidate: 3600 } }
   );
 
-  const channelData = (await channelResponse.json()) as YouTubeChannelResponse;
+  const channelData = await channelResponse.json();
 
   if (!channelData.items || channelData.items.length === 0) {
     return [];
@@ -131,33 +129,32 @@ export async function getLatestYouTubeVideos(
     { next: { revalidate: 3600 } }
   );
 
-  const videosData = (await videosResponse.json()) as YouTubeVideosResponse;
+  const videosData = await videosResponse.json();
 
   if (!videosData.items) {
     return [];
   }
 
   return videosData.items
-    .map((item) => {
-      const id = item.snippet.resourceId?.videoId;
+  .map((item: YouTubeVideoItem) => {
+    const id = item.snippet.resourceId?.videoId ?? item.id?.videoId;
 
-      if (!id) {
-        return null;
-      }
+    if (!id) {
+      return null;
+    }
 
-      const title = he.decode(item.snippet.title);
-      const description = he.decode(item.snippet.description || "");
-      const thumbnail = getBestThumbnail(item.snippet.thumbnails);
+    const title = he.decode(item.snippet.title);
+    const description = he.decode(item.snippet.description || "");
+    const thumbnail = getBestThumbnail(item.snippet.thumbnails);
 
-      return {
-        id,
-        title,
-        description,
-        thumbnail,
-        slug: createVideoSlug(title, id),
-        embedUrl: `https://www.youtube.com/embed/${id}`,
-        publishedAt: item.snippet.publishedAt,
-      };
-    })
-    .filter((video): video is YouTubeVideo => video !== null);
+    return {
+      id,
+      title,
+      description,
+      thumbnail,
+      url: `https://www.youtube.com/watch?v=${id}`,
+      publishedAt: item.snippet.publishedAt,
+    };
+  })
+  .filter((video: null): video is NonNullable<typeof video> => video !== null);
 }

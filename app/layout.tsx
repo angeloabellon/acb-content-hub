@@ -1,9 +1,9 @@
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
+import { siteConfig } from "@/config/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,45 +15,22 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://casttocast.es"),
-
-  title: {
-    default: "Cast To Cast Baloncesto",
-    template: "%s | Cast To Cast Baloncesto",
-  },
-
-  description:
-    "Actualidad, análisis y debate sobre baloncesto nacional, ACB y equipos de la Región de Murcia.",
-
-  openGraph: {
-    title: "Cast To Cast Baloncesto",
-    description:
-      "Actualidad, análisis y debate sobre baloncesto nacional.",
-    url: "https://casttocast.es",
-    siteName: "Cast To Cast Baloncesto",
-    locale: "es_ES",
-    type: "website",
-  },
-
-  twitter: {
-    card: "summary_large_image",
-    title: "Cast To Cast Baloncesto",
-    description:
-      "Actualidad, análisis y debate sobre baloncesto nacional.",
-  },
+export const metadata = {
+  title: siteConfig.name,
+  description: siteConfig.description,
   manifest: "/manifest.webmanifest",
+  icons: {
+    apple: "/icons/apple-touch-icon.png",
+  },
   appleWebApp: {
     capable: true,
-    title: "Cast To Cast",
+    title: siteConfig.shortName,
     statusBarStyle: "black-translucent",
   },
-  icons: {
-  apple: "/icons/apple-touch-icon.png",
-},
 };
+
 export const viewport = {
-  themeColor: "#7a0c0c",
+  themeColor: siteConfig.themeColor,
 };
 
 export default function RootLayout({

@@ -1,4 +1,4 @@
-import Image from "next/image";
+
 const socialLinks = [
   {
     name: "X / Twitter",
@@ -110,21 +110,17 @@ export default function AboutPage() {
 
                 <div className="relative w-20 h-20 mx-auto mb-6">
 
-                  <Image
-  src="/logoCTC.jpg"
-  alt="Cast To Cast"
-  fill
-  sizes="80px"
-  className="object-contain transition-opacity duration-300 group-hover:opacity-0"
-/>
+                  <img
+                    src="/logoCTC.jpg"
+                    alt="Cast To Cast"
+                    className="absolute inset-0 w-full h-full object-contain transition-opacity duration-300 group-hover:opacity-0"
+                  />
 
-                  <Image
-  src="/logo2526.png"
-  alt="Cast To Cast"
-  fill
-  sizes="80px"
-  className="object-contain opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-/>
+                  <img
+                    src="/logo2526.png"
+                    alt="Cast To Cast"
+                    className="absolute inset-0 w-full h-full object-contain opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  />
 
                 </div>
 
@@ -157,14 +153,12 @@ export default function AboutPage() {
         className="group bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 rounded-3xl p-8 border border-red-900/40 shadow-2xl hover:border-orange-400/40 transition-all duration-300 hover:-translate-y-2"
       >
         {collaborator.logo && (
-  <div className="relative w-24 h-24 mb-6 flex items-center justify-center">
-    <Image
-  src={collaborator.logo}
-  alt={collaborator.name}
-  width={96}
-  height={96}
-  className="max-w-full max-h-full object-contain"
-/>
+  <div className="w-24 h-24 mb-6 flex items-center justify-center">
+    <img
+      src={collaborator.logo}
+      alt={collaborator.name}
+      className="max-w-full max-h-full object-contain"
+    />
   </div>
 )}
 

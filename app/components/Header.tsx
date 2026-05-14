@@ -1,9 +1,11 @@
 "use client";
+
 import "./Header.css";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import { siteConfig } from "@/config/site";
+
 export default function Header() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -19,26 +21,15 @@ export default function Header() {
   }, []);
 
   return (
-    <header className={`site-header sticky top-0 z-50 bg-black/50 backdrop-blur-xl border-b border-white/10 shadow-lg ${scrolled ? "scrolled" : ""}`}>
+    <header
+      className={`site-header sticky top-0 z-50 bg-black/50 backdrop-blur-xl border-b border-white/10 shadow-lg ${
+        scrolled ? "scrolled" : ""
+      }`}
+    >
       <div className="site-header-content">
-        <Image
-  src="/logoCTC.jpg"
-  alt="Logo CTC"
-  width={64}
-  height={64}
-  priority
-  className="site-header-image"
-/>
+        <img src="/logoCTC.jpg" alt="Logo CTC" className="site-header-image" />
+        <img src="/ctc_transparente.png" alt="CTC" className="site-header-image" />
 
-<Image
-  src="/ctc_transparente.png"
-  alt="CTC"
-  width={160}
-  height={64}
-  priority
-  className="site-header-image"
-/>
-        
         <button
           className="menu-button"
           onClick={() => setMenuOpen(!menuOpen)}
@@ -49,63 +40,16 @@ export default function Header() {
         </button>
 
         <nav className={menuOpen ? "nav-open" : ""}>
-          <Link
-            href="/"
-            onClick={() => setMenuOpen(false)}
-            className={pathname === "/" ? "active-link" : ""}
-          >
-            Inicio
-          </Link>
-
-          <Link
-            href="/videos"
-            onClick={() => setMenuOpen(false)}
-            className={pathname === "/videos" ? "active-link" : ""}
-          >
-            Vídeos
-          </Link>
-
-          <Link
-            href="/podcasts"
-            onClick={() => setMenuOpen(false)}
-            className={pathname === "/podcasts" ? "active-link" : ""}
-          >
-            Podcasts
-          </Link>
-
-          <Link
-            href="/news"
-            onClick={() => setMenuOpen(false)}
-            className={pathname === "/news" ? "active-link" : ""}
-          >
-            Noticias
-          </Link>
-
-          <Link
-            href="/galeria"
-            onClick={() => setMenuOpen(false)}
-            className={pathname === "/galeria" ? "active-link" : ""}
-          >
-            Galería
-          </Link>
-
-          <Link
-            href="/about"
-            onClick={() => setMenuOpen(false)}
-            className={pathname === "/about" ? "active-link" : ""}
-          >
-            Sobre nosotros
-          </Link>
-
-          <Link
-            href="/contacto"
-            onClick={() => setMenuOpen(false)}
-            className={pathname === "/contacto" ? "active-link" : ""}
-          >
-            Contacto
-          </Link>
-
-          
+          {siteConfig.navigation.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setMenuOpen(false)}
+              className={pathname === item.href ? "active-link" : ""}
+            >
+              {item.label}
+            </Link>
+          ))}
         </nav>
       </div>
     </header>

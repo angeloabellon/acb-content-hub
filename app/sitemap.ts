@@ -1,10 +1,9 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
+import { siteConfig } from "@/config/site";
 import { getLatestYouTubeVideos } from "@/lib/youtube";
 import { getBasketballNews } from "@/lib/news";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://casttocast.es";
-
   const videos = await getLatestYouTubeVideos(20);
   const news = await getBasketballNews();
 
@@ -17,23 +16,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/about",
     "/contacto",
   ].map((route) => ({
-    url: `${baseUrl}${route}`,
+    url: `${siteConfig.url}${route}`,
     lastModified: new Date(),
   }));
 
   const videoPages = videos.map((video) => ({
-    url: `${baseUrl}/videos/${video.slug}`,
+    url: `${siteConfig.url}/videos/${video.slug}`,
     lastModified: new Date(),
   }));
 
   const newsPages = news.map((item) => ({
-    url: `${baseUrl}/news/${item.slug}`,
+    url: `${siteConfig.url}/news/${item.slug}`,
     lastModified: new Date(),
   }));
 
-  return [
-    ...staticPages,
-    ...videoPages,
-    ...newsPages,
-  ];
+  return [...staticPages, ...videoPages, ...newsPages];
 }
