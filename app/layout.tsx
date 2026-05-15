@@ -20,7 +20,9 @@ export const metadata = {
   description: siteConfig.description,
   manifest: "/manifest.webmanifest",
   icons: {
-    apple: "/icons/apple-touch-icon.png",
+    icon: "/logoCTC.jpg",
+    shortcut: "/logoCTC.jpg",
+    apple: "/logoCTC.jpg",
   },
   appleWebApp: {
     capable: true,
