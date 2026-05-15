@@ -10,6 +10,43 @@ export type YouTubeVideo = {
   publishedAt: string;
 };
 
+type YouTubeThumbnail = {
+  url: string;
+};
+
+type YouTubeThumbnails = {
+  default?: YouTubeThumbnail;
+  medium?: YouTubeThumbnail;
+  high?: YouTubeThumbnail;
+  maxres?: YouTubeThumbnail;
+};
+
+type YouTubeVideoItem = {
+  snippet: {
+    title: string;
+    description?: string;
+    publishedAt: string;
+    thumbnails: YouTubeThumbnails;
+    resourceId?: {
+      videoId?: string;
+    };
+  };
+};
+
+type YouTubeVideosResponse = {
+  items?: YouTubeVideoItem[];
+};
+
+type YouTubeChannelResponse = {
+  items?: {
+    contentDetails: {
+      relatedPlaylists: {
+        uploads: string;
+      };
+    };
+  }[];
+};
+
 export function createVideoSlug(title: string, id: string) {
   return (
     title
@@ -27,7 +64,7 @@ export function getVideoIdFromSlug(slug: string) {
   return slug.slice(-11);
 }
 
-function getBestThumbnail(thumbnails: any) {
+function getBestThumbnail(thumbnails: YouTubeThumbnails) {
   return (
     thumbnails.maxres?.url ||
     thumbnails.high?.url ||
@@ -47,7 +84,7 @@ export async function getYouTubeVideoById(
     { next: { revalidate: 3600 } }
   );
 
-  const data = await response.json();
+  const data = (await response.json()) as YouTubeVideosResponse;
 
   if (!data.items || data.items.length === 0) {
     return null;
@@ -80,7 +117,7 @@ export async function getLatestYouTubeVideos(
     { next: { revalidate: 3600 } }
   );
 
-  const channelData = await channelResponse.json();
+  const channelData = (await channelResponse.json()) as YouTubeChannelResponse;
 
   if (!channelData.items || channelData.items.length === 0) {
     return [];
@@ -94,26 +131,33 @@ export async function getLatestYouTubeVideos(
     { next: { revalidate: 3600 } }
   );
 
-  const videosData = await videosResponse.json();
+  const videosData = (await videosResponse.json()) as YouTubeVideosResponse;
 
   if (!videosData.items) {
     return [];
   }
 
-  return videosData.items.map((item: any) => {
-    const id = item.snippet.resourceId.videoId;
-    const title = he.decode(item.snippet.title);
-    const description = he.decode(item.snippet.description || "");
-    const thumbnail = getBestThumbnail(item.snippet.thumbnails);
+  return videosData.items
+    .map((item) => {
+      const id = item.snippet.resourceId?.videoId;
 
-    return {
-      id,
-      title,
-      description,
-      thumbnail,
-      slug: createVideoSlug(title, id),
-      embedUrl: `https://www.youtube.com/embed/${id}`,
-      publishedAt: item.snippet.publishedAt,
-    };
-  });
+      if (!id) {
+        return null;
+      }
+
+      const title = he.decode(item.snippet.title);
+      const description = he.decode(item.snippet.description || "");
+      const thumbnail = getBestThumbnail(item.snippet.thumbnails);
+
+      return {
+        id,
+        title,
+        description,
+        thumbnail,
+        slug: createVideoSlug(title, id),
+        embedUrl: `https://www.youtube.com/embed/${id}`,
+        publishedAt: item.snippet.publishedAt,
+      };
+    })
+    .filter((video): video is YouTubeVideo => video !== null);
 }

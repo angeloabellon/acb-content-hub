@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Route } from "next";
+import Image from "next/image";
 
 type VideoCardProps = {
   title: string;
@@ -14,12 +15,15 @@ export default function VideoCard({ title, thumbnail, url }: VideoCardProps) {
       className="group relative block overflow-hidden bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 rounded-2xl p-3 border border-red-900/40 shadow-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
     >
       <div className="relative overflow-hidden rounded-xl mb-4">
-        <img
-          src={thumbnail}
-          alt={title}
-          loading="lazy"
-          className="w-full aspect-video object-cover transition-transform duration-300 group-hover:scale-105"
-        />
+        <div className="relative aspect-video overflow-hidden rounded-xl">
+  <Image
+    src={thumbnail}
+    alt={title}
+    fill
+    sizes="(max-width: 768px) 100vw, 33vw"
+    className="object-cover transition-transform duration-300 group-hover:scale-105"
+  />
+</div>
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
 
