@@ -10,8 +10,7 @@ export default function GaleriaPage() {
         </h1>
 
         <p className="text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed mb-8">
-          Fotografía deportiva, gentileza de nuestro amigo Antonio Martínez.
-          Actualmente en fase de construcción y pruebas.
+          Fotografía deportiva, gentileza de nuestro amigo y colaborador Antonio Martínez.
         </p>
 
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
