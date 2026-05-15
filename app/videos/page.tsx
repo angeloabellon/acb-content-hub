@@ -1,5 +1,14 @@
 import { getLatestYouTubeVideos } from "@/lib/youtube";
 import VideoSearch from "../components/VideoSearch";
+import type { Metadata } from "next";
+import { createMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = createMetadata({
+  title: "Vídeos",
+  description:
+    "Tertulias, análisis y contenido especial sobre el baloncesto de la Región de Murcia y Málaga.",
+  path: "/videos",
+});
 
 export default async function VideosPage() {
   const videos = await getLatestYouTubeVideos(9);

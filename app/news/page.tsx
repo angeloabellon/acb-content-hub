@@ -1,6 +1,15 @@
 import ArticleCard from "../components/ArticleCard";
 import NewsSourceCard from "../components/NewsSourceCard";
 import { getBasketballNews } from "@/lib/news";
+import type { Metadata } from "next";
+import { createMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = createMetadata({
+  title: "Noticias",
+  description:
+    "Actualidad seleccionada sobre baloncesto, UCAM Murcia, Unicaja, Jairis, ACB y competiciones FEB.",
+  path: "/news",
+});
 
 const articles = [
   {

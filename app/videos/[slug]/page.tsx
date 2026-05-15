@@ -6,6 +6,7 @@ import {
   getYouTubeVideoById,
 } from "@/lib/youtube";
 
+
 type VideoPageProps = {
   params: Promise<{
     slug: string;

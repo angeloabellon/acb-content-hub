@@ -1,5 +1,14 @@
 import { getPodcastEpisodes } from "@/lib/podcasts";
 import PodcastSearch from "../components/PodcastSearch";
+import type { Metadata } from "next";
+import { createMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = createMetadata({
+  title: "Podcasts",
+  description:
+    "Escucha los episodios de Cast To Cast directamente desde nuestra web.",
+  path: "/podcasts",
+});
 
 export default async function PodcastsPage() {
   const episodes = await getPodcastEpisodes();
