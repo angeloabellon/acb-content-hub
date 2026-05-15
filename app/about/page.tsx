@@ -1,4 +1,4 @@
-
+import Image from "next/image";
 const socialLinks = [
   {
     name: "X / Twitter",
@@ -110,17 +110,21 @@ export default function AboutPage() {
 
                 <div className="relative w-20 h-20 mx-auto mb-6">
 
-                  <img
-                    src="/logoCTC.jpg"
-                    alt="Cast To Cast"
-                    className="absolute inset-0 w-full h-full object-contain transition-opacity duration-300 group-hover:opacity-0"
-                  />
+                  <Image
+  src="/logoCTC.jpg"
+  alt="Cast To Cast"
+  fill
+  sizes="80px"
+  className="object-contain transition-opacity duration-300 group-hover:opacity-0"
+/>
 
-                  <img
-                    src="/logo2526.png"
-                    alt="Cast To Cast"
-                    className="absolute inset-0 w-full h-full object-contain opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                  />
+                  <Image
+  src="/logo2526.png"
+  alt="Cast To Cast"
+  fill
+  sizes="80px"
+  className="object-contain opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+/>
 
                 </div>
 
@@ -154,11 +158,13 @@ export default function AboutPage() {
       >
         {collaborator.logo && (
   <div className="w-24 h-24 mb-6 flex items-center justify-center">
-    <img
-      src={collaborator.logo}
-      alt={collaborator.name}
-      className="max-w-full max-h-full object-contain"
-    />
+    <Image
+  src={collaborator.logo}
+  alt={collaborator.name}
+  width={96}
+  height={96}
+  className="max-w-full max-h-full object-contain"
+/>
   </div>
 )}
 
