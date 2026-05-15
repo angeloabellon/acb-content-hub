@@ -3,6 +3,7 @@ import "./Header.css";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 export default function Header() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -20,8 +21,23 @@ export default function Header() {
   return (
     <header className={`site-header sticky top-0 z-50 bg-black/50 backdrop-blur-xl border-b border-white/10 shadow-lg ${scrolled ? "scrolled" : ""}`}>
       <div className="site-header-content">
-        <img src="/logoCTC.jpg" alt="Logo CTC" className="site-header-image" />
-        <img src="/ctc_transparente.png" alt="CTC" className="site-header-image" />
+        <Image
+  src="/logoCTC.jpg"
+  alt="Logo CTC"
+  width={64}
+  height={64}
+  priority
+  className="site-header-image"
+/>
+
+<Image
+  src="/ctc_transparente.png"
+  alt="CTC"
+  width={160}
+  height={64}
+  priority
+  className="site-header-image"
+/>
         
         <button
           className="menu-button"

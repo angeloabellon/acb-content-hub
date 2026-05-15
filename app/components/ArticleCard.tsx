@@ -1,3 +1,4 @@
+import Image from "next/image";
 type ArticleCardProps = {
   image: string;
   category: string;
@@ -15,11 +16,15 @@ export default function ArticleCard({ image, category, url }: ArticleCardProps) 
 
       <div className="relative z-10">
 
-        <img
-          src={image}
-          alt={category}
-          className="w-full aspect-video object-cover rounded-xl mb-4 group-hover:opacity-80 transition-opacity"
-        />
+        <div className="relative aspect-video mb-4 overflow-hidden rounded-xl">
+  <Image
+    src={image}
+    alt={category}
+    fill
+    sizes="(max-width: 768px) 100vw, 50vw"
+    className="object-cover group-hover:opacity-80 transition-opacity"
+  />
+</div>
 
         <span className="uppercase text-xs font-bold tracking-widest text-white block group-hover:text-orange-400 transition-colors">
           {category}

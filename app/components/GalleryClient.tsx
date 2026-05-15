@@ -1,5 +1,5 @@
 "use client";
-
+import Image from "next/image";
 import { useState } from "react";
 
 type Photo = {
@@ -23,11 +23,15 @@ export default function GalleryClient({ photos }: GalleryClientProps) {
             onClick={() => setSelectedImage(photo.src)}
             className="group relative overflow-hidden bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 rounded-2xl p-3 border border-red-900/40 shadow-2xl transition-all duration-300 hover:-translate-y-2"
           >
-            <img
-              src={photo.src}
-              alt={photo.alt}
-              className="w-full aspect-[4/3] object-cover rounded-xl"
-            />
+            <div className="relative aspect-[4/3] overflow-hidden rounded-xl">
+  <Image
+    src={photo.src}
+    alt={photo.alt}
+    fill
+    sizes="(max-width: 768px) 100vw, 33vw"
+    className="object-cover"
+  />
+</div>
           </button>
         ))}
       </section>
@@ -41,11 +45,15 @@ export default function GalleryClient({ photos }: GalleryClientProps) {
             ✕
           </button>
 
-          <img
-            src={selectedImage}
-            alt="Imagen ampliada"
-            className="max-w-full max-h-[90vh] rounded-2xl shadow-2xl"
-          />
+          <div className="relative w-full h-full max-w-6xl max-h-[90vh]">
+  <Image
+    src={selectedImage}
+    alt="Imagen ampliada"
+    fill
+    sizes="100vw"
+    className="object-contain rounded-2xl shadow-2xl"
+  />
+</div>
         </div>
       )}
     </>

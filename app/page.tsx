@@ -3,6 +3,7 @@ import ContentCard from "./components/ContentCard";
 import { getLatestYouTubeVideos } from "@/lib/youtube";
 import { getLatestPodcastEpisode } from "@/lib/podcasts";
 import { featuredContent } from "@/data/featuredContent";
+import Image from "next/image";
 export default async function Home() {
   const [latestVideo] = await getLatestYouTubeVideos(1);
   const latestPodcast = await getLatestPodcastEpisode();
@@ -45,11 +46,14 @@ export default async function Home() {
               </div>
 
               <div className="relative overflow-hidden rounded-2xl">
-                <img
-                  src={featuredContent.image}
-                  alt={featuredContent.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
+                <Image
+  src={featuredContent.image}
+  alt={featuredContent.title}
+  fill
+  priority
+  sizes="(max-width: 1024px) 100vw, 50vw"
+  className="object-cover transition-transform duration-500 group-hover:scale-105"
+/>
 
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
 
@@ -74,11 +78,13 @@ export default async function Home() {
         className="block group"
       >
         <div className="relative overflow-hidden rounded-xl mb-4">
-          <img
-            src={latestVideo.thumbnail}
-            alt={latestVideo.title}
-            className="w-2/3 mx-auto transition-transform duration-300 group-hover:scale-105"
-          />
+          <Image
+  src={latestVideo.thumbnail}
+  alt={latestVideo.title}
+  width={480}
+  height={270}
+  className="w-2/3 mx-auto transition-transform duration-300 group-hover:scale-105"
+/>
         </div>
 
         <p className="text-white font-semibold group-hover:text-orange-400 transition-colors mb-5">
