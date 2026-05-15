@@ -1,5 +1,5 @@
-import GalleryClient from "../components/GalleryClient";
-import { galleryPhotos } from "@/data/gallery";
+import GalleryCollectionCard from "../components/GalleryCollectionCard";
+import { galleryCollections } from "@/data/gallery";
 
 export default function GaleriaPage() {
   return (
@@ -35,7 +35,17 @@ export default function GaleriaPage() {
         </div>
       </section>
 
-      <GalleryClient photos={galleryPhotos} />
+      <section className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+  {galleryCollections.map((collection) => (
+    <GalleryCollectionCard
+      key={collection.slug}
+      title={collection.title}
+      cover={collection.cover}
+      href={`/galeria/${collection.slug}`}
+      count={collection.photos.length}
+    />
+  ))}
+</section>
     </main>
   );
 }

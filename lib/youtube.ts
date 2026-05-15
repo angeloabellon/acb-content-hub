@@ -135,26 +135,30 @@ export async function getLatestYouTubeVideos(
     return [];
   }
 
-  return videosData.items
-  .map((item: YouTubeVideoItem) => {
-    const id = item.snippet.resourceId?.videoId ?? item.id?.videoId;
+    const videos = videosData.items
+    .map((item: YouTubeVideoItem): YouTubeVideo | null => {
+      const id = item.snippet.resourceId?.videoId ?? item.id?.videoId;
 
-    if (!id) {
-      return null;
-    }
+      if (!id) {
+        return null;
+      }
 
-    const title = he.decode(item.snippet.title);
-    const description = he.decode(item.snippet.description || "");
-    const thumbnail = getBestThumbnail(item.snippet.thumbnails);
+      const title = he.decode(item.snippet.title);
+      const description = he.decode(item.snippet.description || "");
+      const thumbnail = getBestThumbnail(item.snippet.thumbnails);
+      const slug = createVideoSlug(title, id);
 
-    return {
-      id,
-      title,
-      description,
-      thumbnail,
-      url: `https://www.youtube.com/watch?v=${id}`,
-      publishedAt: item.snippet.publishedAt,
-    };
-  })
-  .filter((video: null): video is NonNullable<typeof video> => video !== null);
+      return {
+        id,
+        title,
+        description,
+        thumbnail,
+        slug,
+        embedUrl: `https://www.youtube.com/embed/${id}`,
+        publishedAt: item.snippet.publishedAt,
+      };
+    })
+    .filter((video: YouTubeVideo | null): video is YouTubeVideo => video !== null);
+
+  return videos;
 }

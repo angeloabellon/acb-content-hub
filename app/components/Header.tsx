@@ -46,7 +46,12 @@ export default function Header() {
               key={item.href}
               href={item.href}
               onClick={() => setMenuOpen(false)}
-              className={pathname === item.href ? "active-link" : ""}
+              className={
+  pathname === item.href ||
+  (item.href === "/galeria" && pathname.startsWith("/galeria/"))
+    ? "active-link"
+    : ""
+}
             >
               {item.label}
             </Link>
