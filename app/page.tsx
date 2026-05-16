@@ -7,6 +7,7 @@ import { getLatestPodcastEpisode } from "@/lib/podcasts";
 import { getLatestYouTubeVideos } from "@/lib/youtube";
 import CoverageCard from "./components/cards/CoverageCard";
 import { featuredCoverages } from "@/data/featuredCoverages";
+import { homeFeed } from "@/data/homeFeed";
 
 
 export default async function Home() {
@@ -52,6 +53,23 @@ export default async function Home() {
             desde la perspectiva de sus aficionados
           </span>
         </h1>
+
+        {/* CTA PRINCIPALES */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
+          <Link
+            href="/videos"
+            className="inline-flex w-full sm:w-auto justify-center rounded-xl bg-white px-6 py-3 font-semibold text-black hover:bg-orange-400 hover:text-white transition-colors"
+          >
+            Ver últimos vídeos
+          </Link>
+
+          <Link
+            href="/podcasts"
+            className="inline-flex w-full sm:w-auto justify-center rounded-xl border border-white/20 px-6 py-3 font-semibold text-white hover:border-orange-400 hover:text-orange-300 transition-colors"
+          >
+            Escuchar podcast
+          </Link>
+        </div>
       </section>
 
       <main>
@@ -97,6 +115,33 @@ export default async function Home() {
             </div>
           </Link>
         </section>
+        {/* COBERTURAS DESTACADAS */}
+        <section className="max-w-7xl mx-auto px-6 mt-16">
+          <div className="mb-8">
+            <p className="uppercase tracking-[0.18em] text-red-300/80 text-xs font-semibold mb-3">
+              Coberturas
+            </p>
+
+            <h2 className="text-3xl md:text-4xl font-bold">
+              Sigue a tus equipos
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-5">
+            {featuredCoverages.map((coverage) => (
+              <CoverageCard
+                key={coverage.href}
+                title={coverage.title}
+                description={coverage.description}
+                href={coverage.href}
+                accent={coverage.accent}
+                teamLogo={coverage.teamLogo}
+                leagueLogo={coverage.leagueLogo}
+                leagueLogoSize={coverage.leagueLogoSize}
+              />
+                          ))}
+          </div>
+        </section>
 
         {/* ÚLTIMO CONTENIDO MULTIMEDIA */}
         <section className="max-w-7xl mx-auto px-6 mt-16">
@@ -106,7 +151,7 @@ export default async function Home() {
             </p>
 
             <h2 className="text-3xl md:text-4xl font-bold">
-              Contenido reciente
+              Contenido multimedia reciente
             </h2>
           </div>
 
@@ -178,33 +223,7 @@ export default async function Home() {
             <p className="uppercase tracking-[0.18em] text-red-300/80 text-xs font-semibold mb-3">
               Explora Cast To Cast
             </p>
-                    {/* COBERTURAS DESTACADAS */}
-        <section className="max-w-7xl mx-auto px-6 mt-16">
-          <div className="mb-8">
-            <p className="uppercase tracking-[0.18em] text-red-300/80 text-xs font-semibold mb-3">
-              Coberturas
-            </p>
 
-            <h2 className="text-3xl md:text-4xl font-bold">
-              Sigue a tus equipos
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-5">
-            {featuredCoverages.map((coverage) => (
-              <CoverageCard
-                key={coverage.href}
-                title={coverage.title}
-                description={coverage.description}
-                href={coverage.href}
-                accent={coverage.accent}
-                teamLogo={coverage.teamLogo}
-                leagueLogo={coverage.leagueLogo}
-                leagueLogoSize={coverage.leagueLogoSize}
-              />
-                          ))}
-          </div>
-        </section>
 
             <h2 className="text-3xl md:text-4xl font-bold">
               Todo el contenido
@@ -212,21 +231,28 @@ export default async function Home() {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {homeSections.map((section) => (
-          <Link
-            key={section.href}
-            href={section.href}
-            className="rounded-2xl border border-white/10 bg-white/5 p-6 hover:border-orange-400/50 hover:bg-white/10 transition-colors"
-          >
-            <h3 className="text-xl font-bold mb-2">
-              {section.title}
-            </h3>
+            {homeFeed.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="rounded-2xl border border-white/10 bg-white/5 p-6 hover:border-orange-400/50 hover:bg-white/10 transition-colors"
+              >
+                {/* TIPO DE CONTENIDO */}
+                <p className="uppercase tracking-[0.18em] text-red-300/70 text-xs font-semibold mb-4">
+                  {item.type}
+                </p>
 
-            <p className="text-sm text-white/60">
-              {section.description}
-            </p>
-          </Link>
-        ))}
+                {/* TÍTULO */}
+                <h3 className="text-xl font-bold mb-2">
+                  {item.title}
+                </h3>
+
+                {/* DESCRIPCIÓN */}
+                <p className="text-sm text-white/60">
+                  {item.description}
+                </p>
+              </Link>
+            ))}
           </div>
         </section>
       </main>
