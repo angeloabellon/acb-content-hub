@@ -1,4 +1,4 @@
-export type ContentType = "video" | "podcast" | "news";
+
 
 export type BaseContentItem = {
   id: string;
@@ -32,3 +32,29 @@ export type ContentItem =
   | VideoContentItem
   | PodcastContentItem
   | NewsContentItem;
+
+  // TIPOS DE CONTENIDO
+export type ContentType =
+  | "video"
+  | "podcast"
+  | "news"
+  | "gallery"
+  | "coverage";
+
+// BASE CONTENT
+export interface BaseContent {
+  title: string;
+  description: string;
+  href: string;
+  image?: string;
+  type: ContentType;
+}
+
+// COBERTURAS
+export interface CoverageContent
+  extends BaseContent {
+  accent: string;
+  teamLogo: string;
+  leagueLogo: string;
+  leagueLogoSize?: string;
+}

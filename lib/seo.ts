@@ -19,11 +19,15 @@ export function createMetadata({
   const url = `${siteConfig.url}${path}`;
 
   return {
+    metadataBase: new URL(siteConfig.url),
+
     title,
     description,
+
     alternates: {
       canonical: url,
     },
+
     openGraph: {
       title,
       description,
@@ -40,6 +44,7 @@ export function createMetadata({
         },
       ],
     },
+
     twitter: {
       card: "summary_large_image",
       title,

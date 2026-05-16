@@ -1,5 +1,14 @@
 import GalleryCollectionCard from "../components/GalleryCollectionCard";
 import { galleryCollections } from "@/data/gallery";
+import type { Metadata } from "next";
+import { createMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = createMetadata({
+  title: "Galería",
+  description:
+    "Fotografía deportiva, gentileza de nuestro amigo y colaborador Antonio Martínez.",
+  path: "/galeria",
+});
 
 export default function GaleriaPage() {
   return (
