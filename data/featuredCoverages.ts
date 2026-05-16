@@ -6,7 +6,7 @@ export const featuredCoverages: CoverageContent[] = [
 
     title: "UCAM Murcia",
     description: "Noticias, vídeos y contenido sobre UCAM Murcia CB.",
-    href: "/news/ucam",
+    href: "/news/equipos/ucam",
     accent: "from-red-900/80 to-black",
     teamLogo: "/logoUCAM.png",
     leagueLogo: "/logoEndesa.png",
@@ -18,7 +18,7 @@ export const featuredCoverages: CoverageContent[] = [
 
     title: "Hozono Global Jairis",
     description: "Seguimiento del proyecto femenino de Alcantarilla.",
-    href: "/news/jairis",
+    href: "/news/equipos/jairis",
     accent: "from-yellow-700/80 to-black",
     teamLogo: "/logoJairis.png",
     leagueLogo: "/logoFemenina.png",
@@ -30,7 +30,7 @@ export const featuredCoverages: CoverageContent[] = [
 
     title: "Unicaja",
     description: "Actualidad, vídeos y contenido sobre Unicaja Málaga.",
-    href: "/news/unicaja",
+    href: "/news/equipos/unicaja",
     accent: "from-green-900/80 to-black",
     teamLogo: "/logoUnicaja.png",
     leagueLogo: "/logoEndesa.png",
