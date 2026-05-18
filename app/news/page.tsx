@@ -3,6 +3,7 @@ import NewsSourceCard from "@/components/NewsSourceCard";
 import { getBasketballNews } from "@/lib/news";
 import type { Metadata } from "next";
 import { createMetadata } from "@/lib/seo";
+import RecommendedReadingsSection from "@/components/sections/RecommendedReadingsSection";
 
 export const metadata: Metadata = createMetadata({
   title: "Actualidad",
@@ -102,6 +103,8 @@ const jairisNews = basketballNews.filter(
 
 </div>
       </section>
+      {/* FIRMAS INVITADAS */}
+<RecommendedReadingsSection className="mt-16" />
     </main>
   );
 }

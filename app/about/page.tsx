@@ -20,7 +20,13 @@ const collaborators = [
     name: "Antonio Martínez",
     role: "Fotografía deportiva",
     url: "https://instagram.com/anmasa73sports",
-    logo: "",
+    logo: "/fotoAntonio.jpg",
+  },
+  {
+    name: "Emilio Sánchez-Bolea",
+    role: "Firma invitada · La Verdad",
+    url: "https://www.laverdad.es/autor/emilio-sanchez-bolea-4245.html",
+    logo: "/fotoBolea.webp",
   },
 ];
 export default function AboutPage() {
@@ -182,6 +188,7 @@ export default function AboutPage() {
   </div>
 
 </section>
+
       
 
     </main>
