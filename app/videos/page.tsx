@@ -1,5 +1,5 @@
 import { getLatestYouTubeVideos } from "@/lib/youtube";
-import VideoSearch from "../components/VideoSearch";
+import VideoSearch from "@/components/VideoSearch";
 import type { Metadata } from "next";
 import { createMetadata } from "@/lib/seo";
 

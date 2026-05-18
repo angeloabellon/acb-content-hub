@@ -1,5 +1,5 @@
 import { getPodcastEpisodes } from "@/lib/podcasts";
-import PodcastSearch from "../components/PodcastSearch";
+import PodcastSearch from "@/components/PodcastSearch";
 import type { Metadata } from "next";
 import { createMetadata } from "@/lib/seo";
 

@@ -14,7 +14,7 @@ export default function Footer() {
 
             <p className="text-sm text-white/65 leading-relaxed">
               Plataforma multimedia de baloncesto con vídeos,
-              podcasts, noticias y fotografías.
+              podcasts, actualidad y fotografías.
             </p>
           </div>
 
@@ -48,7 +48,7 @@ export default function Footer() {
                   href="/news"
                   className="hover:text-orange-300 transition-colors"
                 >
-                  Noticias
+                  Actualidad
                 </Link>
               </li>
 

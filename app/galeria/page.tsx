@@ -1,4 +1,4 @@
-import GalleryCollectionCard from "../components/GalleryCollectionCard";
+import GalleryCollectionCard from "@/components/GalleryCollectionCard";
 import { galleryCollections } from "@/data/gallery";
 import type { Metadata } from "next";
 import { createMetadata } from "@/lib/seo";

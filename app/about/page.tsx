@@ -74,7 +74,7 @@ export default function AboutPage() {
       </div>
 
       <div className="bg-black/20 rounded-2xl p-5">
-        • Noticias, fotografía y contenido multimedia
+        • Actualidad, fotografía y contenido multimedia
       </div>
 
     </div>

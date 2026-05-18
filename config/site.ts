@@ -5,7 +5,7 @@ export const siteConfig = {
   url: "https://casttocast.es",
 
   description:
-    "Vídeos, podcasts, noticias y contenido multimedia sobre baloncesto.",
+    "Vídeos, podcasts, actualidad y contenido multimedia sobre baloncesto.",
 
   themeColor: "#7a0c0c",
 
@@ -41,7 +41,7 @@ export const siteConfig = {
       href: "/podcasts",
     },
     {
-      label: "Noticias",
+      label: "Actualidad",
       href: "/news",
     },
     {

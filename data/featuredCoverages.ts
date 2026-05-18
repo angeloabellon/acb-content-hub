@@ -5,7 +5,7 @@ export const featuredCoverages: CoverageContent[] = [
     type: "coverage",
 
     title: "UCAM Murcia",
-    description: "Noticias, vídeos y contenido sobre UCAM Murcia CB.",
+    description: "Actualidad, vídeos y contenido sobre UCAM Murcia CB.",
     href: "/news/equipos/ucam",
     accent: "from-red-900/80 to-black",
     teamLogo: "/logoUCAM.png",

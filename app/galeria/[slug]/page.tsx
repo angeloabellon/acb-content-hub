@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import GalleryClient from "@/app/components/GalleryClient";
+import GalleryClient from "@/components/GalleryClient";
 import { galleryCollections } from "@/data/gallery";
 import Link from "next/link";
 

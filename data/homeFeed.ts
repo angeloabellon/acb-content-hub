@@ -14,7 +14,7 @@ export const homeFeed = [
   },
   {
     type: "news",
-    title: "Noticias",
+    title: "Actualidad",
     description: "Actualidad de UCAM Murcia, Jairis, Unicaja y más.",
     href: "/news",
   },

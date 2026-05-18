@@ -1,11 +1,11 @@
-import ArticleCard from "../components/ArticleCard";
-import NewsSourceCard from "../components/NewsSourceCard";
+import ArticleCard from "@/components/ArticleCard";
+import NewsSourceCard from "@/components/NewsSourceCard";
 import { getBasketballNews } from "@/lib/news";
 import type { Metadata } from "next";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = createMetadata({
-  title: "Noticias",
+  title: "Actualidad",
   description:
     "Actualidad seleccionada sobre baloncesto, UCAM Murcia, Unicaja, Jairis, ACB y competiciones FEB.",
   path: "/news",
@@ -47,7 +47,7 @@ const jairisNews = basketballNews.filter(
     <main className="max-w-6xl mx-auto px-6 py-16">
       <section className="text-center mb-14">
         <h1 className="text-4xl md:text-6xl font-extrabold mb-6">
-          Noticias
+          Actualidad
         </h1>
 
         <p className="text-white/70 max-w-2xl mx-auto">
