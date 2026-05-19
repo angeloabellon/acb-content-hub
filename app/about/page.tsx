@@ -20,7 +20,13 @@ const collaborators = [
     name: "Antonio Martínez",
     role: "Fotografía deportiva",
     url: "https://instagram.com/anmasa73sports",
-    logo: "",
+    logo: "/fotoAntonio.jpg",
+  },
+  {
+    name: "Emilio Sánchez-Bolea",
+    role: "Firma invitada · La Verdad",
+    url: "https://www.laverdad.es/autor/emilio-sanchez-bolea-4245.html",
+    logo: "/fotoBolea.webp",
   },
 ];
 export default function AboutPage() {
@@ -158,13 +164,18 @@ export default function AboutPage() {
       >
         {collaborator.logo && (
   <div className="w-24 h-24 mb-6 flex items-center justify-center">
+{/* Imagen / logotipo del colaborador */}
+{collaborator.logo && (
+  <div className="w-24 h-24 mb-6 flex items-center justify-center overflow-hidden rounded-2xl bg-black/20 border border-white/10">
     <Image
-  src={collaborator.logo}
-  alt={collaborator.name}
-  width={96}
-  height={96}
-  className="max-w-full max-h-full object-contain"
-/>
+      src={collaborator.logo}
+      alt={collaborator.name}
+      width={96}
+      height={96}
+      className="h-full w-full object-cover rounded-2xl"
+    />
+  </div>
+)}
   </div>
 )}
 
