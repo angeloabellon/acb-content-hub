@@ -62,42 +62,7 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-
-          {/* COBERTURAS */}
-          <div>
-            <h3 className="text-sm font-bold uppercase tracking-widest text-white/50 mb-4">
-              Coberturas
-            </h3>
-
-            <ul className="space-y-3 text-sm">
-              <li>
-                <Link
-                  href="/news/equipos/ucam"
-                  className="hover:text-orange-300 transition-colors"
-                >
-                  UCAM Murcia
-                </Link>
-              </li>
-
-              <li>
-                <Link
-                  href="/news/equipos/jairis"
-                  className="hover:text-orange-300 transition-colors"
-                >
-                  Hozono Global Jairis
-                </Link>
-              </li>
-
-              <li>
-                <Link
-                  href="/news/equipos/unicaja"
-                  className="hover:text-orange-300 transition-colors"
-                >
-                  Unicaja Málaga
-                </Link>
-              </li>
-            </ul>
-          </div>
+          
 
           {/* REDES */}
           <div>
