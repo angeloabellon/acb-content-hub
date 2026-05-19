@@ -2,9 +2,12 @@ import { getPodcastEpisodes } from "@/lib/podcasts";
 import PodcastSearch from "@/components/PodcastSearch";
 import type { Metadata } from "next";
 import { createMetadata } from "@/lib/seo";
+import { siteConfig } from "@/config/site";
 
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
+
   title: "Podcasts | Cast To Cast Baloncesto",
   description:
     "Escucha los últimos episodios del podcast de Cast To Cast Baloncesto: tertulias, análisis y actualidad sobre baloncesto.",
