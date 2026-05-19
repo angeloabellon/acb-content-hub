@@ -11,6 +11,33 @@ type NewsSourceCardProps = {
   news: NewsItem[];
 };
 
+// Estilos visuales por club / fuente.
+// Usamos gradientes oscuros y elegantes para mantener la estética premium.
+const sourceStyles = {
+  ucam: "from-red-950/90 via-red-900/80 to-red-700/60 border-red-700/40",
+  jairis: "from-yellow-900/80 via-amber-700/70 to-yellow-500/40 border-yellow-400/40",
+  unicaja: "from-green-950/90 via-green-900/80 to-emerald-600/60 border-green-600/40",
+  default: "from-gray-900/80 via-gray-800/70 to-gray-700/60 border-white/20",
+};
+
+function getSourceStyle(title: string) {
+  const normalizedTitle = title.toLowerCase();
+
+  if (normalizedTitle.includes("ucam")) {
+    return sourceStyles.ucam;
+  }
+
+  if (normalizedTitle.includes("jairis")) {
+    return sourceStyles.jairis;
+  }
+
+  if (normalizedTitle.includes("unicaja")) {
+    return sourceStyles.unicaja;
+  }
+
+  return sourceStyles.default;
+}
+
 export default function NewsSourceCard({
   title,
   description,
@@ -18,9 +45,12 @@ export default function NewsSourceCard({
   news,
 }: NewsSourceCardProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const sourceStyle = getSourceStyle(title);
 
   return (
-    <div className="bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 rounded-2xl p-6 border border-red-900/40 shadow-2xl overflow-hidden">
+    <div
+      className={`bg-gradient-to-br ${sourceStyle} rounded-2xl p-6 border shadow-2xl overflow-hidden transition-all duration-300`}
+    >
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}

@@ -1,14 +1,46 @@
 import GalleryCollectionCard from "@/components/GalleryCollectionCard";
 import { galleryCollections } from "@/data/gallery";
-import type { Metadata } from "next";
 import { createMetadata } from "@/lib/seo";
+import type { Metadata } from "next";
+import { siteConfig } from "@/config/site";
 
-export const metadata: Metadata = createMetadata({
-  title: "Galería",
+
+export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
+
+  title: `Galería | ${siteConfig.name}`,
   description:
-    "Fotografía deportiva, gentileza de nuestro amigo y colaborador Antonio Martínez.",
-  path: "/galeria",
-});
+    "Galerías fotográficas de Cast To Cast Baloncesto: partidos, afición, protagonistas y contenido visual del baloncesto.",
+
+  alternates: {
+    canonical: "/galeria",
+  },
+
+  openGraph: {
+    title: `Galería | ${siteConfig.name}`,
+    description:
+      "Fotografías de partidos, afición y protagonistas del baloncesto en Cast To Cast.",
+    url: `${siteConfig.url}/galeria`,
+    siteName: siteConfig.name,
+    type: "website",
+    images: [
+      {
+        url: "/og/galeria-cover.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Galería Cast To Cast Baloncesto",
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: `Galería | ${siteConfig.name}`,
+    description:
+      "Fotografías de partidos, afición y protagonistas del baloncesto en Cast To Cast.",
+    images: ["/og/galeria-cover.jpg"],
+  },
+};
 
 export default function GaleriaPage() {
   return (
