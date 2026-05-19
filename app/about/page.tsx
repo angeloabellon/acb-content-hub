@@ -164,12 +164,12 @@ export default function AboutPage() {
       >
         {collaborator.logo && (
   <div className="w-24 h-24 mb-6 flex items-center justify-center">
-    <Image
+<Image
   src={collaborator.logo}
   alt={collaborator.name}
   width={96}
   height={96}
-  className="max-w-full max-h-full object-contain"
+  className="max-w-full max-h-full object-cover rounded-2xl"
 />
   </div>
 )}
