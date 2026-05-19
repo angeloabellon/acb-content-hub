@@ -3,6 +3,7 @@ import NewsSourceCard from "@/components/NewsSourceCard";
 import { getBasketballNews } from "@/lib/news";
 import type { Metadata } from "next";
 import { createMetadata } from "@/lib/seo";
+import RecommendedReadingsSection from "@/components/sections/RecommendedReadingsSection";
 
 export const metadata: Metadata = createMetadata({
   title: "Actualidad",
@@ -55,6 +56,12 @@ const jairisNews = basketballNews.filter(
           Jairis, ACB y competiciones FEB.
         </p>
       </section>
+
+      {/* Firma invitada / artículos recomendados */}
+{/* Artículos recomendados */}
+<section className="mb-20">
+  <RecommendedReadingsSection showHeader={false} />
+</section>
 
       <section className="mb-16">
         <h2 className="text-2xl font-bold mb-8">
