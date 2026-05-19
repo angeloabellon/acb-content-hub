@@ -4,6 +4,7 @@ import { getBasketballNews } from "@/lib/news";
 import type { Metadata } from "next";
 import { createMetadata } from "@/lib/seo";
 import RecommendedReadingsSection from "@/components/sections/RecommendedReadingsSection";
+import { featureFlags } from "@/config/featureFlags";
 
 export const metadata: Metadata = createMetadata({
   title: "Actualidad",
@@ -104,7 +105,7 @@ const jairisNews = basketballNews.filter(
 </div>
       </section>
       {/* FIRMAS INVITADAS */}
-<RecommendedReadingsSection className="mt-16" />
+{featureFlags.showBoleaArticles && <RecommendedReadingsSection className="mt-16" />}
     </main>
   );
 }

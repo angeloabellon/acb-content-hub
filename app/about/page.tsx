@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { featureFlags } from "@/config/featureFlags";
 const socialLinks = [
   {
     name: "X / Twitter",
@@ -22,12 +23,19 @@ const collaborators = [
     url: "https://instagram.com/anmasa73sports",
     logo: "/fotoAntonio.jpg",
   },
-  {
-    name: "Emilio Sánchez-Bolea",
-    role: "Firma invitada · La Verdad",
-    url: "https://www.laverdad.es/autor/emilio-sanchez-bolea-4245.html",
-    logo: "/fotoBolea.webp",
-  },
+
+  // Firma invitada pendiente de confirmación.
+  // Se mantiene preparada, pero oculta en la web pública.
+  ...(featureFlags.showBoleaArticles
+    ? [
+        {
+          name: "Emilio Sánchez-Bolea",
+          role: "Firma invitada · La Verdad",
+          url: "https://www.laverdad.es/autor/emilio-sanchez-bolea-4245.html",
+          logo: "/fotoBolea.webp",
+        },
+      ]
+    : []),
 ];
 export default function AboutPage() {
   return (
@@ -162,15 +170,15 @@ export default function AboutPage() {
         rel="noopener noreferrer"
         className="group bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 rounded-3xl p-8 border border-red-900/40 shadow-2xl hover:border-orange-400/40 transition-all duration-300 hover:-translate-y-2"
       >
-        {collaborator.logo && (
-  <div className="w-24 h-24 mb-6 flex items-center justify-center">
-<Image
-  src={collaborator.logo}
-  alt={collaborator.name}
-  width={96}
-  height={96}
-  className="max-w-full max-h-full object-cover rounded-2xl"
-/>
+{collaborator.logo && (
+  <div className="w-24 h-24 mb-6 flex items-center justify-center overflow-hidden rounded-2xl bg-black/20 border border-white/10">
+    <Image
+      src={collaborator.logo}
+      alt={collaborator.name}
+      width={96}
+      height={96}
+      className="h-full w-full object-cover rounded-2xl"
+    />
   </div>
 )}
 

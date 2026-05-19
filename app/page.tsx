@@ -9,6 +9,7 @@ import { homeFeed } from "@/data/homeFeed";
 import { recommendedAuthors } from "@/data/recommendedAuthors";
 import ContentCard from "@/components/cards/ContentCard";
 import RecommendedReadingsSection from "@/components/sections/RecommendedReadingsSection";
+import { featureFlags } from "@/config/featureFlags";
 
 
 export default async function Home() {
@@ -219,9 +220,8 @@ export default async function Home() {
     </ContentCard>
   </div>
 
-  {/* LECTURA RECOMENDADA */}
 {/* LECTURAS RECOMENDADAS */}
-<RecommendedReadingsSection className="mt-8" />
+{featureFlags.showBoleaArticles && <RecommendedReadingsSection className="mt-8" />}
 </section>
 
 
