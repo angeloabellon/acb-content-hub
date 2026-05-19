@@ -3,12 +3,37 @@ import PodcastSearch from "@/components/PodcastSearch";
 import type { Metadata } from "next";
 import { createMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = createMetadata({
-  title: "Podcasts",
+
+export const metadata: Metadata = {
+  title: "Podcasts | Cast To Cast Baloncesto",
   description:
-    "Escucha los episodios de Cast To Cast directamente desde nuestra web.",
-  path: "/podcasts",
-});
+    "Escucha los últimos episodios del podcast de Cast To Cast Baloncesto: tertulias, análisis y actualidad sobre baloncesto.",
+
+  openGraph: {
+    title: "Podcasts | Cast To Cast Baloncesto",
+    description:
+      "Tertulias, análisis y actualidad del baloncesto en formato podcast.",
+    url: "https://casttocast.es/podcasts",
+    siteName: "Cast To Cast Baloncesto",
+    type: "website",
+    images: [
+      {
+        url: "/og/podcast-cover.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Podcasts de Cast To Cast Baloncesto",
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "Podcasts | Cast To Cast Baloncesto",
+    description:
+      "Escucha los últimos episodios de Cast To Cast Baloncesto.",
+    images: ["/og/podcast-cover.jpg"],
+  },
+};
 
 export default async function PodcastsPage() {
   const episodes = await getPodcastEpisodes();
