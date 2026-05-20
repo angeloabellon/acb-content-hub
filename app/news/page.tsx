@@ -1,18 +1,22 @@
+import type { Metadata } from "next";
+
 import ArticleCard from "@/components/ArticleCard";
 import NewsSourceCard from "@/components/NewsSourceCard";
-import { getBasketballNews } from "@/lib/news";
-import type { Metadata } from "next";
-import { createMetadata } from "@/lib/seo";
 import RecommendedReadingsSection from "@/components/sections/RecommendedReadingsSection";
+import SectionHeader from "@/components/ui/SectionHeader";
+
+import { createMetadata } from "@/lib/seo";
+import { getBasketballNews } from "@/lib/news";
 
 export const metadata: Metadata = createMetadata({
   title: "Actualidad",
   description:
-    "Actualidad seleccionada sobre baloncesto, UCAM Murcia, Unicaja, Jairis, ACB y competiciones FEB.",
+    "Actualidad seleccionada sobre baloncesto, UCAM Murcia, Unicaja Málaga, Hozono Global Jairis, ACB y competiciones FEB.",
   path: "/news",
+  image: "/og/news-cover.jpg",
 });
 
-const articles = [
+const officialSocialLinks = [
   {
     image: "/logoUCAM.png",
     category: "UCAM Murcia",
@@ -20,7 +24,7 @@ const articles = [
   },
   {
     image: "/logoJairis.png",
-    category: "CB Jairis",
+    category: "Hozono Global Jairis",
     url: "https://x.com/CBJairis",
   },
   {
@@ -32,44 +36,52 @@ const articles = [
 
 export default async function NewsPage() {
   const basketballNews = await getBasketballNews();
+
   const ucamNews = basketballNews.filter(
-  (news) => news.source === "UCAM Murcia CB"
-);
+    (news) => news.source === "UCAM Murcia CB"
+  );
 
-const unicajaNews = basketballNews.filter(
-  (news) => news.source === "Unicaja Málaga"
-);
+  const unicajaNews = basketballNews.filter(
+    (news) => news.source === "Unicaja Málaga"
+  );
 
-const jairisNews = basketballNews.filter(
-  (news) => news.source === "Hozono Global Jairis"
-);
+  const jairisNews = basketballNews.filter(
+    (news) => news.source === "Hozono Global Jairis"
+  );
 
   return (
     <main className="max-w-6xl mx-auto px-6 py-16">
-      <section className="text-center mb-14">
+      {/* CABECERA DE PÁGINA */}
+      <section className="text-center mb-20">
+        <p className="uppercase tracking-[0.18em] text-red-300/80 text-sm font-semibold mb-5">
+          Cast To Cast Baloncesto
+        </p>
+
         <h1 className="text-4xl md:text-6xl font-extrabold mb-6">
           Actualidad
         </h1>
 
-        <p className="text-white/70 max-w-2xl mx-auto">
-          Actualidad seleccionada sobre baloncesto, UCAM Murcia, Unicaja,
-          Jairis, ACB y competiciones FEB.
+        <p className="text-white/70 max-w-2xl mx-auto leading-relaxed">
+          Actualidad seleccionada sobre baloncesto, UCAM Murcia, Unicaja Málaga,
+          Hozono Global Jairis, ACB y competiciones FEB.
         </p>
       </section>
 
-      {/* Firma invitada / artículos recomendados */}
-{/* Artículos recomendados */}
-<section className="mb-20">
-  <RecommendedReadingsSection showHeader={false} />
-</section>
+      {/* ARTÍCULOS RECOMENDADOS */}
+      <section className="mb-24">
+        <RecommendedReadingsSection showHeader={false} />
+      </section>
 
-      <section className="mb-16">
-        <h2 className="text-2xl font-bold mb-8">
-          RRSS oficiales
-        </h2>
+      {/* RRSS OFICIALES */}
+      <section className="mb-24">
+        <SectionHeader
+          eyebrow="Redes oficiales"
+          title="Canales de los clubes"
+          description="Accede rápidamente a los perfiles oficiales de los clubes que seguimos en Cast To Cast."
+        />
 
         <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
-          {articles.map((article) => (
+          {officialSocialLinks.map((article) => (
             <ArticleCard
               key={article.category}
               image={article.image}
@@ -80,34 +92,36 @@ const jairisNews = basketballNews.filter(
         </div>
       </section>
 
-      <section className="mt-20">
-        <h2 className="text-2xl font-bold mb-8">
-          Fuentes de noticias
-        </h2>
+      {/* FUENTES DE NOTICIAS */}
+      <section>
+        <SectionHeader
+          eyebrow="Noticias oficiales"
+          title="Fuentes de actualidad por club"
+          description="Últimas publicaciones procedentes de las webs oficiales de UCAM Murcia CB, Hozono Global Jairis y Unicaja Málaga."
+        />
 
         <div className="grid gap-8">
-<NewsSourceCard
-  title="UCAM Murcia CB"
-  description="Últimas noticias publicadas por el club en su web oficial."
-  logo="/logoUCAM.png"
-  news={ucamNews}
-/>
+          <NewsSourceCard
+            title="UCAM Murcia CB"
+            description="Últimas noticias publicadas por el club en su web oficial."
+            logo="/logoUCAM.png"
+            news={ucamNews}
+          />
 
-<NewsSourceCard
-  title="Unicaja Málaga"
-  description="Últimas noticias publicadas por el club en su web oficial."
-  logo="/logoUnicaja.png"
-  news={unicajaNews}
-/>
+          <NewsSourceCard
+            title="Unicaja Málaga"
+            description="Últimas noticias publicadas por el club en su web oficial."
+            logo="/logoUnicaja.png"
+            news={unicajaNews}
+          />
 
-<NewsSourceCard
-  title="Hozono Global Jairis"
-  description="Últimas noticias publicadas por el club en su web oficial."
-  logo="/logoJairis.png"
-  news={jairisNews}
-/>
-
-</div>
+          <NewsSourceCard
+            title="Hozono Global Jairis"
+            description="Últimas noticias publicadas por el club en su web oficial."
+            logo="/logoJairis.png"
+            news={jairisNews}
+          />
+        </div>
       </section>
     </main>
   );

@@ -1,45 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
+
 import { featuredContent } from "@/data/featuredContent";
+import { homeFeed } from "@/data/homeFeed";
+
 import { getLatestPodcastEpisode } from "@/lib/podcasts";
 import { getLatestYouTubeVideos } from "@/lib/youtube";
-import CoverageCard from "@/components/cards/CoverageCard";
-import { featuredCoverages } from "@/data/featuredCoverages";
-import { homeFeed } from "@/data/homeFeed";
-import { recommendedAuthors } from "@/data/recommendedAuthors";
+
 import ContentCard from "@/components/cards/ContentCard";
 import RecommendedReadingsSection from "@/components/sections/RecommendedReadingsSection";
-
+import SectionHeader from "@/components/ui/SectionHeader";
 
 export default async function Home() {
   const [latestVideo] = await getLatestYouTubeVideos(1);
   const latestPodcast = await getLatestPodcastEpisode();
-
-
-    // ENLACES PRINCIPALES DEL HOME
-  const homeSections = [
-    {
-      title: "Vídeos",
-      description: "Entrevistas, análisis y contenido audiovisual.",
-      href: "/videos",
-    },
-    {
-      title: "Podcasts",
-      description: "Episodios, tertulias y conversaciones sobre baloncesto.",
-      href: "/podcasts",
-    },
-    {
-      title: "Actualidad",
-      description: "Actualidad de equipos, jugadores y competiciones.",
-      href: "/news",
-    },
-    {
-      title: "Galería",
-      description: "Fotografías de partidos, jugadores y eventos.",
-      href: "/galeria",
-    },
-  ];
-
 
   return (
     <>
@@ -76,7 +50,7 @@ export default async function Home() {
 
       <main>
         {/* CONTENIDO DESTACADO PRINCIPAL */}
-        <section className="max-w-7xl mx-auto px-6 mt-20">
+        <section className="max-w-7xl mx-auto px-6 mt-24 md:mt-32">
           <Link
             href={featuredContent.href}
             className="group block bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 rounded-3xl p-6 md:p-8 border border-red-900/40 shadow-2xl overflow-hidden hover:border-orange-400/40 transition-all duration-300"
@@ -117,126 +91,137 @@ export default async function Home() {
             </div>
           </Link>
         </section>
-        {/* COBERTURAS DESTACADAS 
-        <section className="max-w-7xl mx-auto px-6 mt-16">
-          <div className="mb-8">
-            <p className="uppercase tracking-[0.18em] text-red-300/80 text-xs font-semibold mb-3">
-              Coberturas
-            </p>
 
-            <h2 className="text-3xl md:text-4xl font-bold">
-              Sigue a tus equipos
-            </h2>
+        {/* ÚLTIMO CONTENIDO MULTIMEDIA */}
+        <section className="max-w-7xl mx-auto px-6 mt-24 md:mt-32">
+          <SectionHeader
+            eyebrow="Últimas publicaciones"
+            title="Contenido multimedia reciente"
+          />
+
+          {/* VÍDEO Y PODCAST */}
+          <div className="grid lg:grid-cols-2 gap-8">
+            {/* ÚLTIMO VÍDEO */}
+            <ContentCard title="Último vídeo">
+              {latestVideo && (
+                <div className="text-center">
+                  <Link
+                    href={`/videos/${latestVideo.slug}`}
+                    className="block group"
+                  >
+                    <div className="relative aspect-video overflow-hidden rounded-xl mb-4">
+                      <Image
+                        src={latestVideo.thumbnail}
+                        alt={latestVideo.title}
+                        fill
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    </div>
+
+                    <p className="text-white font-semibold group-hover:text-orange-400 transition-colors mb-5">
+                      {latestVideo.title}
+                    </p>
+                  </Link>
+
+                  <Link
+                    href="/videos"
+                    className="inline-flex bg-white text-black px-5 py-3 rounded-xl font-semibold hover:bg-orange-400 hover:text-white transition-colors"
+                  >
+                    Ver todos los vídeos
+                  </Link>
+                </div>
+              )}
+            </ContentCard>
+
+            {/* ÚLTIMO PODCAST */}
+            <ContentCard title="Último podcast">
+              {latestPodcast && (
+                <div className="text-left">
+                  <Link
+                    href={`/podcasts/${latestPodcast.slug}`}
+                    className="block group"
+                  >
+                    <h3 className="text-lg font-bold mb-3 group-hover:text-orange-300 transition-colors">
+                      {latestPodcast.title}
+                    </h3>
+
+                    {latestPodcast.pubDate && (
+                      <p className="text-sm text-white/60 mb-4">
+                        {new Date(latestPodcast.pubDate).toLocaleDateString(
+                          "es-ES"
+                        )}
+                      </p>
+                    )}
+                  </Link>
+
+                  <audio controls preload="none" className="w-full mb-5">
+                    <source src={latestPodcast.audioUrl} />
+                    Tu navegador no soporta el reproductor de audio.
+                  </audio>
+
+                  <Link
+                    href="/podcasts"
+                    className="inline-flex bg-white text-black px-5 py-3 rounded-xl font-semibold hover:bg-orange-400 hover:text-white transition-colors"
+                  >
+                    Ver todos los podcasts
+                  </Link>
+                </div>
+              )}
+            </ContentCard>
+
           </div>
+          {/* ÚLTIMA GALERÍA DESTACADA */}
+<div className="mt-8">
+  <Link
+    href="/galeria/g-grada17may26"
+    className="group block overflow-hidden rounded-3xl border border-white/10 bg-black/20 shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:border-orange-400/40"
+  >
+    <div className="relative aspect-[16/9] md:aspect-[16/7] overflow-hidden">
+      <Image
+        src="/galeria/grada17may2601.webp"
+        alt="Ambiente en la grada durante el UCAM Murcia - Unicaja"
+        fill
+        sizes="100vw"
+        className="object-cover transition-transform duration-700 group-hover:scale-105"
+      />
 
-          <div className="grid md:grid-cols-3 gap-5">
-            {featuredCoverages.map((coverage) => (
-              <CoverageCard
-                key={coverage.href}
-                title={coverage.title}
-                description={coverage.description}
-                href={coverage.href}
-                accent={coverage.accent}
-                teamLogo={coverage.teamLogo}
-                leagueLogo={coverage.leagueLogo}
-                leagueLogoSize={coverage.leagueLogoSize}
-              />
-                          ))}
-          </div>
-        </section>*/}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
- {/* ÚLTIMO CONTENIDO MULTIMEDIA */}
-<section className="max-w-7xl mx-auto px-6 mt-16">
-  <div className="mb-8">
-    <p className="uppercase tracking-[0.18em] text-red-300/80 text-xs font-semibold mb-3">
-      Últimas publicaciones
-    </p>
+      <div className="absolute inset-x-0 bottom-0 p-6 md:p-10">
+        <p className="uppercase tracking-[0.18em] text-orange-300 text-xs font-semibold mb-5">
+          Última galería
+        </p>
 
-    <h2 className="text-3xl md:text-4xl font-bold">
-      Contenido multimedia reciente
-    </h2>
-  </div>
+        <h3 className="text-3xl md:text-5xl font-extrabold leading-tight max-w-3xl">
+          UCAM Murcia - Unicaja:
+          <br />
+          ambiente en la grada
+        </h3>
 
-  {/* VÍDEO Y PODCAST */}
-  <div className="grid lg:grid-cols-2 gap-8">
-    {/* ÚLTIMO VÍDEO */}
-    <ContentCard title="Último vídeo">
-      {latestVideo && (
-        <div className="text-center">
-          <Link href={`/videos/${latestVideo.slug}`} className="block group">
-            <div className="relative aspect-video overflow-hidden rounded-xl mb-4">
-              <Image
-                src={latestVideo.thumbnail}
-                alt={latestVideo.title}
-                fill
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-            </div>
+        <p className="mt-4 text-white/80 max-w-2xl text-sm md:text-base leading-relaxed">
+          Fotografías del ambiente vivido en el Palacio durante el duelo entre
+          UCAM Murcia y Unicaja.
+        </p>
 
-            <p className="text-white font-semibold group-hover:text-orange-400 transition-colors mb-5">
-              {latestVideo.title}
-            </p>
-          </Link>
+        <span className="inline-flex items-center gap-2 mt-6 text-orange-300 font-semibold group-hover:text-orange-200 transition-colors">
+          Ver galería →
+        </span>
+      </div>
+    </div>
+  </Link>
+</div>
+        </section>
 
-          <Link
-            href="/videos"
-            className="inline-flex bg-white text-black px-5 py-3 rounded-xl font-semibold hover:bg-orange-400 hover:text-white transition-colors"
-          >
-            Ver todos los vídeos
-          </Link>
-        </div>
-      )}
-    </ContentCard>
-
-    {/* ÚLTIMO PODCAST */}
-    <ContentCard title="Último podcast">
-      {latestPodcast && (
-        <div className="text-left">
-          <h3 className="text-lg font-bold mb-3">
-            {latestPodcast.title}
-          </h3>
-
-          {latestPodcast.pubDate && (
-            <p className="text-sm text-white/60 mb-4">
-              {new Date(latestPodcast.pubDate).toLocaleDateString("es-ES")}
-            </p>
-          )}
-
-          <audio controls preload="none" className="w-full mb-5">
-            <source src={latestPodcast.audioUrl} />
-            Tu navegador no soporta el reproductor de audio.
-          </audio>
-
-          <Link
-            href="/podcasts"
-            className="inline-flex bg-white text-black px-5 py-3 rounded-xl font-semibold hover:bg-orange-400 hover:text-white transition-colors"
-          >
-            Ver todos los podcasts
-          </Link>
-        </div>
-      )}
-    </ContentCard>
-  </div>
-
-  {/* LECTURA RECOMENDADA */}
-{/* LECTURAS RECOMENDADAS */}
-<RecommendedReadingsSection className="mt-8" />
-</section>
-
+        {/* LECTURAS RECOMENDADAS */}
+        <RecommendedReadingsSection className="mt-24 md:mt-32" />
 
         {/* ACCESOS RÁPIDOS A SECCIONES PRINCIPALES */}
-        <section className="max-w-7xl mx-auto px-6 mt-16 mb-24">
-          <div className="mb-8">
-            <p className="uppercase tracking-[0.18em] text-red-300/80 text-xs font-semibold mb-3">
-              Explora Cast To Cast
-            </p>
-
-
-            <h2 className="text-3xl md:text-4xl font-bold">
-              Todo el contenido
-            </h2>
-          </div>
+        <section className="max-w-7xl mx-auto px-6 mt-24 md:mt-32 mb-24">
+          <SectionHeader
+            eyebrow="Explora Cast To Cast"
+            title="Todo el contenido"
+          />
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {homeFeed.map((item) => (
@@ -245,15 +230,9 @@ export default async function Home() {
                 href={item.href}
                 className="rounded-2xl border border-white/10 bg-white/5 p-6 hover:border-orange-400/50 hover:bg-white/10 transition-colors"
               >
-                {/* TÍTULO */}
-                <h3 className="text-xl font-bold mb-2">
-                  {item.title}
-                </h3>
+                <h3 className="text-xl font-bold mb-2">{item.title}</h3>
 
-                {/* DESCRIPCIÓN */}
-                <p className="text-sm text-white/60">
-                  {item.description}
-                </p>
+                <p className="text-sm text-white/60">{item.description}</p>
               </Link>
             ))}
           </div>
