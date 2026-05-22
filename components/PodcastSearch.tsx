@@ -51,12 +51,6 @@ export default function PodcastSearch({
                   </p>
                 )}
 
-                {episode.description && (
-                  <p className="text-red-100/90 text-sm md:text-base mb-5 line-clamp-3">
-                    {episode.description}
-                  </p>
-                )}
-
                 <span className="inline-flex items-center gap-2 text-sm font-semibold text-orange-200 group-hover:text-orange-300 transition-colors mb-6">
                   Ver episodio →
                 </span>

@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/og/podcast-cover.jpg",
+        url: "/og/podcast-cover.png",
         width: 1200,
         height: 630,
         alt: "Podcasts de Cast To Cast Baloncesto",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     title: "Podcasts | Cast To Cast Baloncesto",
     description:
       "Escucha los últimos episodios de Cast To Cast Baloncesto.",
-    images: ["/og/podcast-cover.jpg"],
+    images: ["/og/podcast-cover.png"],
   },
 };
 

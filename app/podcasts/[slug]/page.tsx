@@ -8,6 +8,7 @@ import {
 } from "@/lib/podcasts";
 
 import { siteConfig } from "@/config/site";
+import ShareButton from "@/components/ShareButton";
 
 type PodcastPageProps = {
   params: Promise<{
@@ -54,25 +55,20 @@ export async function generateMetadata({
 
       type: "article",
 
-      images: [
-        {
-          url: "/og/podcast-cover.jpg",
-          width: 1200,
-          height: 630,
-          alt: episode.title,
-        },
-      ],
+images: [
+  {
+    url: `${siteConfig.url}/og/podcast-cover.png`,
+    width: 1200,
+    height: 630,
+    alt: "Podcasts de Cast To Cast Baloncesto",
+  },
+],
     },
 
     twitter: {
-      card: "summary_large_image",
-
-      title: `${episode.title} | ${siteConfig.name}`,
-
-      description: episode.description.slice(0, 160),
-
-      images: ["/og/podcast-cover.jpg"],
-    },
+  card: "summary_large_image",
+  images: [`${siteConfig.url}/og/podcast-cover.png`],
+}
   };
 }
 
@@ -122,22 +118,22 @@ export default async function PodcastEpisodePage({
         </div>
       </section>
 
-      <section className="prose prose-invert max-w-none">
-        <div className="text-white/80 leading-relaxed whitespace-pre-line">
-          {episode.description}
-        </div>
-      </section>
+<section className="mt-12 flex flex-col sm:flex-row gap-4">
+  <ShareButton
+    title={episode.title}
+    url={`${siteConfig.url}/podcasts/${episode.slug}`}
+    text="Compartir episodio"
+  />
 
-      <section className="mt-12">
-        <a
-          href={episode.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-2xl border border-orange-400/30 bg-orange-400/10 px-5 py-3 text-sm font-semibold text-orange-300 transition-all hover:bg-orange-400/20"
-        >
-          Escuchar en iVoox →
-        </a>
-      </section>
+  <a
+    href={episode.link}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition-all hover:border-orange-400/30 hover:text-orange-300"
+  >
+    Escuchar en iVoox →
+  </a>
+</section>
     </main>
   );
 }

@@ -1,10 +1,11 @@
-import Link from "next/link";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
+
+import GalleryClient from "@/components/GalleryClient";
 
 import { galleryCollections } from "@/data/gallery";
 import { siteConfig } from "@/config/site";
-import GalleryClient from "@/components/GalleryClient";
 
 type GalleryPageProps = {
   params: Promise<{
@@ -30,7 +31,6 @@ export async function generateMetadata({
   if (!collection) {
     return {
       title: "Galería no encontrada | Cast To Cast Baloncesto",
-      description: "La galería solicitada no está disponible.",
     };
   }
 
@@ -38,7 +38,8 @@ export async function generateMetadata({
     metadataBase: new URL(siteConfig.url),
 
     title: `${collection.title} | Galería | ${siteConfig.name}`,
-    description: collection.description,
+
+    description: `Galería fotográfica de ${collection.title} en Cast To Cast Baloncesto.`,
 
     alternates: {
       canonical: `/galeria/${collection.slug}`,
@@ -46,13 +47,18 @@ export async function generateMetadata({
 
     openGraph: {
       title: `${collection.title} | ${siteConfig.name}`,
-      description: collection.description,
+
+      description: `Galería fotográfica de ${collection.title} en Cast To Cast Baloncesto.`,
+
       url: `${siteConfig.url}/galeria/${collection.slug}`,
+
       siteName: siteConfig.name,
+
       type: "article",
+
       images: [
         {
-          url: collection.cover,
+          url: `${siteConfig.url}${collection.cover}`,
           width: 1200,
           height: 630,
           alt: collection.title,
@@ -62,9 +68,12 @@ export async function generateMetadata({
 
     twitter: {
       card: "summary_large_image",
+
       title: `${collection.title} | ${siteConfig.name}`,
-      description: collection.description,
-      images: [collection.cover],
+
+      description: `Galería fotográfica de ${collection.title} en Cast To Cast Baloncesto.`,
+
+      images: [`${siteConfig.url}${collection.cover}`],
     },
   };
 }
@@ -94,19 +103,11 @@ export default async function GalleryCollectionPage({
       </div>
 
       <section className="text-center mb-14">
-        <p className="uppercase tracking-[0.18em] text-red-300/80 text-sm font-semibold mb-5">
-          Galería Cast To Cast
-        </p>
-
         <h1 className="text-4xl md:text-6xl font-extrabold mb-6">
           {collection.title}
         </h1>
 
-        <p className="text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed">
-          {collection.description}
-        </p>
-
-        <p className="text-sm text-white/50 mt-4">
+        <p className="text-lg text-gray-300">
           {collection.photos.length} fotografías
         </p>
       </section>
