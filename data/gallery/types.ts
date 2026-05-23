@@ -9,4 +9,9 @@ export type GalleryCollection = {
   description: string;
   cover: string;
   photos: GalleryPhoto[];
+
+  date?: string;
+  competition?: string;
+  teams?: string[];
+  location?: string;
 };

@@ -10,10 +10,12 @@ import { getLatestYouTubeVideos } from "@/lib/youtube";
 import ContentCard from "@/components/cards/ContentCard";
 import RecommendedReadingsSection from "@/components/sections/RecommendedReadingsSection";
 import SectionHeader from "@/components/ui/SectionHeader";
+import { galleryCollections } from "@/data/gallery";
 
 export default async function Home() {
   const [latestVideo] = await getLatestYouTubeVideos(1);
   const latestPodcast = await getLatestPodcastEpisode();
+  const [latestGallery] = galleryCollections;
 
   return (
     <>
@@ -171,46 +173,45 @@ export default async function Home() {
             </ContentCard>
 
           </div>
-          {/* ÚLTIMA GALERÍA DESTACADA */}
-<div className="mt-8">
-  <Link
-    href="/galeria/g-grada17may26"
-    className="group block overflow-hidden rounded-3xl border border-white/10 bg-black/20 shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:border-orange-400/40"
-  >
-    <div className="relative aspect-[16/9] md:aspect-[16/7] overflow-hidden">
-      <Image
-        src="/galeria/grada17may2601.webp"
-        alt="Ambiente en la grada durante el UCAM Murcia - Unicaja"
-        fill
-        sizes="100vw"
-        className="object-cover transition-transform duration-700 group-hover:scale-105"
-      />
+{/* ÚLTIMA GALERÍA DESTACADA */}
+{latestGallery && (
+  <div className="mt-8">
+    <Link
+      href={`/galeria/${latestGallery.slug}`}
+      className="group block overflow-hidden rounded-3xl border border-white/10 bg-black/20 shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:border-orange-400/40"
+    >
+      <div className="relative aspect-[16/9] md:aspect-[16/7] overflow-hidden">
+        <Image
+          src={latestGallery.cover}
+          alt={latestGallery.title}
+          fill
+          sizes="100vw"
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
+        />
 
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-      <div className="absolute inset-x-0 bottom-0 p-6 md:p-10">
-        <p className="uppercase tracking-[0.18em] text-orange-300 text-xs font-semibold mb-5">
-          Última galería
-        </p>
+        <div className="absolute inset-x-0 bottom-0 p-6 md:p-10">
+          <p className="uppercase tracking-[0.18em] text-orange-300 text-xs font-semibold mb-5">
+            Última galería
+          </p>
 
-        <h3 className="text-3xl md:text-5xl font-extrabold leading-tight max-w-3xl">
-          UCAM Murcia - Unicaja:
-          <br />
-          ambiente en la grada
-        </h3>
+          <h3 className="text-3xl md:text-5xl font-extrabold leading-tight max-w-3xl">
+            {latestGallery.title}
+          </h3>
 
-        <p className="mt-4 text-white/80 max-w-2xl text-sm md:text-base leading-relaxed">
-          Fotografías del ambiente vivido en el Palacio durante el duelo entre
-          UCAM Murcia y Unicaja.
-        </p>
+          <p className="mt-4 text-white/80 max-w-2xl text-sm md:text-base leading-relaxed">
+            {latestGallery.description}
+          </p>
 
-        <span className="inline-flex items-center gap-2 mt-6 text-orange-300 font-semibold group-hover:text-orange-200 transition-colors">
-          Ver galería →
-        </span>
+          <span className="inline-flex items-center gap-2 mt-6 text-orange-300 font-semibold group-hover:text-orange-200 transition-colors">
+            Ver galería →
+          </span>
+        </div>
       </div>
-    </div>
-  </Link>
-</div>
+    </Link>
+  </div>
+)}
         </section>
 
         {/* LECTURAS RECOMENDADAS */}

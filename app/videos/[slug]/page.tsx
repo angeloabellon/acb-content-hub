@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -6,6 +7,7 @@ import ShareButton from "@/components/ShareButton";
 
 import { siteConfig } from "@/config/site";
 import {
+  getLatestYouTubeVideos,
   getVideoIdFromSlug,
   getYouTubeVideoById,
 } from "@/lib/youtube";
@@ -30,8 +32,7 @@ export async function generateMetadata({
   }
 
   const description =
-    video.description?.slice(0, 160) ||
-    "Vídeo de Cast To Cast Baloncesto.";
+    video.description?.slice(0, 160) || "Vídeo de Cast To Cast Baloncesto.";
 
   return {
     metadataBase: new URL(siteConfig.url),
@@ -68,9 +69,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function VideoPage({
-  params,
-}: VideoPageProps) {
+export default async function VideoPage({ params }: VideoPageProps) {
   const { slug } = await params;
   const videoId = getVideoIdFromSlug(slug);
   const video = await getYouTubeVideoById(videoId);
@@ -78,6 +77,10 @@ export default async function VideoPage({
   if (!video) {
     notFound();
   }
+
+  const relatedVideos = (await getLatestYouTubeVideos(8))
+    .filter((relatedVideo) => relatedVideo.id !== video.id)
+    .slice(0, 3);
 
   const videoUrl = `${siteConfig.url}/videos/${slug}`;
 
@@ -167,6 +170,59 @@ export default async function VideoPage({
             </a>
           </div>
         </section>
+
+        {/* VÍDEOS RELACIONADOS */}
+        {relatedVideos.length > 0 && (
+          <section className="mt-20">
+            <div className="mb-8">
+              <p className="uppercase tracking-[0.18em] text-red-300/80 text-xs font-semibold mb-3">
+                Más vídeos
+              </p>
+
+              <h2 className="text-3xl md:text-4xl font-bold">
+                Sigue viendo Cast To Cast
+              </h2>
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {relatedVideos.map((relatedVideo) => (
+                <Link
+                  key={relatedVideo.id}
+                  href={`/videos/${relatedVideo.slug}`}
+                  className="group overflow-hidden rounded-3xl border border-white/10 bg-white/5 transition-all duration-300 hover:-translate-y-2 hover:border-orange-400/40 hover:bg-white/10 hover:shadow-2xl"
+                >
+                  <div className="relative aspect-video overflow-hidden bg-black">
+                    <Image
+                      src={relatedVideo.thumbnail}
+                      alt={relatedVideo.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+
+                    <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors" />
+
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-14 h-14 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                        <span className="text-xl text-white ml-1">▶</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-5">
+                    <p className="uppercase whitespace-nowrap tracking-[0.14em] text-red-300/70 text-[9px] font-semibold mb-3">
+  Cast To Cast
+</p>
+
+                    <h3 className="text-lg font-bold leading-tight text-white transition-colors duration-300 group-hover:text-orange-300 line-clamp-3">
+                      {relatedVideo.title}
+                    </h3>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
     </>
   );

@@ -1,9 +1,7 @@
-import GalleryCollectionCard from "@/components/GalleryCollectionCard";
-import { galleryCollections } from "@/data/gallery";
-import { createMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
-
+import { galleryCollections } from "@/data/gallery";
+import GalleryFilters from "@/components/GalleryFilters";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -46,12 +44,18 @@ export default function GaleriaPage() {
   return (
     <main className="max-w-6xl mx-auto px-6 py-16">
       <section className="text-center mb-14">
+        <p className="uppercase tracking-[0.2em] text-red-300/70 text-xs font-semibold mb-4">
+          Fotografía deportiva
+        </p>
+
         <h1 className="text-4xl md:text-6xl font-extrabold mb-6">
           Galería
         </h1>
 
         <p className="text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed mb-8">
-          Fotografía deportiva, gentileza de nuestro amigo y colaborador Antonio Martínez.
+          Imágenes de partidos, protagonistas y ambiente del baloncesto desde la
+          mirada de Cast To Cast. Fotografía deportiva gentileza de nuestro
+          amigo y colaborador Antonio Martínez.
         </p>
 
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
@@ -75,17 +79,7 @@ export default function GaleriaPage() {
         </div>
       </section>
 
-      <section className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-  {galleryCollections.map((collection) => (
-    <GalleryCollectionCard
-      key={collection.slug}
-      title={collection.title}
-      cover={collection.cover}
-      href={`/galeria/${collection.slug}`}
-      count={collection.photos.length}
-    />
-  ))}
-</section>
+<GalleryFilters collections={galleryCollections} />
     </main>
   );
 }
