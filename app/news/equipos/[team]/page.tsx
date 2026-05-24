@@ -79,7 +79,7 @@ export default async function TeamNewsPage({ params }: TeamPageProps) {
             Cobertura
           </p>
 
-          <h1 className="text-4xl md:text-6xl font-extrabold mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold mb-6">
             {team.name}
           </h1>
 

@@ -74,7 +74,7 @@ export default async function NewsDetailPage({
           href={news.externalUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex bg-white text-black px-6 py-4 rounded-xl font-semibold hover:bg-orange-400 hover:text-white transition-colors"
+          className="inline-flex bg-white text-black px-6 py-4 rounded-xl font-semibold transition-all duration-300 hover:-translate-y-1 hover:bg-orange-400 hover:text-white"
         >
           Leer noticia original
         </a>

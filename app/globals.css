@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0d0d0e;
+  --foreground: #ffffff;
 }
 
 @theme inline {
@@ -12,55 +12,14 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
-}
-
-body {
-  background-color: #0d0d0e;
-  color: white;
-  font-family: Arial, sans-serif;
-}
-
-main {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 60px 20px;
-}
-
-h1 {
-  font-size: 56px;
-  color: #d4110bb1;
-  margin-bottom: 20px;
-}
-
-h2 {
-  font-size: 32px;
-  margin-top: 40px;
-  margin-bottom: 16px;
-}
-
-p {
-  font-size: 20px;
-  line-height: 1.6;
-}
-
-ul {
-  margin-top: 16px;
-  padding-left: 24px;
-}
-
-li {
-  margin-bottom: 12px;
 }
 
 .watermark {
@@ -70,11 +29,33 @@ li {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-  opacity: 0.20;
+  opacity: 0.2;
   pointer-events: none;
   z-index: -1;
 }
 
-/*[#e0131080]*/
+@layer components {
+  .premium-hover {
+    @apply transition-all duration-500 ease-out hover:-translate-y-1 hover:border-red-700/50 hover:shadow-[0_18px_60px_rgba(224,19,16,0.22)];
+  }
 
+  .premium-glow {
+    @apply shadow-[0_10px_40px_rgba(122,12,12,0.18)];
+  }
 
+.premium-card {
+  @apply rounded-3xl border border-red-900/30 bg-gradient-to-br from-[#140303] via-black to-[#220505] shadow-[0_10px_40px_rgba(122,12,12,0.18)];
+}
+
+  .premium-link {
+    @apply transition-colors duration-300 hover:text-orange-300;
+  }
+
+  .premium-image {
+    @apply transition-transform duration-700 ease-out group-hover:scale-105;
+  }
+
+  .premium-overlay {
+    @apply absolute inset-0 bg-gradient-to-br from-[#7a0c0c]/20 via-transparent to-[#e01310]/10 opacity-80 pointer-events-none;
+  }
+}

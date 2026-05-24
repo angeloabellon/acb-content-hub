@@ -20,35 +20,46 @@ export default async function Home() {
   return (
     <>
       {/* HERO INTRODUCTORIO */}
-      <section className="max-w-6xl mx-auto px-6 mt-28 text-center">
-        <p className="uppercase tracking-[0.18em] text-red-300/80 text-sm font-semibold mb-5">
-          Cast To Cast Baloncesto
-        </p>
+<section className="relative overflow-hidden max-w-7xl mx-auto px-6 mt-16 md:mt-24">
+  <div className="premium-card px-6 py-14 sm:px-10 sm:py-16 md:px-16 md:py-24 text-center relative overflow-hidden">
+    <div className="premium-overlay" />
 
-        <h1 className="text-5xl md:text-7xl font-extrabold leading-[1.05] mb-8">
-          El baloncesto en la Región de Murcia y en Málaga,
-          <span className="block text-red-500">
-            desde la perspectiva de sus aficionados
-          </span>
-        </h1>
+    <div className="relative z-10">
+      <p className="uppercase tracking-[0.18em] text-red-300/80 text-xs sm:text-sm font-semibold mb-5">
+        Cast To Cast Baloncesto
+      </p>
 
-        {/* CTA PRINCIPALES */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
-          <Link
-            href="/videos"
-            className="inline-flex w-full sm:w-auto justify-center rounded-xl bg-white px-6 py-3 font-semibold text-black hover:bg-orange-400 hover:text-white transition-colors"
-          >
-            Ver últimos vídeos
-          </Link>
+      <h1 className="text-3xl sm:text-5xl md:text-7xl font-extrabold leading-[1.05] mb-8 break-words">
+        El baloncesto en la Región de Murcia y en Málaga,
+        <span className="block text-red-500">
+          desde la perspectiva de sus aficionados
+        </span>
+      </h1>
 
-          <Link
-            href="/podcasts"
-            className="inline-flex w-full sm:w-auto justify-center rounded-xl border border-white/20 px-6 py-3 font-semibold text-white hover:border-orange-400 hover:text-orange-300 transition-colors"
-          >
-            Escuchar podcast
-          </Link>
-        </div>
-      </section>
+      <p className="text-base sm:text-lg text-white/70 max-w-3xl mx-auto leading-relaxed">
+        Vídeos, podcasts, fotografía y actualidad para seguir el baloncesto
+        desde una mirada cercana, independiente y multimedia.
+      </p>
+
+      {/* CTA PRINCIPALES */}
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
+        <Link
+          href="/videos"
+          className="inline-flex w-full sm:w-auto justify-center rounded-xl bg-white px-6 py-3 font-semibold text-black transition-all duration-300 hover:-translate-y-1 hover:bg-orange-400 hover:text-white"
+        >
+          Ver últimos vídeos
+        </Link>
+
+        <Link
+          href="/podcasts"
+          className="inline-flex w-full sm:w-auto justify-center rounded-xl border border-white/20 px-6 py-3 font-semibold text-white transition-all duration-300 hover:-translate-y-1 hover:border-orange-400 hover:text-orange-300"
+        >
+          Escuchar podcast
+        </Link>
+      </div>
+    </div>
+  </div>
+</section>
 
       <main>
         {/* CONTENIDO DESTACADO PRINCIPAL */}
@@ -93,6 +104,70 @@ export default async function Home() {
             </div>
           </Link>
         </section>
+        {/* ÚLTIMA COBERTURA */}
+<section className="max-w-7xl mx-auto px-6 mt-24 md:mt-32">
+  <SectionHeader
+    eyebrow="Cobertura destacada"
+    title="UCAM Murcia vs Unicaja Málaga"
+  />
+
+  <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] gap-8">
+    {/* HERO PRINCIPAL */}
+
+<div
+  className="group relative overflow-hidden rounded-3xl border border-red-900/30 shadow-[0_10px_40px_rgba(122,12,12,0.18)] transition-all duration-500 hover:-translate-y-2 hover:border-red-700/50 min-h-[420px]"
+>
+  <Image
+    src="/galeria/UCAMUnicaja_22.webp"
+    alt="Cobertura UCAM Murcia vs Unicaja"
+    fill
+    sizes="(max-width: 1024px) 100vw, 40vw"
+    className="object-cover transition-transform duration-700 group-hover:scale-105"
+  />
+
+  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/20" />
+
+  <div className="absolute inset-0 bg-gradient-to-br from-[#7a0c0c]/20 via-transparent to-[#e01310]/10" />
+
+  <div className="relative z-10 flex h-full flex-col justify-end p-8">
+    <p className="uppercase tracking-[0.18em] text-red-300/70 text-xs font-semibold mb-4">
+      Cobertura multimedia
+    </p>
+
+    <h3 className="text-3xl md:text-4xl font-extrabold leading-tight mb-5">
+      UCAM Murcia vs Unicaja Málaga
+    </h3>
+
+    <p className="text-white/75 leading-relaxed mb-8">
+      Podcast, vídeo y galería fotográfica del encuentro.
+    </p>
+
+    <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
+      <Link
+        href="/podcasts/cast-to-cast-4x18-la-tertulia-ucam-murcia-vence-a-unicaja-y-se-mantiene-2-en-acb"
+        className="inline-flex items-center rounded-xl bg-white/10 backdrop-blur border border-white/10 px-4 py-3 text-sm font-semibold text-white transition-all hover:border-orange-400/40 hover:text-orange-300"
+      >
+        Podcast →
+      </Link>
+
+      <Link
+        href="/videos/cast-to-cast-4x18-la-tertulia-ucam-murcia-vence-a-unicaja-y-se-mantiene-2-en-acb-F4rI4vrJTGM"
+        className="inline-flex items-center rounded-xl bg-white/10 backdrop-blur border border-white/10 px-4 py-3 text-sm font-semibold text-white transition-all hover:border-orange-400/40 hover:text-orange-300"
+      >
+        Vídeo →
+      </Link>
+
+      <Link
+        href="/galeria/ucam-murcia-unicaja-accion"
+        className="inline-flex items-center rounded-xl bg-white/10 backdrop-blur border border-white/10 px-4 py-3 text-sm font-semibold text-white transition-all hover:border-orange-400/40 hover:text-orange-300"
+      >
+        Galería →
+      </Link>
+    </div>
+  </div>
+</div>
+  </div>
+</section>
 
         {/* ÚLTIMO CONTENIDO MULTIMEDIA */}
         <section className="max-w-7xl mx-auto px-6 mt-24 md:mt-32">
@@ -128,7 +203,7 @@ export default async function Home() {
 
                   <Link
                     href="/videos"
-                    className="inline-flex bg-white text-black px-5 py-3 rounded-xl font-semibold hover:bg-orange-400 hover:text-white transition-colors"
+                    className="inline-flex bg-white text-black px-5 py-3 rounded-xl font-semibold transition-all duration-300 hover:-translate-y-1 hover:bg-orange-400 hover:text-white"
                   >
                     Ver todos los vídeos
                   </Link>
@@ -164,7 +239,7 @@ export default async function Home() {
 
                   <Link
                     href="/podcasts"
-                    className="inline-flex bg-white text-black px-5 py-3 rounded-xl font-semibold hover:bg-orange-400 hover:text-white transition-colors"
+                    className="inline-flex bg-white text-black px-5 py-3 rounded-xl font-semibold transition-all duration-300 hover:-translate-y-1 hover:bg-orange-400 hover:text-white"
                   >
                     Ver todos los podcasts
                   </Link>
@@ -216,6 +291,59 @@ export default async function Home() {
 
         {/* LECTURAS RECOMENDADAS */}
         <RecommendedReadingsSection className="mt-24 md:mt-32" />
+        {/* COMUNIDAD Y REDES */}
+<section className="max-w-7xl mx-auto px-6 mt-24 md:mt-32">
+  <SectionHeader
+    eyebrow="Comunidad Cast To Cast"
+    title="Síguenos también fuera de la web"
+  />
+
+  <div className="grid md:grid-cols-3 gap-6">
+    {[
+      {
+        name: "YouTube",
+        description:
+          "Episodios completos, tertulias, especiales y contenido audiovisual de Cast To Cast.",
+        href: "https://www.youtube.com/@casttocast_baloncesto",
+        cta: "Ver vídeos",
+      },
+      {
+        name: "Instagram",
+        description:
+          "Galerías, reels, fotografías de partido y momentos visuales del baloncesto.",
+        href: "https://instagram.com/casttocast2",
+        cta: "Ir a Instagram",
+      },
+      {
+        name: "X / Twitter",
+        description:
+          "Debate, opinión, actualidad y conversación en directo con la comunidad.",
+        href: "https://x.com/casttocast2",
+        cta: "Ir a X",
+      },
+    ].map((item) => (
+      <Link
+        key={item.name}
+        href={item.href}
+        target={item.href.startsWith("http") ? "_blank" : undefined}
+        rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
+        className="group premium-card premium-hover p-8"
+      >
+        <p className="uppercase tracking-[0.18em] text-red-300/70 text-xs font-semibold mb-4">
+          {item.name}
+        </p>
+
+        <h3 className="text-2xl font-bold mb-4 group-hover:text-orange-400 transition-colors">
+          {item.cta}
+        </h3>
+
+        <p className="text-white/65 leading-relaxed">
+          {item.description}
+        </p>
+      </Link>
+    ))}
+  </div>
+</section>
 
         {/* ACCESOS RÁPIDOS A SECCIONES PRINCIPALES */}
         <section className="max-w-7xl mx-auto px-6 mt-24 md:mt-32 mb-24">

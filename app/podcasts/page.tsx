@@ -46,40 +46,63 @@ export default async function PodcastsPage() {
 
   return (
     <main className="max-w-6xl mx-auto px-6 py-16">
-<section className="text-center mb-14">
-  <p className="uppercase tracking-[0.2em] text-red-300/70 text-xs font-semibold mb-4">
-    Podcast Cast To Cast
-  </p>
+      {/* HERO EDITORIAL */}
+      <section className="relative overflow-hidden rounded-3xl border border-red-900/30 bg-gradient-to-br from-[#140303] via-black to-[#220505] px-5 py-12 sm:px-8 sm:py-16 md:px-14 md:py-24 mb-20 shadow-[0_10px_40px_rgba(122,12,12,0.22)]">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#7a0c0c]/35 via-transparent to-[#e01310]/15 pointer-events-none" />
 
-  <h1 className="text-4xl md:text-6xl font-extrabold mb-6">
-    Podcasts
-  </h1>
+        <div className="relative z-10 text-center">
+          <div>
+            <p className="uppercase tracking-[0.2em] text-red-300/70 text-xs font-semibold mb-5">
+              Podcast Cast To Cast
+            </p>
 
-  <p className="text-white/70 max-w-2xl mx-auto text-lg leading-relaxed">
-    Escucha los episodios de Cast To Cast directamente desde nuestra web:
-    tertulias, análisis y actualidad del baloncesto con el punto de vista del
-    aficionado.
-  </p>
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold leading-tight mb-6">
+              Baloncesto para escuchar
+              <span className="block text-red-500">
+                desde la voz del aficionado
+              </span>
+            </h1>
 
-  {latestEpisode && (
-    <div className="mt-10 max-w-3xl mx-auto rounded-3xl border border-red-900/40 bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 p-6 md:p-8 shadow-2xl">
-      <p className="uppercase tracking-[0.18em] text-red-100/70 text-[11px] font-semibold mb-3">
-        Último episodio
-      </p>
+            <p className="text-lg text-white/70 max-w-3xl leading-relaxed">
+              Tertulias, análisis, actualidad y episodios especiales sobre UCAM
+              Murcia, Hozono Global Jairis, Unicaja Málaga y el baloncesto FEB.
+            </p>
+          </div>
 
-      <h2 className="text-xl md:text-2xl font-bold leading-snug mb-5">
-        {latestEpisode.title}
-      </h2>
 
-      <a
-        href="#episodios"
-        className="inline-flex rounded-xl bg-black/30 px-5 py-3 text-sm font-semibold text-white border border-white/10 transition-all duration-300 hover:-translate-y-1 hover:text-orange-400"
-      >
-        Ver episodios
-      </a>
+        </div>
+      </section>
+      {/* ÚLTIMO EPISODIO */}
+{latestEpisode && (
+  <section className="mb-24">
+    <div className="relative overflow-hidden rounded-3xl border border-red-900/30 bg-gradient-to-br from-[#140303] via-black to-[#220505] shadow-[0_10px_40px_rgba(122,12,12,0.22)]">
+      <div className="absolute inset-0 bg-gradient-to-r from-[#7a0c0c]/25 via-transparent to-[#e01310]/10" />
+
+      <div className="relative z-10 p-8 md:p-10">
+        <p className="uppercase tracking-[0.18em] text-red-300/70 text-xs font-semibold mb-4">
+          Último episodio
+        </p>
+
+        <h2 className="text-3xl md:text-4xl font-extrabold leading-tight mb-6 max-w-4xl">
+          {latestEpisode.title}
+        </h2>
+
+        <p className="text-white/65 leading-relaxed max-w-3xl mb-8">
+          Escucha el episodio más reciente publicado en Cast To Cast
+          Baloncesto y accede a tertulias, análisis y contenido especial sobre
+          el baloncesto nacional.
+        </p>
+
+        <a
+          href="#episodios"
+          className="inline-flex rounded-xl bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 px-5 py-3 text-sm font-semibold text-white border border-red-900/40 transition-all duration-300 hover:-translate-y-1 hover:text-orange-300"
+        >
+          Escuchar episodio →
+        </a>
+      </div>
     </div>
-  )}
-</section>
+  </section>
+)}
 
       <section id="episodios">
         <PodcastSearch episodes={episodes} />

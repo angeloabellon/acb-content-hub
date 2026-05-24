@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-
+import RelatedContent from "@/components/RelatedContent";
 import ShareButton from "@/components/ShareButton";
 import { siteConfig } from "@/config/site";
 import {
@@ -178,6 +178,20 @@ export default async function PodcastEpisodePage({
           aficionado.
         </p>
       </section>
+      <RelatedContent
+  items={[
+    {
+      type: "Vídeo",
+      title: "UCAM Murcia vs Unicaja Málaga",
+      href: "/videos/SLUG-VIDEO-UCAM-UNICJA",
+    },
+    {
+      type: "Galería",
+      title: "UCAM Murcia - Unicaja Málaga",
+      href: "/galeria/ucam-murcia-unicaja-accion",
+    },
+  ]}
+/>
     </main>
   );
 }
