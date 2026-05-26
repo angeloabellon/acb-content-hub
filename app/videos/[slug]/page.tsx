@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import RelatedContent from "@/components/RelatedContent";
+import RelatedContentFromCoverage from "@/components/RelatedContentFromCoverage";
 import ShareButton from "@/components/ShareButton";
 
 import { siteConfig } from "@/config/site";
@@ -223,19 +223,9 @@ export default async function VideoPage({ params }: VideoPageProps) {
             </div>
           </section>
         )}
-        <RelatedContent
-  items={[
-    {
-      type: "Podcast",
-      title: "La tertulia: UCAM Murcia vence a Unicaja",
-      href: "/podcasts/cast-to-cast-4x18-la-tertulia-ucam-murcia-vence-a-unicaja-y-se-mantiene-2-en-acb",
-    },
-    {
-      type: "Galería",
-      title: "UCAM Murcia - Unicaja Málaga",
-      href: "/galeria/ucam-murcia-unicaja-accion",
-    },
-  ]}
+<RelatedContentFromCoverage
+  currentType="video"
+  currentSlug={slug}
 />
       </main>
     </>

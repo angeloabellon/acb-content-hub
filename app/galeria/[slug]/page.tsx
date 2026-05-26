@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import RelatedContent from "@/components/RelatedContent";
+import RelatedContentFromCoverage from "@/components/RelatedContentFromCoverage";
 import GalleryClient from "@/components/GalleryClient";
 import ShareButton from "@/components/ShareButton";
 
@@ -188,19 +188,9 @@ export default async function GalleryCollectionPage({
 </section>
 
       <GalleryClient photos={collection.photos} />
-      <RelatedContent
-  items={[
-    {
-      type: "Podcast",
-      title: "La tertulia: UCAM Murcia vence a Unicaja",
-      href: "/podcasts/cast-to-cast-4x18-la-tertulia-ucam-murcia-vence-a-unicaja-y-se-mantiene-2-en-acb",
-    },
-    {
-      type: "Vídeo",
-      title: "UCAM Murcia vs Unicaja Málaga",
-      href: "/videos/SLUG-VIDEO-UCAM-UNICJA",
-    },
-  ]}
+<RelatedContentFromCoverage
+  currentType="gallery"
+  currentSlug={collection.slug}
 />
       <section className="mt-16 rounded-3xl border border-red-900/30 bg-gradient-to-br from-[#140303] via-black to-[#220505] p-8 md:p-10 shadow-[0_10px_40px_rgba(122,12,12,0.22)]">
   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
