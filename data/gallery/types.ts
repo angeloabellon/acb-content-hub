@@ -14,4 +14,6 @@ export type GalleryCollection = {
   competition?: string;
   teams?: string[];
   location?: string;
+  relatedPodcast?: string;
+relatedVideo?: string;
 };

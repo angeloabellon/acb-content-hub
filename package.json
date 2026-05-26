@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "import-gallery": "node scripts/import-gallery.mjs"
+    "import-gallery": "node scripts/import-gallery.mjs",
+    "remove-gallery": "node scripts/remove-gallery.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
@@ -15,7 +16,8 @@
     "next": "16.2.4",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "rss-parser": "^3.13.0"
+    "rss-parser": "^3.13.0",
+    "sharp": "^0.34.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
