@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getNewsBySlug } from "@/lib/news";
 
+
 type NewsPageProps = {
   params: Promise<{
     slug: string;
