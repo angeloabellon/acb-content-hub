@@ -11,6 +11,7 @@ import ContentCard from "@/components/cards/ContentCard";
 import RecommendedReadingsSection from "@/components/sections/RecommendedReadingsSection";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { galleryCollections } from "@/data/gallery";
+import LiveHomeNotice from "@/components/LiveHomeNotice";
 
 export default async function Home() {
   const [latestVideo] = await getLatestYouTubeVideos(1);
@@ -20,7 +21,8 @@ export default async function Home() {
   return (
     <>
       {/* HERO INTRODUCTORIO */}
-<section className="relative overflow-hidden max-w-7xl mx-auto px-6 mt-16 md:mt-24">
+      <LiveHomeNotice />
+      <section className="relative overflow-hidden max-w-7xl mx-auto px-6 mt-16 md:mt-24">
   <div className="premium-card px-6 py-14 sm:px-10 sm:py-16 md:px-16 md:py-24 text-center relative overflow-hidden">
     <div className="premium-overlay" />
 

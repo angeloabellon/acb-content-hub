@@ -48,8 +48,9 @@ export default function Header() {
               href={item.href}
               onClick={() => setMenuOpen(false)}
               className={
-  pathname === item.href ||
-  (item.href === "/galeria" && pathname.startsWith("/galeria/"))
+pathname === item.href ||
+(item.href === "/galeria" && pathname.startsWith("/galeria/")) ||
+(item.href === "/directo" && pathname.startsWith("/directo"))
     ? "active-link"
     : ""
 }
