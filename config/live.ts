@@ -1,5 +1,5 @@
 export const liveConfig = {
-  isLive: false,
+  isLive: true,
   videoId: "lVV0R67lrW4",
   title: "Cast To Cast Baloncesto en directo",
   description:
