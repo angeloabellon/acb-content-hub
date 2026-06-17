@@ -1,8 +1,10 @@
 import Link from "next/link";
-import { liveConfig } from "@/config/live";
 
-export default function LiveHomeNotice() {
-  const hasLive = liveConfig.isLive && liveConfig.videoId.length > 0;
+import { getActiveLiveStream } from "@/lib/youtube-live";
+
+export default async function LiveHomeNotice() {
+  const live = await getActiveLiveStream();
+  const hasLive = live.isLive && live.videoId.length > 0;
 
   if (!hasLive) {
     return null;
@@ -21,7 +23,7 @@ export default function LiveHomeNotice() {
             </p>
 
             <h2 className="text-2xl font-extrabold text-white md:text-3xl">
-              {liveConfig.title}
+              {live.title}
             </h2>
 
             <p className="mt-3 max-w-2xl text-white/75">

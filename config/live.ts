@@ -1,7 +1,7 @@
 export const liveConfig = {
-  isLive: false,
-  videoId: "",
-  title: "Cast To Cast Baloncesto en directo",
+  isLive: true,
+  videoId: "wToeJeHHzRE",
+  title: "ESPECIAL CTC (DIRECTO)",
   description:
     "Sigue nuestra emisión en directo con vídeo y chat integrado desde la web.",
 };
