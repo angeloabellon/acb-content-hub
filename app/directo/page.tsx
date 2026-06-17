@@ -12,20 +12,28 @@ export default function DirectoPage() {
 
   return (
     <main className="mx-auto max-w-7xl px-6 py-16">
-      <section className="mb-10">
-        <p className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-red-300/70">
-          Cast To Cast Baloncesto
-        </p>
+{/* HERO EDITORIAL */}
+<section className="relative mb-20 overflow-hidden rounded-3xl border border-red-900/30 bg-gradient-to-br from-[#140303] via-black to-[#220505] px-5 py-12 shadow-[0_10px_40px_rgba(122,12,12,0.22)] sm:px-8 sm:py-16 md:px-14 md:py-24">
+  <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#7a0c0c]/35 via-transparent to-[#e01310]/15" />
 
-        <h1 className="text-4xl font-black tracking-tight text-white md:text-6xl">
-          Directo
-        </h1>
+  <div className="relative z-10 text-center">
+    <p className="mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-red-300/70">
+      Directos Cast To Cast
+    </p>
 
-        <p className="mt-5 max-w-3xl text-lg leading-relaxed text-white/70">
-          Sigue nuestras emisiones en directo con vídeo y chat integrado, sin
-          salir de Cast To Cast.
-        </p>
-      </section>
+    <h1 className="mb-6 text-3xl font-extrabold leading-tight sm:text-4xl md:text-6xl">
+      Sigue nuestra emisión
+      <span className="block text-red-500">
+        en directo
+      </span>
+    </h1>
+
+    <p className="mx-auto max-w-3xl text-lg leading-relaxed text-white/70">
+      Vídeo en vivo, chat oficial de YouTube y toda la conversación de
+      Cast To Cast Baloncesto reunida en una página propia.
+    </p>
+  </div>
+</section>
 
       {hasLive ? (
         <section className="rounded-3xl border border-red-900/40 bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 p-4 shadow-2xl md:p-6">
