@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.1",
+  "episodio": {
+    "id": "CTC_T5E03",
+    "tipo": "entrevista",
+    "temporada": 5,
+    "numero": 3,
+    "titulo": "Entrevista con una leyenda",
+    "descripcion": "Conversación extensa.",
+    "fecha": "2026-09-11",
+    "participantes": []
+  },
+  "publicacion": { "thumbnail": "https://cdn.example.test/CTC_T5E03.jpg" }
+}

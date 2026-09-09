@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "episodio": {
+    "id": "CTC_T5E01",
+    "tipo": "especial",
+    "temporada": 5,
+    "numero": 1,
+    "titulo": "Especial Copa del 96",
+    "descripcion": "Un especial histórico.",
+    "fecha": "2026-09-09"
+  },
+  "publicacion": {
+    "thumbnail": "https://i.ytimg.com/vi/IE6ztcN8mJ4/maxresdefault.jpg",
+    "plataformas": { "youtube": "https://www.youtube.com/watch?v=IE6ztcN8mJ4" }
+  }
+}

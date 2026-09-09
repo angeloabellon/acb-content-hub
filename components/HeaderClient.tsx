@@ -65,10 +65,8 @@ export default function HeaderClient({ hasLive }: HeaderClientProps) {
               onClick={() => setMenuOpen(false)}
               className={
                 pathname === item.href ||
-                (item.href === "/galeria" &&
-                  pathname.startsWith("/galeria/")) ||
-                (item.href === "/directo" &&
-                  pathname.startsWith("/directo"))
+                (item.href !== "/" &&
+                  pathname.startsWith(`${item.href}/`))
                   ? "active-link"
                   : ""
               }

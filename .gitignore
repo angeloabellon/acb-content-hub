@@ -17,6 +17,9 @@
 /.next/
 /out/
 
+# Local nested working copy; the repository root is the canonical project.
+/acb-content-hub/
+
 # production
 /build
 

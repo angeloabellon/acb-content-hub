@@ -2,15 +2,18 @@ import type { MetadataRoute } from "next";
 import { siteConfig } from "@/config/site";
 import { getLatestYouTubeVideos } from "@/lib/youtube";
 import { getBasketballNews } from "@/lib/news";
+import { getEpisodes } from "@/lib/episodes";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const videos = await getLatestYouTubeVideos(20);
   const news = await getBasketballNews();
+  const episodes = getEpisodes();
 
   const staticPages = [
     "",
     "/videos",
     "/podcasts",
+    "/episodios",
     "/news",
     "/galeria",
     "/about",
@@ -30,5 +33,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(),
   }));
 
-  return [...staticPages, ...videoPages, ...newsPages];
+  const episodePages = episodes.map((episode) => ({
+    url: `${siteConfig.url}/episodios/${episode.slug}`,
+    lastModified: new Date(episode.date),
+  }));
+
+  return [...staticPages, ...videoPages, ...newsPages, ...episodePages];
 }

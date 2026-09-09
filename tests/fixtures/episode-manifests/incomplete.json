@@ -1,0 +1,5 @@
+{
+  "schema_version": "1.1",
+  "episodio": { "id": "CTC_T5E04", "tipo": "regular" },
+  "publicacion": { "plataformas": { "youtube": "ftp://invalid.example/episode" } }
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.1",
+  "episodio": {
+    "id": "CTC_DEMO_T5E02",
+    "tipo": "regular",
+    "temporada": 5,
+    "numero": 2,
+    "titulo": "DEMO — La jornada decisiva",
+    "descripcion": "Manifest de demostración para probar el importador local.",
+    "fecha": "2026-09-10",
+    "participantes": [{ "nombre": "Demo editorial", "rol": "Prueba" }]
+  },
+  "publicacion": {
+    "thumbnail": "https://cdn.example.test/CTC_DEMO_T5E02.jpg",
+    "plataformas": { "youtube": "https://www.youtube.com/watch?v=demo02" }
+  }
+}

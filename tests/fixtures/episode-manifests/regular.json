@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.1",
+  "episodio": {
+    "id": "CTC_T5E02",
+    "tipo": "regular",
+    "temporada": 5,
+    "numero": 2,
+    "titulo": "La jornada decisiva",
+    "descripcion": "Análisis de la jornada y sus protagonistas.",
+    "fecha": "2026-09-10",
+    "participantes": [{ "nombre": "Ana Pérez", "rol": "Presentadora" }]
+  },
+  "publicacion": {
+    "thumbnail": "https://cdn.example.test/CTC_T5E02.jpg",
+    "plataformas": {
+      "youtube": "https://www.youtube.com/watch?v=regular02",
+      "ivoox": "https://www.ivoox.com/regular02",
+      "spotify": "not-a-url"
+    }
+  }
+}
