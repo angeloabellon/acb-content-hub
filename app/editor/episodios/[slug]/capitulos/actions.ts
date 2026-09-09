@@ -1,10 +1,11 @@
 "use server";
 
-import { getChapterEditorPreview, isChapterEditorEnabled } from "@/lib/chapter-editor";
+import { getChapterEditorPreview } from "@/lib/chapter-editor";
 import { persistApprovedChapters } from "@/lib/chapter-editor-storage";
 import { getEpisodeBySlug } from "@/lib/episodes";
 import { getTranscriptByEpisodeId } from "@/lib/transcripts";
 import type { ChapterProposal } from "@/types/chapter-proposal";
+import { requireEditor } from "@/lib/require-editor";
 
 export type SaveChapterEditorResult = { ok: boolean; message: string; conflict?: boolean };
 
@@ -13,7 +14,7 @@ export async function saveApprovedChapterProposals(
   proposals: readonly ChapterProposal[],
   allowVersionedFile = false,
 ): Promise<SaveChapterEditorResult> {
-  if (!isChapterEditorEnabled()) return { ok: false, message: "El editor no está habilitado." };
+  await requireEditor(`/editor/episodios/${slug}/capitulos`);
   const episode = getEpisodeBySlug(slug);
   if (!episode) return { ok: false, message: "Episodio desconocido." };
   const transcript = getTranscriptByEpisodeId(episode.id);
@@ -25,7 +26,7 @@ export async function saveApprovedChapterProposals(
   const saved = await persistApprovedChapters({ episodeId: episode.id, slug, chapters: preview.chapters, transcript }, { allowVersionedFile });
   if (saved.ok) return { ok: true, message: "Capítulos guardados localmente. No se han publicado." };
   const messages = {
-    not_writable_environment: "El guardado solo está disponible en desarrollo local con ENABLE_EDITOR=true.",
+    not_writable_environment: "El guardado solo está disponible en desarrollo local con el almacenamiento de desarrollo habilitado.",
     invalid_identifier: "Identificador de episodio no válido.",
     invalid_chapters: "Los capítulos no superan la validación.",
     conflict: "Ya existe un archivo para este episodio; no se ha sobrescrito.",

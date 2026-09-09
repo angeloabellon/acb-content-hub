@@ -4,7 +4,6 @@ import test from "node:test";
 import { createEpisodeEditorialSummary, loadLocalChapterSources } from "../lib/episode-editor.ts";
 import { importEpisodeManifestSources } from "../lib/episode-manifest-importer.ts";
 import { importTranscriptFile } from "../lib/transcript-importer.ts";
-import { isChapterEditorEnabled } from "../lib/chapter-editor.ts";
 import type { Episode } from "../types/episode.ts";
 import type { Transcript } from "../types/transcript.ts";
 
@@ -42,11 +41,6 @@ test("dashboard diagnostics expose invalid and duplicate manifests without parsi
   assert.equal(summary.diagnostics.manifests.length, 3);
   assert.ok(summary.diagnostics.manifests.some((item) => item.status === "duplicate"));
   assert.ok(summary.diagnostics.warnings.length > 0);
-});
-
-test("editor dashboard uses the same editor gate", () => {
-  assert.equal(isChapterEditorEnabled({}), false);
-  assert.equal(isChapterEditorEnabled({ ENABLE_EDITOR: "true" }), true);
 });
 
 test("local chapter reader ignores unrelated filenames", async () => {

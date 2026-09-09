@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 
-import { getChapterEditorPreview, isChapterEditorEnabled } from "../lib/chapter-editor.ts";
+import { getChapterEditorPreview } from "../lib/chapter-editor.ts";
 import { getSafeChapterFileName, isChapterEditorStorageAvailable, persistApprovedChapters } from "../lib/chapter-editor-storage.ts";
 import { acceptChapterProposal, editChapterProposal, generateChapterProposals, rejectChapterProposal } from "../lib/chapter-proposals.ts";
 import type { Transcript } from "../types/transcript.ts";
@@ -20,11 +20,6 @@ const transcript: Transcript = {
 };
 const options = { minimumDurationSeconds: 30, targetDurationSeconds: 60, maximumDurationSeconds: 120, minimumGapSeconds: 40 };
 const developmentEnvironment = { ENABLE_EDITOR: "true", NODE_ENV: "development" } as NodeJS.ProcessEnv;
-
-test("editor gate is disabled unless explicitly enabled", () => {
-  assert.equal(isChapterEditorEnabled({}), false);
-  assert.equal(isChapterEditorEnabled({ ENABLE_EDITOR: "true" }), true);
-});
 
 test("editor generation, edits and transitions reuse proposal business logic", () => {
   const generated = generateChapterProposals(transcript, options);

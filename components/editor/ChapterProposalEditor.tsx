@@ -100,7 +100,7 @@ export function ChapterProposalEditor({
         {preview.chapters.length > 0 ? <ol className="mt-4 list-decimal pl-5">{preview.chapters.map((chapter) => <li key={chapter.id}>{formatChapterTimestamp(chapter.startSeconds)} — {chapter.title}</li>)}</ol> : <p className="text-white/70">Acepte propuestas y corrija los errores para generar una vista previa válida.</p>}
         {(preview.diagnostics.length > 0 || preview.chapterDiagnostics.length > 0) && <ul className="mt-4 list-disc pl-5 text-sm text-red-200">{[...preview.diagnostics, ...preview.chapterDiagnostics].map((item) => <li key={`${item.code}-${item.message}`}>{item.message}</li>)}</ul>}
         <button type="button" disabled={!storageAvailable || saving || preview.chapters.length === 0} onClick={save} className="mt-5 rounded-lg bg-orange-500 px-4 py-3 text-sm font-bold text-black disabled:cursor-not-allowed disabled:opacity-50">{saving ? "Guardando…" : "Guardar capítulos aprobados"}</button>
-        {!storageAvailable && <p className="mt-3 text-sm text-amber-100">El guardado está deshabilitado fuera de desarrollo local o sin ENABLE_EDITOR=true.</p>}
+        {!storageAvailable && <p className="mt-3 text-sm text-amber-100">El guardado está deshabilitado fuera del desarrollo local.</p>}
         {saveMessage && <p className="mt-3 text-sm text-white/80" role="status">{saveMessage}</p>}
       </article>
     </section>

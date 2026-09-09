@@ -1,6 +1,6 @@
 # Panel editorial de episodio
 
-La ruta privada `/editor/episodios/[slug]` concentra una lectura editorial de cada episodio sin convertirse en un CMS. Está fuera de la navegación y del sitemap, y solo responde cuando `ENABLE_EDITOR=true`. Este gate es exclusivamente para desarrollo: no sustituye autenticación ni autorización de producción.
+La ruta privada `/editor/episodios/[slug]` concentra una lectura editorial de cada episodio sin convertirse en un CMS. Está fuera de la navegación y del sitemap. Requiere una sesión de usuario con rol `editor`; consulta `docs/editor-auth.md` para la configuración.
 
 ## Secciones
 
@@ -17,4 +17,4 @@ El view model `EpisodeEditorialSummary` se construye en `lib/episode-editor.ts` 
 
 ## Limitaciones y evolución
 
-El panel no edita metadata, no publica, no llama a APIs externas y no conecta SSK ni Automation. La siguiente iteración razonable es sustituir el gate por autenticación editorial y añadir una fuente persistente revisada antes de permitir cambios sobre metadata o publicación.
+El panel no edita metadata, no publica, no llama a APIs externas y no conecta SSK ni Automation. La siguiente iteración razonable es añadir una fuente persistente revisada antes de permitir cambios sobre metadata o publicación.

@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { isChapterEditorEnabled } from "@/lib/chapter-editor";
+import { EditorLogoutButton } from "@/components/editor/EditorLogoutButton";
 import { getEpisodeEditorialSummary } from "@/lib/episode-editor";
 import { loadImportedEpisodeManifests } from "@/lib/episode-manifest-importer";
 import { getEpisodeBySlug } from "@/lib/episodes";
 import { loadImportedTranscripts } from "@/lib/transcript-importer";
+import { requireEditor } from "@/lib/require-editor";
 
 export const dynamic = "force-dynamic";
 
@@ -28,8 +29,8 @@ function DetailList({ items }: { items: ReadonlyArray<[string, string | number |
 }
 
 export default async function EpisodeEditorialDashboard({ params }: PageProps) {
-  if (!isChapterEditorEnabled()) notFound();
   const { slug } = await params;
+  await requireEditor(`/editor/episodios/${slug}`);
   const episode = getEpisodeBySlug(slug);
   if (!episode) notFound();
   const summary = await getEpisodeEditorialSummary(episode, { loadImportedTranscripts, loadImportedManifests: loadImportedEpisodeManifests });
@@ -38,7 +39,7 @@ export default async function EpisodeEditorialDashboard({ params }: PageProps) {
     <p className="text-sm font-semibold uppercase tracking-[0.18em] text-orange-300">Editor privado · Desarrollo</p>
     <div className="mt-3 flex flex-col justify-between gap-5 md:flex-row md:items-end">
       <div><h1 className="text-3xl font-extrabold leading-tight md:text-5xl">{episode.title}</h1><p className="mt-3 text-white/65">Consola de lectura editorial. No publica ni modifica datos.</p></div>
-      <div className="flex flex-wrap gap-3"><Link href={`/episodios/${episode.slug}`} className="rounded-xl border border-white/20 px-4 py-3 text-sm font-bold text-white transition hover:border-orange-300 hover:text-orange-200">Ver ficha pública</Link><Link href={`/editor/episodios/${episode.slug}/capitulos`} className="rounded-xl bg-orange-400 px-4 py-3 text-sm font-bold text-black transition hover:bg-orange-300">Editar capítulos</Link></div>
+      <div className="flex flex-wrap gap-3"><Link href={`/episodios/${episode.slug}`} className="rounded-xl border border-white/20 px-4 py-3 text-sm font-bold text-white transition hover:border-orange-300 hover:text-orange-200">Ver ficha pública</Link><Link href={`/editor/episodios/${episode.slug}/capitulos`} className="rounded-xl bg-orange-400 px-4 py-3 text-sm font-bold text-black transition hover:bg-orange-300">Editar capítulos</Link><EditorLogoutButton /></div>
     </div>
     <nav aria-label="Módulos editoriales" className="mt-8 flex flex-wrap gap-2 border-y border-red-900/40 py-4 text-sm"><a href="#resumen" className="rounded-lg px-3 py-2 text-white/75 hover:bg-white/10">Resumen</a><a href="#transcripcion" className="rounded-lg px-3 py-2 text-white/75 hover:bg-white/10">Transcripción</a><a href="#capitulos" className="rounded-lg px-3 py-2 text-white/75 hover:bg-white/10">Capítulos</a><a href="#publicacion" className="rounded-lg px-3 py-2 text-white/75 hover:bg-white/10">Publicación</a><span className="cursor-not-allowed rounded-lg px-3 py-2 text-white/30">Piezas derivadas · Próximamente</span><a href="#diagnostico" className="rounded-lg px-3 py-2 text-white/75 hover:bg-white/10">Diagnóstico</a></nav>
     <div className="mt-8 grid gap-6 lg:grid-cols-2">

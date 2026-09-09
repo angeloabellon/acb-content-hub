@@ -2,11 +2,11 @@ import { notFound } from "next/navigation";
 
 import { saveApprovedChapterProposals } from "./actions";
 import { ChapterProposalEditor } from "@/components/editor/ChapterProposalEditor";
-import { isChapterEditorEnabled } from "@/lib/chapter-editor";
 import { isChapterEditorStorageAvailable } from "@/lib/chapter-editor-storage";
 import { generateChapterProposals } from "@/lib/chapter-proposals";
 import { getEpisodeBySlug } from "@/lib/episodes";
 import { getTranscriptByEpisodeId } from "@/lib/transcripts";
+import { requireEditor } from "@/lib/require-editor";
 
 export const dynamic = "force-dynamic";
 
@@ -18,8 +18,8 @@ function excerptForProposal(segmentIds: readonly string[], segments: readonly { 
 }
 
 export default async function ChapterEditorPage({ params }: PageProps) {
-  if (!isChapterEditorEnabled()) notFound();
   const { slug } = await params;
+  await requireEditor(`/editor/episodios/${slug}/capitulos`);
   const episode = getEpisodeBySlug(slug);
   if (!episode) notFound();
   const transcript = getTranscriptByEpisodeId(episode.id);
