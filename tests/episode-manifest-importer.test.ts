@@ -72,9 +72,14 @@ test("future resolver can explicitly prefer a verified imported episode", () => 
   assert.equal(getImportedEpisodeById(imports, "CTC_T5E01")?.id, "CTC_T5E01");
 });
 
-test("loads the repository demo directory without making it an application source", async () => {
+test("loads repository manifests without making them an application source", async () => {
   const results = await loadImportedEpisodeManifests();
-  assert.equal(results.length, 1);
-  assert.equal(results[0].status, "imported");
-  assert.equal(results[0].episode?.id, "CTC_DEMO_T5E02");
+  assert.equal(results.length, 2);
+  assert.deepEqual(
+    results.map((result) => [result.status, result.episode?.id || result.source]),
+    [
+      ["partial", "data/manifests/CTC_T5E92_EPISODIO_WEB.json"],
+      ["imported", "CTC_DEMO_T5E02"],
+    ],
+  );
 });
