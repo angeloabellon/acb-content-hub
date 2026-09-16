@@ -1,21 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 type YouTubeLiveChatProps = {
   videoId: string;
 };
 
 export default function YouTubeLiveChat({ videoId }: YouTubeLiveChatProps) {
-  const [chatUrl, setChatUrl] = useState("");
-
-  useEffect(() => {
-    const embedDomain = window.location.hostname;
-
-    setChatUrl(
-      `https://www.youtube.com/live_chat?v=${videoId}&embed_domain=${embedDomain}`
-    );
-  }, [videoId]);
+  const embedDomain = useSyncExternalStore(
+    () => () => {},
+    () => window.location.hostname,
+    () => null,
+  );
+  const chatUrl = embedDomain
+    ? `https://www.youtube.com/live_chat?v=${videoId}&embed_domain=${encodeURIComponent(embedDomain)}`
+    : null;
 
   if (!chatUrl) {
     return (

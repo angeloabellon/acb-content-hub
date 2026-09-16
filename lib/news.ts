@@ -1,3 +1,5 @@
+import { fetchExternal } from "@/lib/external-fetch";
+
 export type NewsItem = {
   title: string;
   slug: string;
@@ -151,43 +153,20 @@ function extractJairisNews(html: string): NewsItem[] {
     .slice(0, 6);
 }
 export async function getBasketballNews(): Promise<NewsItem[]> {
-  try {
-    const [ucamResponse, unicajaResponse, jairisResponse] =
-      await Promise.all([
-        fetch(UCAM_NEWS_URL, {
-          next: { revalidate: 3600 },
-        }),
+  const responses = await Promise.all([
+    fetchExternal(UCAM_NEWS_URL, { revalidate: 3600 }),
+    fetchExternal(UNICAJA_NEWS_URL, { revalidate: 3600 }),
+    fetchExternal(JAIRIS_NEWS_URL, { revalidate: 3600 }),
+  ]);
+  const [ucamHtml, unicajaHtml, jairisHtml] = await Promise.all(
+    responses.map(async (response) => response ? response.text() : ""),
+  );
 
-        fetch(UNICAJA_NEWS_URL, {
-          next: { revalidate: 3600 },
-        }),
-
-        fetch(JAIRIS_NEWS_URL, {
-          next: { revalidate: 3600 },
-        }),
-      ]);
-
-    const [ucamHtml, unicajaHtml, jairisHtml] =
-      await Promise.all([
-        ucamResponse.text(),
-        unicajaResponse.text(),
-        jairisResponse.text(),
-      ]);
-
-    const ucamNews = extractUcamNews(ucamHtml);
-    const unicajaNews = extractUnicajaNews(unicajaHtml);
-    const jairisNews = extractJairisNews(jairisHtml);
-
-return [
-  ...ucamNews,
-  ...unicajaNews,
-  ...jairisNews,
-];
-  } catch (error) {
-    console.error("Error cargando noticias:", error);
-
-    return [];
-  }
+  return [
+    ...extractUcamNews(ucamHtml),
+    ...extractUnicajaNews(unicajaHtml),
+    ...extractJairisNews(jairisHtml),
+  ];
 }
 
 export async function getNewsBySlug(slug: string): Promise<NewsItem | null> {

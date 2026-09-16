@@ -1,5 +1,7 @@
 import he from "he";
 
+import { fetchExternal } from "@/lib/external-fetch";
+
 type YouTubeThumbnail = {
   url: string;
   width?: number;
@@ -22,7 +24,17 @@ type YouTubeVideoItem = {
 };
 
 type YouTubeSearchResponse = {
-  items: YouTubeVideoItem[];
+  items?: YouTubeVideoItem[];
+};
+
+type YouTubeChannelResponse = {
+  items?: Array<{
+    contentDetails?: {
+      relatedPlaylists?: {
+        uploads?: string;
+      };
+    };
+  }>;
 };
 
 export type YouTubeVideo = {
@@ -35,6 +47,11 @@ export type YouTubeVideo = {
   publishedAt: string;
 };
 
+const youtubeVideoIdPattern = /^[A-Za-z0-9_-]{11}$/;
+
+export function isYouTubeVideoId(value: string): boolean {
+  return youtubeVideoIdPattern.test(value);
+}
 
 export function createVideoSlug(title: string, id: string) {
   return (
@@ -76,11 +93,13 @@ export async function getYouTubeVideoById(
   videoId: string
 ): Promise<YouTubeVideo | null> {
   const apiKey = process.env.YOUTUBE_API_KEY;
+  if (!apiKey || !isYouTubeVideoId(videoId)) return null;
 
-  const response = await fetch(
+  const response = await fetchExternal(
     `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${apiKey}`,
-    { next: { revalidate: 3600 } }
+    { revalidate: 3600 }
   );
+  if (!response) return null;
 
   const data = (await response.json()) as YouTubeSearchResponse;
 
@@ -109,33 +128,36 @@ export async function getLatestYouTubeVideos(
 ): Promise<YouTubeVideo[]> {
   const apiKey = process.env.YOUTUBE_API_KEY;
   const channelId = process.env.YOUTUBE_CHANNEL_ID;
+  if (!apiKey || !channelId) return [];
 
-  const channelResponse = await fetch(
+  const channelResponse = await fetchExternal(
     `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${apiKey}`,
-    { next: { revalidate: 3600 } }
+    { revalidate: 3600 }
   );
+  if (!channelResponse) return [];
 
-  const channelData = await channelResponse.json();
+  const channelData = (await channelResponse.json()) as YouTubeChannelResponse;
 
   if (!channelData.items || channelData.items.length === 0) {
     return [];
   }
 
-  const uploadsPlaylistId =
-    channelData.items[0].contentDetails.relatedPlaylists.uploads;
+  const uploadsPlaylistId = channelData.items[0]?.contentDetails?.relatedPlaylists?.uploads;
+  if (!uploadsPlaylistId) return [];
 
-  const videosResponse = await fetch(
-    `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=${maxResults}&key=${apiKey}`,
-    { next: { revalidate: 3600 } }
+  const videosResponse = await fetchExternal(
+    `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=${Math.min(Math.max(maxResults, 1), 50)}&key=${apiKey}`,
+    { revalidate: 3600 }
   );
+  if (!videosResponse) return [];
 
-  const videosData = await videosResponse.json();
+  const videosData = (await videosResponse.json()) as YouTubeSearchResponse;
 
   if (!videosData.items) {
     return [];
   }
 
-    const videos = videosData.items
+  const videos = videosData.items
     .map((item: YouTubeVideoItem): YouTubeVideo | null => {
       const id = item.snippet.resourceId?.videoId ?? item.id?.videoId;
 

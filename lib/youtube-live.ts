@@ -1,4 +1,6 @@
 import { liveConfig } from "@/config/live";
+import { fetchExternal } from "@/lib/external-fetch";
+import { isYouTubeVideoId } from "@/lib/youtube";
 
 type YouTubeLiveItem = {
   id?: {
@@ -29,7 +31,7 @@ const emptyLive: ActiveLiveStream = {
 };
 
 function getManualLiveStream(): ActiveLiveStream {
-  if (!liveConfig.isLive || !liveConfig.videoId) {
+  if (!liveConfig.isLive || !isYouTubeVideoId(liveConfig.videoId)) {
     return emptyLive;
   }
 
@@ -59,20 +61,16 @@ export async function getActiveLiveStream(): Promise<ActiveLiveStream> {
   url.searchParams.set("key", apiKey);
 
   try {
-    const response = await fetch(url.toString(), {
-      next: {
-        revalidate: 60,
-      },
-    });
+    const response = await fetchExternal(url.toString(), { revalidate: 60 });
 
-    if (!response.ok) {
+    if (!response) {
       return getManualLiveStream();
     }
 
     const data = (await response.json()) as YouTubeLiveResponse;
     const live = data.items?.[0];
 
-    if (!live?.id?.videoId) {
+    if (!live?.id?.videoId || !isYouTubeVideoId(live.id.videoId)) {
       return getManualLiveStream();
     }
 

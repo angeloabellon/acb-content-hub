@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 type Photo = {
   src: string;
@@ -18,17 +18,17 @@ export default function GalleryClient({ photos }: GalleryClientProps) {
   const selectedPhoto =
     selectedIndex !== null ? photos[selectedIndex] : null;
 
-  const closeLightbox = () => setSelectedIndex(null);
+  const closeLightbox = useCallback(() => setSelectedIndex(null), []);
 
-  const showPrevious = () => {
+  const showPrevious = useCallback(() => {
     if (selectedIndex === null) return;
     setSelectedIndex((selectedIndex - 1 + photos.length) % photos.length);
-  };
+  }, [photos.length, selectedIndex]);
 
-  const showNext = () => {
+  const showNext = useCallback(() => {
     if (selectedIndex === null) return;
     setSelectedIndex((selectedIndex + 1) % photos.length);
-  };
+  }, [photos.length, selectedIndex]);
 
   useEffect(() => {
     if (selectedIndex === null) return;
@@ -46,7 +46,7 @@ export default function GalleryClient({ photos }: GalleryClientProps) {
       window.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "";
     };
-  }, [selectedIndex]);
+  }, [closeLightbox, selectedIndex, showNext, showPrevious]);
 
   return (
     <>

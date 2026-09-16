@@ -1,5 +1,7 @@
 import Parser from "rss-parser";
 
+import { fetchExternal } from "@/lib/external-fetch";
+
 export type PodcastEpisode = {
   title: string;
   slug: string;
@@ -24,8 +26,11 @@ function createPodcastSlug(title: string) {
 export async function getPodcastEpisodes(): Promise<PodcastEpisode[]> {
   const parser = new Parser();
 
+  const response = await fetchExternal(PODCAST_RSS_URL, { revalidate: 3600 });
+  if (!response) return [];
+
   try {
-    const feed = await parser.parseURL(PODCAST_RSS_URL);
+    const feed = await parser.parseString(await response.text());
 
     return feed.items
       .map((item) => {
