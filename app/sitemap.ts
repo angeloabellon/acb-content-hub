@@ -1,12 +1,15 @@
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/config/site";
+import { galleryCollections } from "@/data/gallery";
 import { getLatestYouTubeVideos } from "@/lib/youtube";
-import { getBasketballNews } from "@/lib/news";
 import { getEpisodes } from "@/lib/episodes";
+import { getPodcastEpisodes } from "@/lib/podcasts";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const videos = await getLatestYouTubeVideos(20);
-  const news = await getBasketballNews();
+  const [videos, podcasts] = await Promise.all([
+    getLatestYouTubeVideos(20),
+    getPodcastEpisodes(),
+  ]);
   const episodes = getEpisodes();
 
   const staticPages = [
@@ -18,6 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/galeria",
     "/about",
     "/contacto",
+    "/directo",
   ].map((route) => ({
     url: `${siteConfig.url}${route}`,
     lastModified: new Date(),
@@ -28,9 +32,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(),
   }));
 
-  const newsPages = news.map((item) => ({
-    url: `${siteConfig.url}/news/${item.slug}`,
-    lastModified: new Date(),
+  const podcastPages = podcasts.map((episode) => ({
+    url: `${siteConfig.url}/podcasts/${episode.slug}`,
+    lastModified: episode.pubDate ? new Date(episode.pubDate) : new Date(),
+  }));
+
+  const galleryPages = galleryCollections.map((gallery) => ({
+    url: `${siteConfig.url}/galeria/${gallery.slug}`,
+    lastModified: gallery.date ? new Date(gallery.date) : new Date(),
   }));
 
   const episodePages = episodes.map((episode) => ({
@@ -38,5 +47,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(episode.date),
   }));
 
-  return [...staticPages, ...videoPages, ...newsPages, ...episodePages];
+  return [...staticPages, ...videoPages, ...podcastPages, ...galleryPages, ...episodePages];
 }

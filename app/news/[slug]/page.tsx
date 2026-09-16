@@ -25,6 +25,7 @@ export async function generateMetadata({
   return {
     title: `${news.title} | Cast To Cast Baloncesto`,
     description: `Noticia de ${news.source} enlazada desde Cast To Cast Baloncesto.`,
+    robots: { index: false, follow: true },
     openGraph: {
       title: news.title,
       description: `Noticia de ${news.source} enlazada desde Cast To Cast Baloncesto.`,
