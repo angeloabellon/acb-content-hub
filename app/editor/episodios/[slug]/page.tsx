@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 
 import { EditorLogoutButton } from "@/components/editor/EditorLogoutButton";
 import { PromotionCandidatePanel } from "@/components/editor/PromotionCandidatePanel";
-import { generateApprovedPromotionArtifact } from "./actions";
+import { applyPublicPromotion, generateApprovedPromotionArtifact, previewPublicPromotion } from "./actions";
+import { findLatestApprovedPromotionArtifact, isPromotionWriteAvailable } from "@/lib/promote-to-public";
 import { getChaptersByEpisodeId } from "@/lib/chapters";
 import { getEpisodeEditorialSummary } from "@/lib/episode-editor";
 import { loadImportedEpisodeManifests } from "@/lib/episode-manifest-importer";
@@ -44,6 +45,7 @@ export default async function EpisodeEditorialDashboard({ params }: PageProps) {
   const imported = imports.find((item) => item.status === "imported" && item.episode?.id === episode.id);
   const promotionCandidate = buildPublicEpisodeCandidate({ current: episode, ...(imported?.episode ? { manifestEpisode: imported.episode, manifestSource: imported.source } : {}), transcript: getTranscriptByEpisodeId(episode.id), chapters: getChaptersByEpisodeId(episode.id) });
   const promotionDiff = diffPublicEpisode(episode, promotionCandidate.candidate);
+  const approvedArtifact = await findLatestApprovedPromotionArtifact(episode.id);
 
   return <main className="mx-auto max-w-6xl px-6 py-12 md:py-16">
     <p className="text-sm font-semibold uppercase tracking-[0.18em] text-orange-300">Editor privado · Desarrollo</p>
@@ -59,7 +61,7 @@ export default async function EpisodeEditorialDashboard({ params }: PageProps) {
       <section id="publicacion" className="rounded-2xl border border-red-900/40 bg-black/40 p-6"><h2 className="text-xl font-bold">Publicación</h2><p className="mt-3 text-sm text-white/65">Solo lectura; estos enlaces proceden de la ficha actual.</p>{summary.publication.available.length ? <ul className="mt-4 space-y-2">{summary.publication.available.map((item) => <li key={item.platform}><a className="text-orange-200 underline decoration-orange-400/50 underline-offset-4 hover:text-orange-100" href={item.url} target="_blank" rel="noreferrer">{item.label} ↗</a></li>)}</ul> : <p className="mt-4 text-sm text-white/50">No hay enlaces de plataforma conectados.</p>}<p className="mt-4 text-sm text-white/55">Pendiente: {summary.publication.missing.map((platform) => platform === "applePodcasts" ? "Apple Podcasts" : platform === "ivoox" ? "iVoox" : platform[0].toUpperCase() + platform.slice(1)).join(", ") || "nada"}.</p></section>
     </div>
     <section id="piezas-derivadas" className="mt-6 rounded-2xl border border-dashed border-white/15 bg-white/[0.03] p-6"><h2 className="text-xl font-bold text-white/70">Piezas derivadas</h2><p className="mt-2 text-sm text-white/50">Próximamente. Este módulo alojará clips, shorts y otras piezas cuando exista una fuente editorial.</p></section>
-    <PromotionCandidatePanel slug={slug} candidate={promotionCandidate} diff={promotionDiff} storageAvailable={isEpisodePromotionStorageAvailable()} generateArtifactAction={generateApprovedPromotionArtifact} />
+    <PromotionCandidatePanel slug={slug} candidate={promotionCandidate} diff={promotionDiff} storageAvailable={isEpisodePromotionStorageAvailable()} approvedArtifactAvailable={Boolean(approvedArtifact)} promotionWriteAvailable={isPromotionWriteAvailable()} generateArtifactAction={generateApprovedPromotionArtifact} previewPromotionAction={previewPublicPromotion} applyPromotionAction={applyPublicPromotion} />
     <section id="diagnostico" className="mt-6 rounded-2xl border border-red-900/40 bg-black/40 p-6"><h2 className="text-xl font-bold">Diagnóstico</h2><p className="mt-2 text-sm text-white/60">Importaciones y avisos técnicos, sin resolver conflictos ni alterar fuentes.</p><div className="mt-5 grid gap-5 lg:grid-cols-3"><div><h3 className="text-sm font-bold uppercase tracking-widest text-white/55">Manifests</h3>{summary.diagnostics.manifests.length ? <ul className="mt-3 space-y-2 text-sm">{summary.diagnostics.manifests.map((item) => <li key={item.source} className="rounded-lg border border-white/10 p-3"><strong>{item.source}</strong> · {item.status}{item.messages.length ? `: ${item.messages.join(" ")}` : ""}</li>)}</ul> : <p className="mt-3 text-sm text-white/45">No conectado.</p>}</div><div><h3 className="text-sm font-bold uppercase tracking-widest text-white/55">Transcripciones importadas</h3>{summary.diagnostics.transcripts.length ? <ul className="mt-3 space-y-2 text-sm">{summary.diagnostics.transcripts.map((item) => <li key={item.source} className="rounded-lg border border-white/10 p-3"><strong>{item.source}</strong> · {item.status}{item.messages.length ? `: ${item.messages.join(" ")}` : ""}</li>)}</ul> : <p className="mt-3 text-sm text-white/45">No conectado.</p>}</div><div><h3 className="text-sm font-bold uppercase tracking-widest text-white/55">Avisos relevantes</h3>{summary.diagnostics.warnings.length ? <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-orange-100">{summary.diagnostics.warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul> : <p className="mt-3 text-sm text-white/45">Sin warnings relevantes.</p>}</div></div></section>
   </main>;
 }

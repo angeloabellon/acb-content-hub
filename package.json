@@ -11,7 +11,10 @@
     "start": "next start",
     "lint": "eslint",
     "import-gallery": "node scripts/import-gallery.mjs",
-    "remove-gallery": "node scripts/remove-gallery.mjs"
+    "remove-gallery": "node scripts/remove-gallery.mjs",
+    "promote:preview": "node --experimental-strip-types scripts/promote-to-public.ts preview",
+    "promote:apply": "node --experimental-strip-types scripts/promote-to-public.ts apply",
+    "promote:validate": "npm test && npm run lint && npm run typecheck && npm run build"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
