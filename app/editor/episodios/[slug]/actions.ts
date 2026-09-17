@@ -11,10 +11,11 @@ import { requireEditor } from "@/lib/require-editor";
 import { getTranscriptByEpisodeId } from "@/lib/transcripts";
 
 /** Server-side reconstruction prevents a client preview from selecting sources or bypassing validation. */
-export async function generateApprovedPromotionArtifact(slug: string): Promise<{ ok: boolean; message: string }> {
+export async function generateApprovedPromotionArtifact(slug: string, approvedForPreview: boolean): Promise<{ ok: boolean; message: string }> {
   await requireEditor(`/editor/episodios/${slug}`);
   const current = getEpisodeBySlug(slug);
   if (!current) return { ok: false, message: "Episodio desconocido." };
+  if (!approvedForPreview) return { ok: false, message: "Aprueba primero el candidato en esta vista previa." };
   const manifests = await loadImportedEpisodeManifests();
   const imported = manifests.find((item) => item.episode?.id === current.id && item.status === "imported");
   const candidate = buildPublicEpisodeCandidate({

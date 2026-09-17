@@ -27,7 +27,7 @@ Los estados son `draft`, `ready`, `blocked` y `approved`. Un candidato bloqueado
 
 El diff enumera los campos públicos como `unchanged`, `added`, `removed` o `changed`; arrays de participantes, plataformas y módulos se muestran como valores completos, por lo que no se ocultan cambios estructurales.
 
-En `/editor/episodios/[slug]`, la sección **Promoción a público** muestra estado, bloqueos, fuentes, comparación con la ficha actual y enlaces al editor de capítulos. El botón **Aprobar candidato** solo cambia la preview actual. **Generar artefacto aprobado** reconstruye y revalida el candidato en el servidor, exige el rol editorial y crea un archivo local solo en desarrollo.
+En `/editor/episodios/[slug]`, la sección **Promoción a público** muestra estado, bloqueos, fuentes, comparación con la ficha actual y enlaces al editor de capítulos. El botón **Aprobar candidato** solo cambia la preview actual. **Generar artefacto aprobado** exige esa aprobación de preview, reconstruye y revalida el candidato en el servidor, exige el rol editorial y crea un archivo local solo en desarrollo.
 
 ## Artefactos aprobados
 

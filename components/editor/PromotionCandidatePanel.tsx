@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 
 import type { PublicEpisodeCandidate, PublicEpisodeDiffItem } from "@/types/public-episode-candidate";
 
-type GenerateArtifactAction = (slug: string) => Promise<{ ok: boolean; message: string }>;
+type GenerateArtifactAction = (slug: string, approvedForPreview: boolean) => Promise<{ ok: boolean; message: string }>;
 
 type PromotionCandidatePanelProps = {
   slug: string;
@@ -32,7 +32,7 @@ export function PromotionCandidatePanel({ slug, candidate, diff, storageAvailabl
 
   function generateArtifact() {
     setMessage(undefined);
-    startSaving(async () => setMessage((await generateArtifactAction(slug)).message));
+    startSaving(async () => setMessage((await generateArtifactAction(slug, approved)).message));
   }
 
   return <section id="promocion" className="mt-6 rounded-2xl border border-sky-300/30 bg-sky-950/20 p-6">
