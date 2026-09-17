@@ -8,6 +8,7 @@ La ruta privada `/editor/episodios/[slug]` concentra una lectura editorial de ca
 - **Transcripción**: estado, segmentos, idioma, timestamps, versión, hash y diagnósticos. Los fixtures se etiquetan inequívocamente como `Demo técnica`.
 - **Capítulos**: capítulos de la fuente controlada, JSON locales de `data/chapters/generated/` y acceso al editor de propuestas. Los locales se distinguen como `local/dev`.
 - **Publicación**: enlaces existentes a plataformas y las plataformas que faltan; es solo lectura.
+- **Promoción a público**: candidato verificable, bloqueos, diff frente a la ficha actual y generación local de un artefacto aprobado. Consulta `docs/episode-promotion.md`; no publica ni altera la fuente pública.
 - **Diagnóstico**: resultados de importación de manifests/transcripciones y warnings relevantes.
 - **Piezas derivadas**: placeholder estructurado para clips, shorts y derivados futuros.
 
@@ -17,4 +18,4 @@ El view model `EpisodeEditorialSummary` se construye en `lib/episode-editor.ts` 
 
 ## Limitaciones y evolución
 
-El panel no edita metadata, no publica, no llama a APIs externas y no conecta SSK ni Automation. La siguiente iteración razonable es añadir una fuente persistente revisada antes de permitir cambios sobre metadata o publicación.
+El panel no edita metadata pública, no publica, no llama a APIs externas y no conecta SSK ni Automation. Los artefactos de promoción son únicamente una propuesta versionada local: una iteración posterior generará un patch revisable antes de cualquier cambio sobre metadata pública.
