@@ -97,8 +97,108 @@ function parseEpisodes(source: string): Episode[] {
   return cjsModule.exports.episodes;
 }
 
-function serializeEpisodes(episodes: readonly Episode[]): string {
-  return `import type { Episode } from "@/types/episode";\n\n/** Public episode source. Promotions are applied locally after editorial review. */\nexport const episodes: Episode[] = ${JSON.stringify(episodes, null, 2)};\n`;
+type EpisodesSourceLocation = {
+  array: ts.ArrayLiteralExpression;
+  sourceFile: ts.SourceFile;
+  episode?: ts.ObjectLiteralExpression;
+  eol: "\n" | "\r\n";
+};
+
+function dominantEol(source: string): "\n" | "\r\n" {
+  const crlf = (source.match(/\r\n/g) ?? []).length;
+  const lf = (source.match(/(?<!\r)\n/g) ?? []).length;
+  return crlf > lf ? "\r\n" : "\n";
+}
+
+function propertyName(property: ts.ObjectLiteralElementLike): string | undefined {
+  if (!ts.isPropertyAssignment(property) || !property.name) return undefined;
+  return ts.isIdentifier(property.name) || ts.isStringLiteral(property.name) ? property.name.text : undefined;
+}
+
+function episodeIdFromObject(object: ts.ObjectLiteralExpression): string | undefined {
+  const id = object.properties.find((property) => propertyName(property) === "id");
+  return id && ts.isPropertyAssignment(id) && ts.isStringLiteral(id.initializer) ? id.initializer.text : undefined;
+}
+
+/** Finds the exported `episodes` array and, when present, its exact target object range. */
+function locateEpisodesSource(source: string, episodeId: string): EpisodesSourceLocation {
+  const sourceFile = ts.createSourceFile("episodes.ts", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+  const declarations: ts.VariableDeclaration[] = [];
+  for (const statement of sourceFile.statements) {
+    if (!ts.isVariableStatement(statement) || !statement.modifiers?.some((modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword)) continue;
+    for (const declaration of statement.declarationList.declarations) if (ts.isIdentifier(declaration.name) && declaration.name.text === "episodes") declarations.push(declaration);
+  }
+  if (declarations.length !== 1 || !declarations[0].initializer || !ts.isArrayLiteralExpression(declarations[0].initializer)) throw new Error("No se pudo reconocer con seguridad el array exportado `episodes` en data/episodes.ts.");
+  const array = declarations[0].initializer;
+  if (array.elements.some((element) => !ts.isObjectLiteralExpression(element))) throw new Error("El array exportado `episodes` contiene una estructura no compatible con la promoción localizada.");
+  const matches = array.elements.filter(ts.isObjectLiteralExpression).filter((element) => episodeIdFromObject(element) === episodeId);
+  if (matches.length > 1) throw new Error("data/episodes.ts contiene más de un episodio con el mismo ID técnico.");
+  return { array, sourceFile, episode: matches[0], eol: dominantEol(source) };
+}
+
+function lineIndent(source: string, position: number): string {
+  const start = Math.max(source.lastIndexOf("\n", position - 1), source.lastIndexOf("\r", position - 1)) + 1;
+  return /^[\t ]*/.exec(source.slice(start, position))?.[0] ?? "";
+}
+
+function serializeEpisodeObject(episode: Episode, indent: string, eol: "\n" | "\r\n"): string {
+  // JSON is valid TypeScript expression syntax. It deliberately formats only the promoted object,
+  // never the surrounding source file or neighbouring episodes.
+  const serialized = JSON.stringify(episode, null, 2);
+  if (!serialized) throw new Error("No se pudo serializar el episodio para la promoción localizada.");
+  return serialized.split("\n").map((line) => `${indent}${line}`).join(eol);
+}
+
+function objectTextRange(object: ts.ObjectLiteralExpression, sourceFile: ts.SourceFile): { start: number; end: number } {
+  const first = object.getFirstToken(sourceFile);
+  if (!first || first.kind !== ts.SyntaxKind.OpenBraceToken) throw new Error("No se pudo localizar el bloque de texto del episodio con seguridad.");
+  const start = first.getStart(sourceFile);
+  const scanner = ts.createScanner(ts.ScriptTarget.Latest, false, ts.LanguageVariant.Standard, sourceFile.text);
+  scanner.setTextPos(start);
+  let depth = 0;
+  for (;;) {
+    const token = scanner.scan();
+    if (token === ts.SyntaxKind.EndOfFileToken) break;
+    if (token === ts.SyntaxKind.OpenBraceToken) depth += 1;
+    if (token === ts.SyntaxKind.CloseBraceToken) {
+      depth -= 1;
+      if (depth === 0) return { start, end: scanner.getTokenPos() + scanner.getTokenText().length };
+    }
+  }
+  throw new Error("No se pudo localizar el bloque de texto del episodio con seguridad.");
+}
+
+/** Replaces one object range or appends one object while preserving all unrelated source text. */
+function patchEpisodesSource(source: string, patch: PromotionPatch): string {
+  const location = locateEpisodesSource(source, patch.episodeId);
+  const promoted = patch.episodes.find((episode) => episode.id === patch.episodeId);
+  if (!promoted) throw new Error("El patch localizado no contiene el episodio aprobado.");
+
+  if (patch.operation === "update") {
+    if (!location.episode) throw new Error("El episodio a actualizar no se encontró en data/episodes.ts.");
+    const { start, end } = objectTextRange(location.episode, location.sourceFile);
+    return `${source.slice(0, start)}${serializeEpisodeObject(promoted, lineIndent(source, start), location.eol)}${source.slice(end)}`;
+  }
+
+  if (location.episode) throw new Error("El episodio ya existe; no se puede insertarlo dos veces.");
+  const closeBracket = location.array.getEnd() - 1;
+  const arrayIndent = lineIndent(source, location.array.getStart(location.sourceFile));
+  const elements = location.array.elements;
+  const objectIndent = elements.length ? lineIndent(source, elements[0].getStart(location.sourceFile)) : `${arrayIndent}  `;
+  const lastRange = elements.length ? objectTextRange(elements[elements.length - 1] as ts.ObjectLiteralExpression, location.sourceFile) : undefined;
+  const hasTrailingComma = !!lastRange && /^\s*,/.test(source.slice(lastRange.end, closeBracket));
+  const closeIndent = lineIndent(source, closeBracket);
+  const lastEnd = lastRange?.end ?? location.array.getStart(location.sourceFile) + 1;
+  // Preserve comments/blank lines between the final existing element and `]` verbatim. The
+  // only punctuation changed is the separator required to add the new array element.
+  const beforeLastTail = source.slice(0, lastEnd);
+  const tail = source.slice(lastEnd, closeBracket);
+  const suffix = source.slice(closeBracket + 1);
+  const existingSeparator = elements.length && !hasTrailingComma ? "," : "";
+  const tailEndsWithLineBreak = /(?:\r\n|\n)$/.test(tail);
+  const beforeObject = tailEndsWithLineBreak ? tail : `${tail}${location.eol}`;
+  const trailingComma = hasTrailingComma ? "," : "";
+  return `${beforeLastTail}${existingSeparator}${beforeObject}${serializeEpisodeObject(promoted, objectIndent, location.eol)}${trailingComma}${location.eol}${closeIndent}]${suffix}`;
 }
 
 async function newestApprovedVersion(directory: string, episodeId: string): Promise<number> {
@@ -146,8 +246,9 @@ export async function persistPromotionPreview(token: string, options: PromotionF
   const backupFile = `${episodesFile}.backup-${timestamp}`;
   await copyFile(episodesFile, backupFile);
   const temporary = `${episodesFile}.tmp-${process.pid}-${Date.now()}`;
-  try { await mkdir(path.dirname(episodesFile), { recursive: true }); await writeFile(temporary, serializeEpisodes(patch.episodes), "utf8"); await rename(temporary, episodesFile); } catch (error) { await import("node:fs/promises").then(({ rm }) => rm(temporary, { force: true })); throw error; }
+  const localizedSource = patchEpisodesSource(source, patch);
+  try { await mkdir(path.dirname(episodesFile), { recursive: true }); await writeFile(temporary, localizedSource, "utf8"); await rename(temporary, episodesFile); } catch (error) { await import("node:fs/promises").then(({ rm }) => rm(temporary, { force: true })); throw error; }
   return { operation: patch.operation, backupFile };
 }
 
-export const __test__ = { parseEpisodes, serializeEpisodes, newestApprovedVersion };
+export const __test__ = { parseEpisodes, locateEpisodesSource, objectTextRange, patchEpisodesSource, serializeEpisodeObject, newestApprovedVersion };

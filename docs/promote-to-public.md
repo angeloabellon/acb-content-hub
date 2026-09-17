@@ -20,6 +20,10 @@ Solo el servidor autenticado (`requireEditor`), en desarrollo local con `ENABLE_
 
 Aplicar crea primero `data/episodes.ts.backup-<timestamp>` y después sustituye el archivo con un temporal y `rename` atómico. No hay commit, push ni deploy automático. Revisa siempre `git diff` y realiza el commit manualmente. Para volver atrás, restaura manualmente el backup correspondiente tras inspeccionarlo.
 
+El escritor es localizado: usa el AST de TypeScript solo para reconocer el único `export const episodes = [...]`, localizar el objeto literal cuyo `id` coincide y calcular su rango exacto. La escritura final es textual: en una actualización reemplaza exclusivamente ese bloque; en una inserción añade exclusivamente un bloque al array. Por tanto, los comentarios, espaciado, EOL y episodios no objetivo permanecen intactos. El nuevo bloque usa una representación TypeScript determinista y conserva la indentación, EOL dominante y estilo de coma final del array.
+
+Por seguridad se aborta sin escribir si `episodes` no es un único array exportado directamente, si sus elementos no son objetos literales o si encuentra más de un objeto con el mismo ID técnico. Esta restricción es deliberada: una estructura que no se puede localizar de forma inequívoca no se modifica.
+
 También se puede usar la CLI local:
 
 ```sh
