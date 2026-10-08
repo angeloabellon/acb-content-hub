@@ -4,7 +4,12 @@ import path from "node:path";
 import { promotionStatus } from "./episode-promotion.ts";
 import type { ApprovedPublicEpisodeArtifact, PublicEpisodeCandidate } from "../types/public-episode-candidate.ts";
 
-export const APPROVED_PROMOTIONS_DIRECTORY = path.join(process.cwd(), "data", "promotions", "approved");
+export const APPROVED_PROMOTIONS_DIRECTORY = path.join(
+  /* turbopackIgnore: true */ process.cwd(),
+  "data",
+  "promotions",
+  "approved",
+);
 
 export type PersistApprovedPromotionOptions = { baseDirectory?: string; environment?: NodeJS.ProcessEnv };
 export type PersistApprovedPromotionResult =

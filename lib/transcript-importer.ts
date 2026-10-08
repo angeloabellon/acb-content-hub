@@ -5,7 +5,12 @@ import path from "node:path";
 import type { Transcript, TranscriptSegment } from "../types/transcript.ts";
 
 /** The only directory read by the repository transcript importer; it is never recursive. */
-export const IMPORTED_TRANSCRIPTS_DIRECTORY = path.join(process.cwd(), "data", "transcripts", "source");
+export const IMPORTED_TRANSCRIPTS_DIRECTORY = path.join(
+  /* turbopackIgnore: true */ process.cwd(),
+  "data",
+  "transcripts",
+  "source",
+);
 
 export type TranscriptImportStatus = "valid" | "partial" | "invalid";
 export type TranscriptImportFormat = "txt" | "srt";

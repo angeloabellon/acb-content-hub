@@ -10,7 +10,11 @@ import {
 import type { Episode } from "../types/episode.ts";
 
 /** The only directory this importer reads. It is deliberately non-recursive. */
-export const IMPORTED_EPISODE_MANIFESTS_DIRECTORY = path.join(process.cwd(), "data", "manifests");
+export const IMPORTED_EPISODE_MANIFESTS_DIRECTORY = path.join(
+  /* turbopackIgnore: true */ process.cwd(),
+  "data",
+  "manifests",
+);
 
 export type EpisodeManifestImportStatus = "imported" | "partial" | "error" | "duplicate";
 
