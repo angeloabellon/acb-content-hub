@@ -1,5 +1,6 @@
 import type { GalleryCollection } from "./types";
 
+import { ucamMurciaBarca } from "./ucam-murcia-barca";
 import { cacokPhotos } from "./cacok";
 import { grada17May26Photos } from "./grada17may26";
 import { ucamUnicajaPhotos } from "./ucamUnicaja";
@@ -39,7 +40,9 @@ const devontaeCacok: GalleryCollection = {
   teams: ["UCAM Murcia CB"],
 };
 
-export const galleryCollections: GalleryCollection[] = [  ucamMurciaUnicajaAccion,
+export const galleryCollections: GalleryCollection[] = [
+  ucamMurciaBarca,
+  ucamMurciaUnicajaAccion,
   ucamMurciaUnicajaGrada,
   devontaeCacok,
 ];
