@@ -14,6 +14,10 @@ export type PodcastEpisode = {
 const PODCAST_RSS_URL =
   "https://feeds.ivoox.com/feed_fg_f11580626_filtro_1.xml";
 
+// New episodes should reach the site quickly while keeping the iVoox feed
+// protected from a request on every page view.
+const PODCAST_REVALIDATE_SECONDS = 300;
+
 function createPodcastSlug(title: string) {
   return title
     .toLowerCase()
@@ -26,7 +30,9 @@ function createPodcastSlug(title: string) {
 export async function getPodcastEpisodes(): Promise<PodcastEpisode[]> {
   const parser = new Parser();
 
-  const response = await fetchExternal(PODCAST_RSS_URL, { revalidate: 3600 });
+  const response = await fetchExternal(PODCAST_RSS_URL, {
+    revalidate: PODCAST_REVALIDATE_SECONDS,
+  });
   if (!response) return [];
 
   try {
