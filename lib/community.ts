@@ -7,6 +7,7 @@ import {
   createSupabaseServerClient,
   isSupabaseConfigured,
 } from "@/lib/supabase/server";
+import type { CommunityFollowStatus } from "@/lib/community-follow";
 export {
   getCommunityViewerIdentity,
   type CommunityViewerIdentity,
@@ -34,6 +35,11 @@ type PostRow = {
   body: string;
   created_at: string;
   author: ProfileRow;
+};
+
+type FollowStatusRow = {
+  topic_id: string;
+  unread_reply_count: number | string | null;
 };
 
 export type CommunityViewer = {
@@ -85,7 +91,10 @@ function fullDateLabel(value: string): string {
   }).format(date);
 }
 
-function mapTopic(row: TopicRow): CommunityTopic {
+function mapTopic(
+  row: TopicRow,
+  followStatus?: CommunityFollowStatus,
+): CommunityTopic {
   const author = authorName(row.author);
   return {
     id: row.id,
@@ -96,9 +105,32 @@ function mapTopic(row: TopicRow): CommunityTopic {
     author,
     initials: initialsFor(author),
     replies: row.reply_count,
+    ...(followStatus?.isFollowing
+      ? {
+        following: true,
+        unreadReplies: followStatus.unreadReplies,
+      }
+      : {}),
     lastActivity: dateLabel(row.last_activity_at),
     messages: [],
   };
+}
+
+async function getCommunityFollowStatuses(
+  supabase: NonNullable<Awaited<ReturnType<typeof createSupabaseServerClient>>>,
+): Promise<Map<string, CommunityFollowStatus>> {
+  const { data, error } = await supabase.rpc("community_topic_follow_statuses");
+  if (error || !data) return new Map();
+
+  return new Map(
+    (data as FollowStatusRow[]).map((row) => [
+      row.topic_id,
+      {
+        isFollowing: true,
+        unreadReplies: Math.max(0, Number(row.unread_reply_count) || 0),
+      },
+    ]),
+  );
 }
 
 /** Returns a verified identity only when the Supabase integration is configured. */
@@ -136,7 +168,13 @@ export async function listCommunityTopics(): Promise<CommunityTopic[]> {
       .order("last_activity_at", { ascending: false });
 
     if (error || !data) throw error;
-    return (data as TopicRow[]).map(mapTopic);
+
+    const viewer = await getCommunityViewer();
+    const followStatuses = viewer
+      ? await getCommunityFollowStatuses(supabase)
+      : new Map<string, CommunityFollowStatus>();
+
+    return (data as TopicRow[]).map((row) => mapTopic(row, followStatuses.get(row.id)));
   } catch {
     return communityTopics;
   }
@@ -161,7 +199,11 @@ export async function getCommunityTopicBySlug(
     if (topicError || !topicData) return getCommunityFixtureTopic(slug);
 
     const row = topicData as TopicRow;
-    const topic = mapTopic(row);
+    const viewer = await getCommunityViewer();
+    const followStatuses = viewer
+      ? await getCommunityFollowStatuses(supabase)
+      : new Map<string, CommunityFollowStatus>();
+    const topic = mapTopic(row, followStatuses.get(row.id));
     const openingAuthor = authorName(row.author);
     const openingMessage: CommunityMessage = {
       author: openingAuthor,

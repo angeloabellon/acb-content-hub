@@ -24,6 +24,8 @@ export type CommunityTopic = {
   author: string;
   initials: string;
   replies: number;
+  following?: boolean;
+  unreadReplies?: number;
   lastActivity: string;
   messages: CommunityMessage[];
 };

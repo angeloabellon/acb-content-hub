@@ -39,6 +39,105 @@ function originForMagicLink(requestHeaders: Headers): string {
   return siteConfig.url;
 }
 
+type CommunityFollowActionResult =
+  | { ok: true }
+  | { ok: false; message: string };
+
+function isUuid(value: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
+function revalidateCommunityFollowViews(topicSlug: string) {
+  revalidatePath("/comunidad");
+  revalidatePath("/comunidad/acb");
+  revalidatePath("/comunidad/bcl");
+  revalidatePath(`/comunidad/tema/${topicSlug}`);
+}
+
+async function getFollowActionContext(topicId: string): Promise<
+  | { ok: true; viewerId: string; supabase: NonNullable<Awaited<ReturnType<typeof createSupabaseServerClient>>> }
+  | { ok: false; message: string }
+> {
+  if (!isUuid(topicId)) {
+    return { ok: false, message: "No se ha reconocido el tema." };
+  }
+
+  const viewer = await getCommunityViewer();
+  if (!viewer) {
+    return { ok: false, message: "Inicia sesión para gestionar el seguimiento." };
+  }
+
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) {
+    return { ok: false, message: "El backend de Comunidad aún no está configurado." };
+  }
+
+  return { ok: true, viewerId: viewer.id, supabase };
+}
+
+export async function followCommunityTopic(
+  topicId: string,
+  topicSlug: string,
+): Promise<CommunityFollowActionResult> {
+  const context = await getFollowActionContext(topicId);
+  if (!context.ok) return context;
+
+  const { error } = await context.supabase.from("community_topic_follows").insert({
+    topic_id: topicId,
+    user_id: context.viewerId,
+    last_read_at: new Date().toISOString(),
+  });
+
+  if (error && error.code !== "23505") {
+    return { ok: false, message: "No se ha podido seguir el tema. Inténtalo de nuevo." };
+  }
+
+  revalidateCommunityFollowViews(topicSlug);
+  return { ok: true };
+}
+
+export async function unfollowCommunityTopic(
+  topicId: string,
+  topicSlug: string,
+): Promise<CommunityFollowActionResult> {
+  const context = await getFollowActionContext(topicId);
+  if (!context.ok) return context;
+
+  const { error } = await context.supabase
+    .from("community_topic_follows")
+    .delete()
+    .eq("topic_id", topicId)
+    .eq("user_id", context.viewerId);
+
+  if (error) {
+    return { ok: false, message: "No se ha podido dejar de seguir el tema. Inténtalo de nuevo." };
+  }
+
+  revalidateCommunityFollowViews(topicSlug);
+  return { ok: true };
+}
+
+export async function markCommunityTopicRead(
+  topicId: string,
+  topicSlug: string,
+): Promise<CommunityFollowActionResult> {
+  const context = await getFollowActionContext(topicId);
+  if (!context.ok) return context;
+
+  const { error } = await context.supabase
+    .from("community_topic_follows")
+    .update({ last_read_at: new Date().toISOString() })
+    .eq("topic_id", topicId)
+    .eq("user_id", context.viewerId);
+
+  if (error) {
+    return { ok: false, message: "No se ha podido actualizar la lectura del tema." };
+  }
+
+  revalidateCommunityFollowViews(topicSlug);
+  return { ok: true };
+}
+
 export async function requestCommunitySignIn(
   _: CommunityActionState,
   formData: FormData,
@@ -152,7 +251,7 @@ export async function createCommunityReply(
     return { status: "error", message: "Inicia sesión para responder." };
   }
 
-  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(topicId)) {
+  if (!isUuid(topicId)) {
     return { status: "error", message: "No se ha reconocido el tema al que quieres responder." };
   }
 

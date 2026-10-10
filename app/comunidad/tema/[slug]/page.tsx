@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import CommunityReplyForm from "@/components/community/CommunityReplyForm";
+import CommunityTopicFollow from "@/components/community/CommunityTopicFollow";
 import { getCommunitySpace } from "@/data/community";
 import { formatCommunityReplyCount } from "@/lib/community-format";
 import {
@@ -62,7 +63,20 @@ export default async function CommunityTopicPage({
             <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5">Iniciado por {topic.author}</span>
             <span>{formatCommunityReplyCount(topic.replies)}</span>
             <span>Última actividad {topic.lastActivity.toLowerCase()}</span>
+            {topic.unreadReplies && topic.unreadReplies > 0 ? (
+              <span className="rounded-full border border-orange-400/35 bg-orange-300/10 px-3 py-1.5 font-semibold text-orange-200">
+                {topic.unreadReplies} {topic.unreadReplies === 1 ? "nueva" : "nuevas"}
+              </span>
+            ) : null}
           </div>
+          {viewer && topic.id && (
+            <CommunityTopicFollow
+              topicId={topic.id}
+              topicSlug={topic.slug}
+              isFollowing={Boolean(topic.following)}
+              unreadReplies={topic.unreadReplies ?? 0}
+            />
+          )}
         </div>
       </section>
 

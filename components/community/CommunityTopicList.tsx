@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import type { CommunityTopic } from "@/data/community";
 import { formatCommunityReplyCount } from "@/lib/community-format";
+import { formatCommunityUnreadReplyCount } from "@/lib/community-follow";
 
 type CommunityTopicListProps = {
   topics: CommunityTopic[];
@@ -51,6 +52,8 @@ export default function CommunityTopicList({
               )}
               {showSpace && <span className="text-white/25">·</span>}
               <span>Por {topic.author}</span>
+              {topic.following && <span className="text-white/25">·</span>}
+              {topic.following && <span className="text-white/55">Siguiendo</span>}
             </div>
 
             <h3 className="text-xl font-bold leading-snug transition-colors duration-300 group-hover:text-orange-300 sm:text-2xl">
@@ -63,6 +66,11 @@ export default function CommunityTopicList({
           </div>
 
           <div className="flex items-center gap-4 text-sm text-white/55 md:justify-end">
+            {topic.unreadReplies && topic.unreadReplies > 0 ? (
+              <span className="rounded-full border border-orange-400/35 bg-orange-300/10 px-3 py-1.5 font-semibold text-orange-200">
+                {formatCommunityUnreadReplyCount(topic.unreadReplies)}
+              </span>
+            ) : null}
             <span className="rounded-full border border-white/10 bg-white/[0.035] px-3 py-1.5">
               {formatCommunityReplyCount(topic.replies)}
             </span>

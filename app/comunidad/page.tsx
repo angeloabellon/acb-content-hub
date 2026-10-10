@@ -16,6 +16,8 @@ export const metadata: Metadata = createMetadata({
   path: "/comunidad",
 });
 
+export const dynamic = "force-dynamic";
+
 type ComunidadPageProps = {
   searchParams: Promise<{ view?: string }>;
 };
