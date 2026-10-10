@@ -36,9 +36,13 @@ export default function CommunitySpaceCard({
               className="h-9 w-auto object-contain opacity-80"
             />
           ) : (
-            <span className="rounded-full border border-red-500/30 bg-red-950/40 px-3 py-1 text-xs font-bold tracking-[0.16em] text-red-200">
-              BCL
-            </span>
+            <Image
+              src="/logoBCL.png"
+              alt="Basketball Champions League"
+              width={118}
+              height={38}
+              className="h-8 w-auto max-w-[7.5rem] object-contain opacity-90"
+            />
           )}
         </div>
 

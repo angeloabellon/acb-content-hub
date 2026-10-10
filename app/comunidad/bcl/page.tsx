@@ -36,7 +36,13 @@ export default async function ComunidadBclPage() {
           <div className="max-w-3xl">
             <div className="mb-5 flex items-center gap-4">
               <Image src="/logoUCAM.png" alt="UCAM Murcia" width={58} height={58} className="h-14 w-14 object-contain" />
-              <span className="rounded-full border border-red-500/30 bg-red-950/40 px-4 py-2 text-sm font-bold tracking-[0.18em] text-red-200">BCL</span>
+              <Image
+                src="/logoBCL.png"
+                alt="Basketball Champions League"
+                width={132}
+                height={43}
+                className="h-9 w-auto object-contain opacity-90"
+              />
             </div>
             <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-red-300/70">{space.eyebrow}</p>
             <h1 className="text-3xl font-extrabold leading-tight sm:text-4xl md:text-5xl">{space.title}</h1>
