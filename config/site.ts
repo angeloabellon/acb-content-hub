@@ -56,6 +56,10 @@ export const siteConfig = {
       label: "Galería",
       href: "/galeria",
     },
+    {
+      label: "Comunidad",
+      href: "/comunidad",
+    },
 
     {
       label: "Sobre nosotros",

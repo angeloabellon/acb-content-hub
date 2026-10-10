@@ -7,6 +7,7 @@ const contentLinks = [
   { label: "Podcasts", href: "/podcasts" },
   { label: "Actualidad", href: "/news" },
   { label: "Galería", href: "/galeria" },
+  { label: "Comunidad", href: "/comunidad" },
 ];
 
 const projectLinks = [
