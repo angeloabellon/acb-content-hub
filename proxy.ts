@@ -7,5 +7,6 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/comunidad/:path*"],
+  // Refresh the Supabase session wherever the global header is rendered.
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\..*$).*)"],
 };

@@ -7,6 +7,10 @@ import {
   createSupabaseServerClient,
   isSupabaseConfigured,
 } from "@/lib/supabase/server";
+export {
+  getCommunityViewerIdentity,
+  type CommunityViewerIdentity,
+} from "@/lib/community-viewer";
 export { getSafeCommunityPath, isCommunitySpace } from "@/lib/community-validation";
 
 type ProfileRow =

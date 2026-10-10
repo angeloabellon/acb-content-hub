@@ -40,6 +40,107 @@
   color: #f97316;
 }
 
+.community-session-status--header {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.community-session-trigger {
+  display: inline-flex;
+  max-width: 190px;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  padding: 5px 10px 5px 5px;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.07);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.community-session-trigger:hover,
+.community-session-trigger:focus-visible {
+  border-color: rgba(249, 115, 22, 0.78);
+  background: rgba(249, 115, 22, 0.12);
+  outline: none;
+}
+
+.community-session-avatar {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #f97316, #e01310);
+  color: white;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.community-session-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.community-session-chevron {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.community-session-options {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 90;
+  display: grid;
+  min-width: 170px;
+  gap: 4px;
+  padding: 8px;
+  border: 1px solid rgba(127, 29, 29, 0.65);
+  border-radius: 14px;
+  background: rgba(10, 10, 10, 0.98);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+.community-session-options a,
+.community-session-options button {
+  display: block;
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-radius: 9px;
+  padding: 9px 10px;
+  color: rgba(255, 255, 255, 0.86);
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.community-session-options a:hover,
+.community-session-options a:focus-visible,
+.community-session-options button:hover,
+.community-session-options button:focus-visible {
+  color: white;
+  background: rgba(249, 115, 22, 0.16);
+  outline: none;
+}
+
+.community-session-status--mobile-menu {
+  display: none;
+}
+
 .active-link {
   color: #e01310 !important;
 }
@@ -107,6 +208,55 @@
     border-radius: 14px;
     background: rgba(255, 255, 255, 0.04);
     font-size: 15px;
+  }
+
+  .community-session-status--header {
+    display: none;
+  }
+
+  .site-header nav.nav-open .community-session-status--mobile-menu {
+    display: grid;
+    gap: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .site-header nav.nav-open .community-session-status--mobile-menu a,
+  .site-header nav.nav-open .community-session-status--mobile-menu button {
+    margin-left: 0;
+    border-radius: 14px;
+    padding: 12px 14px;
+    color: white;
+    background: rgba(255, 255, 255, 0.04);
+    font: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    text-align: left;
+  }
+
+  .site-header nav.nav-open .community-session-status--mobile-menu a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .site-header nav.nav-open .community-session-status--mobile-menu button {
+    width: 100%;
+    border: 0;
+    cursor: pointer;
+  }
+
+  .community-session-mobile-copy {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .community-session-destination {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+    font-weight: 500;
   }
 }
 

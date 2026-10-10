@@ -91,7 +91,7 @@ export async function signOutCommunity() {
     await supabase.auth.signOut({ scope: "local" });
   }
 
-  revalidatePath("/comunidad");
+  revalidatePath("/", "layout");
   redirect("/comunidad");
 }
 

@@ -1,17 +1,20 @@
 "use client";
 
 import "./Header.css";
+import CommunitySessionStatus from "@/components/community/CommunitySessionStatus";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { siteConfig } from "@/config/site";
 import Image from "next/image";
+import type { CommunityViewer } from "@/lib/community";
 
 type HeaderClientProps = {
   hasLive: boolean;
+  viewer?: CommunityViewer;
 };
 
-export default function HeaderClient({ hasLive }: HeaderClientProps) {
+export default function HeaderClient({ hasLive, viewer }: HeaderClientProps) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -81,7 +84,15 @@ export default function HeaderClient({ hasLive }: HeaderClientProps) {
               )}
             </Link>
           ))}
+          {viewer && (
+            <CommunitySessionStatus
+              viewer={viewer}
+              variant="mobile-menu"
+              onNavigate={() => setMenuOpen(false)}
+            />
+          )}
         </nav>
+        {viewer && <CommunitySessionStatus viewer={viewer} variant="header" />}
       </div>
     </header>
   );
