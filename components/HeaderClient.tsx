@@ -10,11 +10,10 @@ import Image from "next/image";
 import type { CommunityViewer } from "@/lib/community";
 
 type HeaderClientProps = {
-  hasLive: boolean;
   viewer?: CommunityViewer;
 };
 
-export default function HeaderClient({ hasLive, viewer }: HeaderClientProps) {
+export default function HeaderClient({ viewer }: HeaderClientProps) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -74,14 +73,7 @@ export default function HeaderClient({ hasLive, viewer }: HeaderClientProps) {
                   : ""
               }
             >
-              {item.href === "/directo" && hasLive ? (
-                <span className="inline-flex items-center gap-2 rounded-full bg-red-600/20 px-3 py-1 text-red-300">
-                  <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" />
-                  EN DIRECTO
-                </span>
-              ) : (
-                item.label
-              )}
+              {item.label}
             </Link>
           ))}
           {viewer && (

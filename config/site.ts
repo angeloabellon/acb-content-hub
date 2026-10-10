@@ -41,17 +41,9 @@ export const siteConfig = {
       href: "/podcasts",
     },
     {
-      label: "Episodios",
-      href: "/episodios",
-    },
-    {
       label: "Actualidad",
       href: "/news",
     },
-          {
-    href: "/directo",
-    label: "Directo",
-  },
     {
       label: "Galería",
       href: "/galeria",
