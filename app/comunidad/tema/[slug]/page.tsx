@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import CommunityReplyForm from "@/components/community/CommunityReplyForm";
 import { getCommunitySpace } from "@/data/community";
+import { formatCommunityReplyCount } from "@/lib/community-format";
 import {
   getCommunityTopicBySlug,
   getCommunityViewer,
@@ -59,7 +60,7 @@ export default async function CommunityTopicPage({
           <h1 className="max-w-3xl text-3xl font-extrabold leading-tight sm:text-4xl md:text-5xl">{topic.title}</h1>
           <div className="mt-6 flex flex-wrap items-center gap-3 text-sm text-white/60">
             <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5">Iniciado por {topic.author}</span>
-            <span>{topic.replies} respuestas</span>
+            <span>{formatCommunityReplyCount(topic.replies)}</span>
             <span>Última actividad {topic.lastActivity.toLowerCase()}</span>
           </div>
         </div>

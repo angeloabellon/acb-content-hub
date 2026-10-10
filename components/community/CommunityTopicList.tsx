@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import type { CommunityTopic } from "@/data/community";
+import { formatCommunityReplyCount } from "@/lib/community-format";
 
 type CommunityTopicListProps = {
   topics: CommunityTopic[];
@@ -63,7 +64,7 @@ export default function CommunityTopicList({
 
           <div className="flex items-center gap-4 text-sm text-white/55 md:justify-end">
             <span className="rounded-full border border-white/10 bg-white/[0.035] px-3 py-1.5">
-              {topic.replies} respuestas
+              {formatCommunityReplyCount(topic.replies)}
             </span>
             <span className="whitespace-nowrap">{topic.lastActivity}</span>
           </div>

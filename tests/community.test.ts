@@ -5,6 +5,7 @@ import {
   getSafeCommunityPath,
   isCommunitySpace,
 } from "../lib/community-validation.ts";
+import { formatCommunityReplyCount } from "../lib/community-format.ts";
 import {
   getSupabasePublicConfig,
   isSupabaseConfigured,
@@ -20,6 +21,12 @@ test("community redirect targets remain inside the community", () => {
   assert.equal(getSafeCommunityPath("/comunidad/nuevo"), "/comunidad/nuevo");
   assert.equal(getSafeCommunityPath("https://example.com"), "/comunidad");
   assert.equal(getSafeCommunityPath("//example.com"), "/comunidad");
+});
+
+test("community reply counts use the singular only for one reply", () => {
+  assert.equal(formatCommunityReplyCount(0), "0 respuestas");
+  assert.equal(formatCommunityReplyCount(1), "1 respuesta");
+  assert.equal(formatCommunityReplyCount(2), "2 respuestas");
 });
 
 test("Supabase public configuration requires a valid URL and publishable key", () => {

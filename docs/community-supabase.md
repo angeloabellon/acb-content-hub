@@ -32,6 +32,8 @@ Las políticas RLS permiten leer únicamente contenido visible. Una persona aute
 
 ## Acceso
 
-El acceso de Comunidad utiliza enlaces de un solo uso por correo (`signInWithOtp`). La aplicación verifica la identidad con `getClaims()` en servidor; no confía en una sesión leída directamente de cookies. El `proxy.ts` de Next 16 se limita a rutas `/comunidad` y refresca las cookies de sesión.
+El acceso de Comunidad utiliza enlaces de un solo uso por correo (`signInWithOtp`), sin contraseñas. Tras abrir el primer enlace, el callback canjea el código por una sesión de Supabase que se guarda en cookies. Mientras sea válida, la persona permanece identificada y puede publicar sin recibir otro correo.
+
+La aplicación verifica la identidad con `getClaims()` en servidor; no confía en una sesión leída directamente de cookies. El `proxy.ts` de Next 16 se limita a rutas `/comunidad` y refresca las cookies de sesión. La interfaz muestra la identidad de la sesión activa y permite cerrarla solo en el navegador actual. Una persona que ya tenga sesión y visite `/comunidad/acceso` vuelve directamente a `/comunidad`.
 
 Sin las variables de Supabase, las pantallas siguen funcionando con conversaciones de muestra, pero la publicación permanece desactivada de forma explícita.

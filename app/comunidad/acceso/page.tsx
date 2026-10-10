@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import CommunityAccessForm from "@/components/community/CommunityAccessForm";
-import { isCommunityBackendConfigured } from "@/lib/community";
+import { getCommunityViewer, isCommunityBackendConfigured } from "@/lib/community";
 import { getSafeCommunityPath } from "@/lib/community-validation";
 import { createMetadata } from "@/lib/seo";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = createMetadata({
   title: "Acceder | Comunidad",
@@ -20,6 +21,11 @@ export default async function CommunityAccessPage({ searchParams }: PageProps) {
   const { next } = await searchParams;
   const safeNext = getSafeCommunityPath(next);
   const backendConfigured = isCommunityBackendConfigured();
+  const viewer = backendConfigured ? await getCommunityViewer() : undefined;
+
+  if (viewer) {
+    redirect("/comunidad");
+  }
 
   return (
     <main className="mx-auto flex min-h-[65vh] max-w-xl items-center px-6 py-12">

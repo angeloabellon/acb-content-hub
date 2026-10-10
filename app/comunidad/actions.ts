@@ -50,6 +50,10 @@ export async function requestCommunitySignIn(
     };
   }
 
+  if (await getCommunityViewer()) {
+    redirect("/comunidad");
+  }
+
   const email = textValue(formData, "email").toLowerCase();
   if (!safeEmail(email)) {
     return { status: "error", message: "Introduce un correo electrónico válido." };
@@ -77,6 +81,18 @@ export async function requestCommunitySignIn(
     status: "success",
     message: "Te hemos enviado un enlace de acceso. Revisa tu correo para continuar.",
   };
+}
+
+/** Ends only the session in this browser and clears its Supabase cookies. */
+export async function signOutCommunity() {
+  const supabase = await createSupabaseServerClient();
+
+  if (supabase) {
+    await supabase.auth.signOut({ scope: "local" });
+  }
+
+  revalidatePath("/comunidad");
+  redirect("/comunidad");
 }
 
 export async function createCommunityTopic(
