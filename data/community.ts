@@ -15,10 +15,14 @@ export type CommunityMention = {
 };
 
 export type CommunityMessage = {
+  id?: string;
+  authorId?: string;
   author: string;
   initials: string;
   publishedAt: string;
   body: string;
+  /** Canonical data used only by reply controls; the UI displays displayName. */
+  authorMention?: CommunityMention & { id: string };
   /** Resolved mentions; unresolved text stays plain. */
   mentions?: CommunityMention[];
 };

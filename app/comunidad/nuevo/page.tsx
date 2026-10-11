@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import CommunityComposer from "@/components/community/CommunityComposer";
 import CommunitySpaceNav from "@/components/community/CommunitySpaceNav";
-import { getCommunityViewer, isCommunityBackendConfigured } from "@/lib/community";
+import { getCommunityViewer, isCommunityBackendConfigured, listCommunityMentionableProfiles } from "@/lib/community";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = createMetadata({
@@ -17,6 +17,7 @@ export const dynamic = "force-dynamic";
 export default async function NuevoTemaPage() {
   const backendConfigured = isCommunityBackendConfigured();
   const viewer = await getCommunityViewer();
+  const profiles = viewer ? await listCommunityMentionableProfiles() : [];
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-12 sm:py-16">
@@ -47,7 +48,7 @@ export default async function NuevoTemaPage() {
           ) : (
             <>
               <p className="mt-4 max-w-2xl leading-relaxed text-white/65">Abre una conversación en uno de los dos espacios de Comunidad.</p>
-              <CommunityComposer />
+              <CommunityComposer profiles={profiles} />
             </>
           )}
 

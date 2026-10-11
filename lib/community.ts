@@ -20,8 +20,8 @@ export {
 export { getSafeCommunityPath, isCommunitySpace } from "@/lib/community-validation";
 
 type ProfileRow =
-  | { display_name: string | null; username: string | null }
-  | { display_name: string | null; username: string | null }[]
+  | { id: string; display_name: string | null; username: string | null }
+  | { id: string; display_name: string | null; username: string | null }[]
   | null;
 
 type TopicRow = {
@@ -37,6 +37,7 @@ type TopicRow = {
 };
 
 type PostRow = {
+  id: string;
   body: string;
   created_at: string;
   author: ProfileRow;
@@ -57,9 +58,31 @@ export type CommunityViewer = {
   email?: string;
 };
 
+/** Public profile data used by the composer. Canonical usernames stay internal. */
+export type CommunityMentionableProfile = {
+  id: string;
+  username: string;
+  displayName: string;
+};
+
+function firstProfile(profile: ProfileRow) {
+  return Array.isArray(profile) ? profile[0] : profile;
+}
+
 function authorName(profile: ProfileRow): string {
-  const value = Array.isArray(profile) ? profile[0] : profile;
+  const value = firstProfile(profile);
   return value?.display_name?.trim() || "Aficionado CTC";
+}
+
+function authorMention(profile: ProfileRow): CommunityMentionableProfile | undefined {
+  const value = firstProfile(profile);
+  const username = value?.username?.trim().toLowerCase();
+  if (!value?.id || !username) return undefined;
+  return {
+    id: value.id,
+    username,
+    displayName: value.display_name?.trim() || "Miembro de la Comunidad",
+  };
 }
 
 function initialsFor(name: string): string {
@@ -163,6 +186,35 @@ async function getCommunityMentions(
     }] : []);
 }
 
+/** Lists a bounded set of public names for local, incremental composer search. */
+export async function listCommunityMentionableProfiles(): Promise<CommunityMentionableProfile[]> {
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return [];
+
+  try {
+    const { data, error } = await supabase
+      .from("community_profiles")
+      .select("id, username, display_name")
+      .not("username", "is", null)
+      .order("display_name", { ascending: true })
+      .limit(100);
+    if (error || !data) return [];
+
+    return (data as Array<{ id: string; username: string | null; display_name: string | null }>)
+      .flatMap((profile) => {
+        const username = profile.username?.trim().toLowerCase();
+        if (!username) return [];
+        return [{
+          id: profile.id,
+          username,
+          displayName: profile.display_name?.trim() || "Miembro de la Comunidad",
+        }];
+      });
+  } catch {
+    return [];
+  }
+}
+
 /** Returns a verified identity only when the Supabase integration is configured. */
 export async function getCommunityViewer(): Promise<CommunityViewer | undefined> {
   const supabase = await createSupabaseServerClient();
@@ -192,7 +244,7 @@ export async function listCommunityTopics(): Promise<CommunityTopic[]> {
     const { data, error } = await supabase
       .from("community_topics")
       .select(
-        "id, slug, space_slug, title, body, reply_count, last_activity_at, created_at, author:community_profiles!community_topics_author_id_fkey(display_name, username)",
+        "id, slug, space_slug, title, body, reply_count, last_activity_at, created_at, author:community_profiles!community_topics_author_id_fkey(id, display_name, username)",
       )
       .eq("is_visible", true)
       .order("last_activity_at", { ascending: false });
@@ -228,7 +280,7 @@ export async function getCommunityTopicBySlug(
     const { data: topicData, error: topicError } = await supabase
       .from("community_topics")
       .select(
-        "id, slug, space_slug, title, body, reply_count, last_activity_at, created_at, author:community_profiles!community_topics_author_id_fkey(display_name, username)",
+        "id, slug, space_slug, title, body, reply_count, last_activity_at, created_at, author:community_profiles!community_topics_author_id_fkey(id, display_name, username)",
       )
       .eq("slug", slug)
       .eq("is_visible", true)
@@ -244,16 +296,19 @@ export async function getCommunityTopicBySlug(
     const topic = mapTopic(row, followStatuses.get(row.id));
     const openingAuthor = authorName(row.author);
     const openingMessage: CommunityMessage = {
+      id: row.id,
+      authorId: firstProfile(row.author)?.id,
       author: openingAuthor,
       initials: initialsFor(openingAuthor),
       publishedAt: fullDateLabel(row.created_at),
       body: row.body,
+      authorMention: authorMention(row.author),
     };
 
     const { data: postData, error: postError } = await supabase
       .from("community_posts")
       .select(
-        "body, created_at, author:community_profiles!community_posts_author_id_fkey(display_name, username)",
+        "id, body, created_at, author:community_profiles!community_posts_author_id_fkey(id, display_name, username)",
       )
       .eq("topic_id", row.id)
       .eq("is_visible", true)
@@ -263,10 +318,13 @@ export async function getCommunityTopicBySlug(
     const replies: CommunityMessage[] = (postData as PostRow[] | null ?? []).map((post) => {
       const author = authorName(post.author);
       return {
+        id: post.id,
+        authorId: firstProfile(post.author)?.id,
         author,
         initials: initialsFor(author),
         publishedAt: fullDateLabel(post.created_at),
         body: post.body,
+        authorMention: authorMention(post.author),
       };
     });
 
