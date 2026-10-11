@@ -26,7 +26,6 @@ export type CommunityNotification = {
   createdAt: string;
   readAt: string | null;
   actorName: string;
-  actorUsername?: string;
   topicId: string;
   topicSlug: string;
   topicTitle: string;
@@ -43,7 +42,7 @@ function single<T>(value: T | T[] | null): T | null {
 
 function profileName(profile: ProfileRow): string {
   const value = single(profile);
-  return value?.display_name?.trim() || value?.username?.trim() || "Un miembro de la Comunidad";
+  return value?.display_name?.trim() || "Un miembro de la Comunidad";
 }
 
 /** Gets only the current viewer's compact notification feed; RLS remains the final guard. */
@@ -75,14 +74,12 @@ export async function getCommunityNotificationSummary(
     .flatMap((row) => {
       const topic = single(row.topic);
       if (!topic) return [];
-      const actor = single(row.actor);
       return [{
         id: row.id,
         type: row.notification_type,
         createdAt: row.created_at,
         readAt: row.read_at,
         actorName: profileName(row.actor),
-        ...(actor?.username ? { actorUsername: actor.username } : {}),
         topicId: topic.id,
         topicSlug: topic.slug,
         topicTitle: topic.title,

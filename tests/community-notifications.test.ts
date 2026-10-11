@@ -4,6 +4,7 @@ import test from "node:test";
 
 import {
   extractCommunityMentionHandles,
+  formatCommunityMentionText,
   tokenizeCommunityMentions,
 } from "../lib/community-mentions.ts";
 import {
@@ -21,6 +22,16 @@ test("community mentions accept only complete public handles and ignore email fr
     tokenizeCommunityMentions("@Ana_23, ¿lo ves?").map((token) => token.value),
     ["@Ana_23", ", ¿lo ves?"],
   );
+});
+
+test("resolved mentions show the friendly profile name instead of a canonical handle", () => {
+  const rendered = formatCommunityMentionText(
+    "Gracias @aficionado-5be79f por el análisis.",
+    [{ username: "aficionado-5be79f", displayName: "angel.otalora" }],
+  );
+
+  assert.equal(rendered, "Gracias @angel.otalora por el análisis.");
+  assert.doesNotMatch(rendered, /aficionado-5be79f/);
 });
 
 test("notification read state supports individual and bulk marking", () => {
@@ -75,4 +86,16 @@ test("notification component keeps an explicit mobile-menu variant", async () =>
   assert.match(component, /variant === "mobile-menu"/);
   assert.match(styles, /community-notifications--mobile-menu/);
   assert.match(styles, /@media \(max-width: 1150px\)/);
+});
+
+test("community surfaces do not render canonical usernames", async () => {
+  const [notifications, topicList, topicPage] = await Promise.all([
+    readFile(new URL("../components/community/CommunityNotifications.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../components/community/CommunityTopicList.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/comunidad/tema/[slug]/page.tsx", import.meta.url), "utf8"),
+  ]);
+
+  assert.doesNotMatch(notifications, /actorUsername/);
+  assert.doesNotMatch(topicList, /authorUsername/);
+  assert.doesNotMatch(topicPage, /message\.username|authorUsername/);
 });

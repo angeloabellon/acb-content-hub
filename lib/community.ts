@@ -1,4 +1,8 @@
-import type { CommunityMessage, CommunityTopic } from "@/data/community";
+import type {
+  CommunityMention,
+  CommunityMessage,
+  CommunityTopic,
+} from "@/data/community";
 import {
   communityTopics,
   getCommunityTopic as getCommunityFixtureTopic,
@@ -38,7 +42,10 @@ type PostRow = {
   author: ProfileRow;
 };
 
-type MentionProfileRow = { username: string | null };
+type MentionProfileRow = {
+  username: string | null;
+  display_name: string | null;
+};
 
 type FollowStatusRow = {
   topic_id: string;
@@ -52,12 +59,7 @@ export type CommunityViewer = {
 
 function authorName(profile: ProfileRow): string {
   const value = Array.isArray(profile) ? profile[0] : profile;
-  return value?.display_name?.trim() || value?.username?.trim() || "Aficionado CTC";
-}
-
-function authorUsername(profile: ProfileRow): string | undefined {
-  const value = Array.isArray(profile) ? profile[0] : profile;
-  return value?.username?.trim().toLowerCase() || undefined;
+  return value?.display_name?.trim() || "Aficionado CTC";
 }
 
 function initialsFor(name: string): string {
@@ -104,7 +106,6 @@ function mapTopic(
   followStatus?: CommunityFollowStatus,
 ): CommunityTopic {
   const author = authorName(row.author);
-  const username = authorUsername(row.author);
   return {
     id: row.id,
     slug: row.slug,
@@ -112,7 +113,6 @@ function mapTopic(
     title: row.title,
     excerpt: excerptFor(row.body),
     author,
-    ...(username ? { authorUsername: username } : {}),
     initials: initialsFor(author),
     replies: row.reply_count,
     ...(followStatus?.isFollowing
@@ -143,21 +143,24 @@ async function getCommunityFollowStatuses(
   );
 }
 
-async function getMentionUsernames(
+async function getCommunityMentions(
   supabase: NonNullable<Awaited<ReturnType<typeof createSupabaseServerClient>>>,
   bodies: string[],
-): Promise<string[]> {
+): Promise<CommunityMention[]> {
   const handles = [...new Set(bodies.flatMap(extractCommunityMentionHandles))];
   if (!handles.length) return [];
 
   const { data, error } = await supabase
     .from("community_profiles")
-    .select("username")
+    .select("username, display_name")
     .in("username", handles);
 
   if (error || !data) return [];
   return (data as MentionProfileRow[])
-    .flatMap((profile) => profile.username ? [profile.username.toLowerCase()] : []);
+    .flatMap((profile) => profile.username ? [{
+      username: profile.username.toLowerCase(),
+      displayName: profile.display_name?.trim() || "Miembro de la Comunidad",
+    }] : []);
 }
 
 /** Returns a verified identity only when the Supabase integration is configured. */
@@ -202,13 +205,13 @@ export async function listCommunityTopics(): Promise<CommunityTopic[]> {
       : new Map<string, CommunityFollowStatus>();
 
     const rows = data as TopicRow[];
-    const mentionUsernames = await getMentionUsernames(
+    const mentions = await getCommunityMentions(
       supabase,
       rows.flatMap((row) => [row.title, row.body]),
     );
     return rows.map((row) => ({
       ...mapTopic(row, followStatuses.get(row.id)),
-      mentionUsernames,
+      mentions,
     }));
   } catch {
     return communityTopics;
@@ -240,10 +243,8 @@ export async function getCommunityTopicBySlug(
       : new Map<string, CommunityFollowStatus>();
     const topic = mapTopic(row, followStatuses.get(row.id));
     const openingAuthor = authorName(row.author);
-    const openingUsername = authorUsername(row.author);
     const openingMessage: CommunityMessage = {
       author: openingAuthor,
-      ...(openingUsername ? { username: openingUsername } : {}),
       initials: initialsFor(openingAuthor),
       publishedAt: fullDateLabel(row.created_at),
       body: row.body,
@@ -261,23 +262,21 @@ export async function getCommunityTopicBySlug(
     if (postError) throw postError;
     const replies: CommunityMessage[] = (postData as PostRow[] | null ?? []).map((post) => {
       const author = authorName(post.author);
-      const username = authorUsername(post.author);
       return {
         author,
-        ...(username ? { username } : {}),
         initials: initialsFor(author),
         publishedAt: fullDateLabel(post.created_at),
         body: post.body,
       };
     });
 
-    const mentionUsernames = await getMentionUsernames(
+    const mentions = await getCommunityMentions(
       supabase,
       [row.title, openingMessage.body, ...replies.map((reply) => reply.body)],
     );
-    topic.mentionUsernames = mentionUsernames;
-    openingMessage.mentionUsernames = mentionUsernames;
-    replies.forEach((reply) => { reply.mentionUsernames = mentionUsernames; });
+    topic.mentions = mentions;
+    openingMessage.mentions = mentions;
+    replies.forEach((reply) => { reply.mentions = mentions; });
 
     return { ...topic, messages: [openingMessage, ...replies] };
   } catch {

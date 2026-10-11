@@ -2,6 +2,11 @@ export type CommunityMentionToken =
   | { type: "text"; value: string }
   | { type: "mention"; value: string; username: string };
 
+export type ResolvedCommunityMention = {
+  username: string;
+  displayName: string;
+};
+
 // Usernames are deliberately restricted to the same public format enforced by
 // the database. Requiring a boundary before @ prevents matching email fragments.
 const mentionPattern = /(^|[^a-z0-9_@])@([a-z0-9][a-z0-9_-]{2,23})(?![a-z0-9_-])/gi;
@@ -40,4 +45,28 @@ export function tokenizeCommunityMentions(value: string): CommunityMentionToken[
 
   if (cursor < value.length) tokens.push({ type: "text", value: value.slice(cursor) });
   return tokens.length ? tokens : [{ type: "text", value }];
+}
+
+/**
+ * Replaces only resolved canonical handles with friendly profile names. The
+ * source text is never mutated or interpreted as HTML.
+ */
+export function formatCommunityMentionText(
+  value: string,
+  mentions: ResolvedCommunityMention[] = [],
+): string {
+  const mentionNames = new Map(
+    mentions.map((mention) => [
+      mention.username.toLowerCase(),
+      mention.displayName.trim() || "Miembro de la Comunidad",
+    ]),
+  );
+
+  return tokenizeCommunityMentions(value)
+    .map((token) => (
+      token.type === "mention"
+        ? `@${mentionNames.get(token.username) ?? token.value.slice(1)}`
+        : token.value
+    ))
+    .join("");
 }

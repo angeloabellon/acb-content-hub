@@ -21,10 +21,9 @@ type CommunityNotificationsProps = {
 };
 
 function notificationCopy(notification: CommunityNotification): string {
-  const actor = notification.actorUsername ? `@${notification.actorUsername}` : notification.actorName;
   return notification.type === "mention"
-    ? `${actor} te mencionó`
-    : `Nueva respuesta de ${actor}`;
+    ? `${notification.actorName} te mencionó`
+    : `Nueva respuesta de ${notification.actorName}`;
 }
 
 function badgeLabel(count: number): string {

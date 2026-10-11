@@ -7,6 +7,7 @@ import CommunityTopicFollow from "@/components/community/CommunityTopicFollow";
 import CommunityMessageBody, { CommunityMentionText } from "@/components/community/CommunityMessageBody";
 import { getCommunitySpace } from "@/data/community";
 import { formatCommunityReplyCount } from "@/lib/community-format";
+import { formatCommunityMentionText } from "@/lib/community-mentions";
 import {
   getCommunityTopicBySlug,
   getCommunityViewer,
@@ -29,8 +30,8 @@ export async function generateMetadata({
   }
 
   return createMetadata({
-    title: `${topic.title} | Comunidad`,
-    description: topic.excerpt,
+    title: `${formatCommunityMentionText(topic.title, topic.mentions)} | Comunidad`,
+    description: formatCommunityMentionText(topic.excerpt, topic.mentions),
     path: `/comunidad/tema/${topic.slug}`,
   });
 }
@@ -60,11 +61,11 @@ export default async function CommunityTopicPage({
         <div className="relative z-10">
           <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-red-300/70">{space?.eyebrow}</p>
           <h1 className="max-w-3xl text-3xl font-extrabold leading-tight sm:text-4xl md:text-5xl">
-            <CommunityMentionText value={topic.title} mentionUsernames={topic.mentionUsernames} />
+            <CommunityMentionText value={topic.title} mentions={topic.mentions} />
           </h1>
           <div className="mt-6 flex flex-wrap items-center gap-3 text-sm text-white/60">
             <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5">
-              Iniciado por {topic.author}{topic.authorUsername ? ` · @${topic.authorUsername}` : ""}
+              Iniciado por {topic.author}
             </span>
             <span>{formatCommunityReplyCount(topic.replies)}</span>
             <span>Última actividad {topic.lastActivity.toLowerCase()}</span>
@@ -95,13 +96,13 @@ export default async function CommunityTopicPage({
               <div className="min-w-0 flex-1">
                 <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
                   <h2 className="font-bold text-white">
-                    {message.author}{message.username ? <span className="ml-2 text-sm font-medium text-orange-200">@{message.username}</span> : null}
+                    {message.author}
                   </h2>
                   <time className="text-sm text-white/45">{message.publishedAt}</time>
                 </div>
                 <CommunityMessageBody
                   body={message.body}
-                  mentionUsernames={message.mentionUsernames}
+                  mentions={message.mentions}
                 />
               </div>
             </div>

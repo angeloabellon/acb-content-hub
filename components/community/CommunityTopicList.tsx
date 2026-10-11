@@ -52,17 +52,17 @@ export default function CommunityTopicList({
                 </span>
               )}
               {showSpace && <span className="text-white/25">·</span>}
-              <span>Por {topic.author}{topic.authorUsername ? ` · @${topic.authorUsername}` : ""}</span>
+              <span>Por {topic.author}</span>
               {topic.following && <span className="text-white/25">·</span>}
               {topic.following && <span className="text-white/55">Siguiendo</span>}
             </div>
 
             <h3 className="text-xl font-bold leading-snug transition-colors duration-300 group-hover:text-orange-300 sm:text-2xl">
-              <CommunityMentionText value={topic.title} mentionUsernames={topic.mentionUsernames} />
+              <CommunityMentionText value={topic.title} mentions={topic.mentions} />
             </h3>
 
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-white/60 sm:text-base">
-              {topic.excerpt}
+              <CommunityMentionText value={topic.excerpt} mentions={topic.mentions} />
             </p>
           </div>
 

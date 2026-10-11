@@ -8,14 +8,19 @@ export type CommunitySpace = {
   detail: string;
 };
 
+/** A resolved mention retains its canonical match key but displays a friendly name. */
+export type CommunityMention = {
+  username: string;
+  displayName: string;
+};
+
 export type CommunityMessage = {
   author: string;
-  username?: string;
   initials: string;
   publishedAt: string;
   body: string;
-  /** Public usernames resolved from the message; unresolved text stays plain. */
-  mentionUsernames?: string[];
+  /** Resolved mentions; unresolved text stays plain. */
+  mentions?: CommunityMention[];
 };
 
 export type CommunityTopic = {
@@ -25,12 +30,11 @@ export type CommunityTopic = {
   title: string;
   excerpt: string;
   author: string;
-  authorUsername?: string;
   initials: string;
   replies: number;
   following?: boolean;
   unreadReplies?: number;
-  mentionUsernames?: string[];
+  mentions?: CommunityMention[];
   lastActivity: string;
   messages: CommunityMessage[];
 };
