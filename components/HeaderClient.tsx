@@ -2,18 +2,21 @@
 
 import "./Header.css";
 import CommunitySessionStatus from "@/components/community/CommunitySessionStatus";
+import CommunityNotifications from "@/components/community/CommunityNotifications";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { siteConfig } from "@/config/site";
 import Image from "next/image";
 import type { CommunityViewer } from "@/lib/community";
+import type { CommunityNotificationSummary } from "@/lib/community-notifications";
 
 type HeaderClientProps = {
   viewer?: CommunityViewer;
+  notificationSummary: CommunityNotificationSummary;
 };
 
-export default function HeaderClient({ viewer }: HeaderClientProps) {
+export default function HeaderClient({ viewer, notificationSummary }: HeaderClientProps) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -77,6 +80,14 @@ export default function HeaderClient({ viewer }: HeaderClientProps) {
             </Link>
           ))}
           {viewer && (
+            <CommunityNotifications
+              initialNotifications={notificationSummary.notifications}
+              initialUnreadCount={notificationSummary.unreadCount}
+              variant="mobile-menu"
+              onNavigate={() => setMenuOpen(false)}
+            />
+          )}
+          {viewer && (
             <CommunitySessionStatus
               viewer={viewer}
               variant="mobile-menu"
@@ -84,6 +95,13 @@ export default function HeaderClient({ viewer }: HeaderClientProps) {
             />
           )}
         </nav>
+        {viewer && (
+          <CommunityNotifications
+            initialNotifications={notificationSummary.notifications}
+            initialUnreadCount={notificationSummary.unreadCount}
+            variant="header"
+          />
+        )}
         {viewer && <CommunitySessionStatus viewer={viewer} variant="header" />}
       </div>
     </header>

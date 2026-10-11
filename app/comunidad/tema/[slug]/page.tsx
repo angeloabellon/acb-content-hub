@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import CommunityReplyForm from "@/components/community/CommunityReplyForm";
 import CommunityTopicFollow from "@/components/community/CommunityTopicFollow";
+import CommunityMessageBody, { CommunityMentionText } from "@/components/community/CommunityMessageBody";
 import { getCommunitySpace } from "@/data/community";
 import { formatCommunityReplyCount } from "@/lib/community-format";
 import {
@@ -58,9 +59,13 @@ export default async function CommunityTopicPage({
         <div className="premium-overlay" />
         <div className="relative z-10">
           <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-red-300/70">{space?.eyebrow}</p>
-          <h1 className="max-w-3xl text-3xl font-extrabold leading-tight sm:text-4xl md:text-5xl">{topic.title}</h1>
+          <h1 className="max-w-3xl text-3xl font-extrabold leading-tight sm:text-4xl md:text-5xl">
+            <CommunityMentionText value={topic.title} mentionUsernames={topic.mentionUsernames} />
+          </h1>
           <div className="mt-6 flex flex-wrap items-center gap-3 text-sm text-white/60">
-            <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5">Iniciado por {topic.author}</span>
+            <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5">
+              Iniciado por {topic.author}{topic.authorUsername ? ` · @${topic.authorUsername}` : ""}
+            </span>
             <span>{formatCommunityReplyCount(topic.replies)}</span>
             <span>Última actividad {topic.lastActivity.toLowerCase()}</span>
             {topic.unreadReplies && topic.unreadReplies > 0 ? (
@@ -89,10 +94,15 @@ export default async function CommunityTopicPage({
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-                  <h2 className="font-bold text-white">{message.author}</h2>
+                  <h2 className="font-bold text-white">
+                    {message.author}{message.username ? <span className="ml-2 text-sm font-medium text-orange-200">@{message.username}</span> : null}
+                  </h2>
                   <time className="text-sm text-white/45">{message.publishedAt}</time>
                 </div>
-                <p className="mt-5 leading-relaxed text-white/75">{message.body}</p>
+                <CommunityMessageBody
+                  body={message.body}
+                  mentionUsernames={message.mentionUsernames}
+                />
               </div>
             </div>
           </article>

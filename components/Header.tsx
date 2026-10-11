@@ -1,5 +1,6 @@
 import HeaderClient from "@/components/HeaderClient";
 import { getCommunityViewer } from "@/lib/community";
+import { getCommunityNotificationSummary } from "@/lib/community-notifications";
 import { cookies } from "next/headers";
 
 export default async function Header() {
@@ -8,6 +9,7 @@ export default async function Header() {
   await cookies();
 
   const viewer = await getCommunityViewer();
+  const notificationSummary = await getCommunityNotificationSummary(viewer);
 
-  return <HeaderClient viewer={viewer} />;
+  return <HeaderClient viewer={viewer} notificationSummary={notificationSummary} />;
 }

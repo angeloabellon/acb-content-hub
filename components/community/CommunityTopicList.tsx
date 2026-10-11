@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { CommunityTopic } from "@/data/community";
 import { formatCommunityReplyCount } from "@/lib/community-format";
 import { formatCommunityUnreadReplyCount } from "@/lib/community-follow";
+import { CommunityMentionText } from "@/components/community/CommunityMessageBody";
 
 type CommunityTopicListProps = {
   topics: CommunityTopic[];
@@ -51,13 +52,13 @@ export default function CommunityTopicList({
                 </span>
               )}
               {showSpace && <span className="text-white/25">·</span>}
-              <span>Por {topic.author}</span>
+              <span>Por {topic.author}{topic.authorUsername ? ` · @${topic.authorUsername}` : ""}</span>
               {topic.following && <span className="text-white/25">·</span>}
               {topic.following && <span className="text-white/55">Siguiendo</span>}
             </div>
 
             <h3 className="text-xl font-bold leading-snug transition-colors duration-300 group-hover:text-orange-300 sm:text-2xl">
-              {topic.title}
+              <CommunityMentionText value={topic.title} mentionUsernames={topic.mentionUsernames} />
             </h3>
 
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-white/60 sm:text-base">

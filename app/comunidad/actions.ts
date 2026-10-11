@@ -43,6 +43,10 @@ type CommunityFollowActionResult =
   | { ok: true }
   | { ok: false; message: string };
 
+type CommunityNotificationActionResult =
+  | { ok: true }
+  | { ok: false; message: string };
+
 function isUuid(value: string): boolean {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 }
@@ -52,6 +56,10 @@ function revalidateCommunityFollowViews(topicSlug: string) {
   revalidatePath("/comunidad/acb");
   revalidatePath("/comunidad/bcl");
   revalidatePath(`/comunidad/tema/${topicSlug}`);
+}
+
+function revalidateCommunityNotificationViews() {
+  revalidatePath("/", "layout");
 }
 
 async function getFollowActionContext(topicId: string): Promise<
@@ -135,6 +143,52 @@ export async function markCommunityTopicRead(
   }
 
   revalidateCommunityFollowViews(topicSlug);
+  return { ok: true };
+}
+
+async function getNotificationActionContext(): Promise<
+  | { ok: true; viewerId: string; supabase: NonNullable<Awaited<ReturnType<typeof createSupabaseServerClient>>> }
+  | { ok: false; message: string }
+> {
+  const viewer = await getCommunityViewer();
+  if (!viewer) return { ok: false, message: "Inicia sesión para gestionar tus avisos." };
+
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return { ok: false, message: "El backend de Comunidad aún no está configurado." };
+
+  return { ok: true, viewerId: viewer.id, supabase };
+}
+
+export async function markCommunityNotificationRead(
+  notificationId: string,
+): Promise<CommunityNotificationActionResult> {
+  if (!isUuid(notificationId)) return { ok: false, message: "No se ha reconocido el aviso." };
+  const context = await getNotificationActionContext();
+  if (!context.ok) return context;
+
+  const { error } = await context.supabase
+    .from("community_notifications")
+    .update({ read_at: new Date().toISOString() })
+    .eq("id", notificationId)
+    .eq("recipient_id", context.viewerId);
+
+  if (error) return { ok: false, message: "No se ha podido marcar el aviso como leído." };
+  revalidateCommunityNotificationViews();
+  return { ok: true };
+}
+
+export async function markAllCommunityNotificationsRead(): Promise<CommunityNotificationActionResult> {
+  const context = await getNotificationActionContext();
+  if (!context.ok) return context;
+
+  const { error } = await context.supabase
+    .from("community_notifications")
+    .update({ read_at: new Date().toISOString() })
+    .eq("recipient_id", context.viewerId)
+    .is("read_at", null);
+
+  if (error) return { ok: false, message: "No se han podido marcar los avisos como leídos." };
+  revalidateCommunityNotificationViews();
   return { ok: true };
 }
 
