@@ -7,7 +7,8 @@ import { revalidatePath } from "next/cache";
 import {
   getCommunityViewer,
 } from "@/lib/community";
-import { getSafeCommunityPath, isCommunitySpace } from "@/lib/community-validation";
+import { isCommunityRootTopicSlug } from "@/data/community";
+import { getSafeCommunityPath } from "@/lib/community-validation";
 import type { CommunityActionState } from "@/lib/community-action-state";
 import { createSupabaseServerClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { siteConfig } from "@/config/site";
@@ -19,18 +20,6 @@ function textValue(formData: FormData, key: string): string {
 
 function safeEmail(value: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-}
-
-function topicSlug(title: string): string {
-  const base = title
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "")
-    .slice(0, 90);
-
-  return `${base || "conversacion"}-${crypto.randomUUID().slice(0, 8)}`;
 }
 
 function originForMagicLink(requestHeaders: Headers): string {
@@ -53,8 +42,6 @@ function isUuid(value: string): boolean {
 
 function revalidateCommunityFollowViews(topicSlug: string) {
   revalidatePath("/comunidad");
-  revalidatePath("/comunidad/acb");
-  revalidatePath("/comunidad/bcl");
   revalidatePath(`/comunidad/tema/${topicSlug}`);
 }
 
@@ -62,12 +49,15 @@ function revalidateCommunityNotificationViews() {
   revalidatePath("/", "layout");
 }
 
-async function getFollowActionContext(topicId: string): Promise<
+async function getFollowActionContext(topicId: string, topicSlug: string): Promise<
   | { ok: true; viewerId: string; supabase: NonNullable<Awaited<ReturnType<typeof createSupabaseServerClient>>> }
   | { ok: false; message: string }
 > {
   if (!isUuid(topicId)) {
     return { ok: false, message: "No se ha reconocido el tema." };
+  }
+  if (!isCommunityRootTopicSlug(topicSlug)) {
+    return { ok: false, message: "Solo se pueden seguir las conversaciones principales." };
   }
 
   const viewer = await getCommunityViewer();
@@ -87,7 +77,7 @@ export async function followCommunityTopic(
   topicId: string,
   topicSlug: string,
 ): Promise<CommunityFollowActionResult> {
-  const context = await getFollowActionContext(topicId);
+  const context = await getFollowActionContext(topicId, topicSlug);
   if (!context.ok) return context;
 
   const { error } = await context.supabase.from("community_topic_follows").insert({
@@ -108,7 +98,7 @@ export async function unfollowCommunityTopic(
   topicId: string,
   topicSlug: string,
 ): Promise<CommunityFollowActionResult> {
-  const context = await getFollowActionContext(topicId);
+  const context = await getFollowActionContext(topicId, topicSlug);
   if (!context.ok) return context;
 
   const { error } = await context.supabase
@@ -129,7 +119,7 @@ export async function markCommunityTopicRead(
   topicId: string,
   topicSlug: string,
 ): Promise<CommunityFollowActionResult> {
-  const context = await getFollowActionContext(topicId);
+  const context = await getFollowActionContext(topicId, topicSlug);
   if (!context.ok) return context;
 
   const { error } = await context.supabase
@@ -248,52 +238,6 @@ export async function signOutCommunity() {
   redirect("/comunidad");
 }
 
-export async function createCommunityTopic(
-  _: CommunityActionState,
-  formData: FormData,
-): Promise<CommunityActionState> {
-  const viewer = await getCommunityViewer();
-  if (!viewer) {
-    return { status: "error", message: "Inicia sesión para publicar un tema." };
-  }
-
-  const space = textValue(formData, "space");
-  const title = textValue(formData, "title");
-  const body = textValue(formData, "body");
-
-  if (!isCommunitySpace(space)) {
-    return { status: "error", message: "Elige uno de los dos espacios de Comunidad." };
-  }
-  if (title.length < 8 || title.length > 140) {
-    return { status: "error", message: "El título debe tener entre 8 y 140 caracteres." };
-  }
-  if (body.length < 12 || body.length > 5000) {
-    return { status: "error", message: "El mensaje debe tener entre 12 y 5.000 caracteres." };
-  }
-
-  const supabase = await createSupabaseServerClient();
-  if (!supabase) {
-    return { status: "error", message: "El backend de Comunidad aún no está configurado." };
-  }
-
-  const slug = topicSlug(title);
-  const { error } = await supabase.from("community_topics").insert({
-    space_slug: space,
-    author_id: viewer.id,
-    slug,
-    title,
-    body,
-  });
-
-  if (error) {
-    return { status: "error", message: "No se ha podido publicar el tema. Inténtalo de nuevo." };
-  }
-
-  revalidatePath("/comunidad");
-  revalidatePath(`/comunidad/${space}`);
-  redirect(`/comunidad/tema/${slug}`);
-}
-
 export async function createCommunityReply(
   topicId: string,
   topicSlug: string,
@@ -307,6 +251,9 @@ export async function createCommunityReply(
 
   if (!isUuid(topicId)) {
     return { status: "error", message: "No se ha reconocido el tema al que quieres responder." };
+  }
+  if (!isCommunityRootTopicSlug(topicSlug)) {
+    return { status: "error", message: "Solo se puede responder en las conversaciones principales." };
   }
 
   const body = textValue(formData, "body");

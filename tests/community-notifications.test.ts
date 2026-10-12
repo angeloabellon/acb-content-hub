@@ -89,13 +89,13 @@ test("notification component keeps an explicit mobile-menu variant", async () =>
 });
 
 test("community surfaces do not render canonical usernames", async () => {
-  const [notifications, topicList, topicPage] = await Promise.all([
+  const [notifications, topicPage, messageBody] = await Promise.all([
     readFile(new URL("../components/community/CommunityNotifications.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../components/community/CommunityTopicList.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/comunidad/tema/[slug]/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../components/community/CommunityMessageBody.tsx", import.meta.url), "utf8"),
   ]);
 
   assert.doesNotMatch(notifications, /actorUsername/);
-  assert.doesNotMatch(topicList, /authorUsername/);
   assert.doesNotMatch(topicPage, /message\.username|authorUsername/);
+  assert.doesNotMatch(messageBody, /username\s*=/);
 });

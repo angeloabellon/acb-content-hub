@@ -57,7 +57,11 @@ export default function CommunityTopicConversation({
                     <h2 className="font-bold text-white">{message.author}</h2>
                     <time className="text-sm text-white/45">{message.publishedAt}</time>
                   </div>
-                  <CommunityMessageBody body={message.body} mentions={message.mentions} />
+                  <CommunityMessageBody
+                    body={message.body}
+                    legacyTitle={message.legacyTitle}
+                    mentions={message.mentions}
+                  />
                   {canReplyToMessage ? (
                     <button
                       type="button"
@@ -88,7 +92,7 @@ export default function CommunityTopicConversation({
         ) : topicId ? (
           <CommunityReplyForm topicId={topicId} topicSlug={topicSlug} profiles={profiles} requestedMention={requestedMention} />
         ) : (
-          <p className="text-sm leading-relaxed text-white/60">Esta conversación es una muestra visual. Puedes crear un tema nuevo cuando la comunidad esté activa.</p>
+          <p className="text-sm leading-relaxed text-white/60">Esta conversación es una muestra visual. La participación se activará cuando se conecte la Comunidad CTC a su proyecto de datos.</p>
         )}
       </section>
     </>

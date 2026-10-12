@@ -3,6 +3,7 @@ import type { CommunityMention } from "@/data/community";
 
 type CommunityMessageBodyProps = {
   body: string;
+  legacyTitle?: string;
   mentions?: CommunityMention[];
 };
 
@@ -35,11 +36,19 @@ export function CommunityMentionText({
 
 export default function CommunityMessageBody({
   body,
+  legacyTitle,
   mentions = [],
 }: CommunityMessageBodyProps) {
   return (
-    <p className="mt-5 whitespace-pre-wrap leading-relaxed text-white/75">
-      <CommunityMentionText value={body} mentions={mentions} />
-    </p>
+    <div className="mt-5">
+      {legacyTitle ? (
+        <h3 className="mb-3 border-l-2 border-orange-300/70 pl-3 text-base font-bold leading-snug text-orange-100 sm:text-lg">
+          <CommunityMentionText value={legacyTitle} mentions={mentions} />
+        </h3>
+      ) : null}
+      <p className="whitespace-pre-wrap leading-relaxed text-white/75">
+        <CommunityMentionText value={body} mentions={mentions} />
+      </p>
+    </div>
   );
 }

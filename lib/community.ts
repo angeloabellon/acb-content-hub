@@ -5,7 +5,9 @@ import type {
 } from "@/data/community";
 import {
   communityTopics,
+  communityRootTopicSlugs,
   getCommunityTopic as getCommunityFixtureTopic,
+  isCommunityRootTopicSlug,
 } from "@/data/community";
 import {
   createSupabaseServerClient,
@@ -39,6 +41,8 @@ type TopicRow = {
 type PostRow = {
   id: string;
   body: string;
+  legacy_topic_title: string | null;
+  legacy_message_order: number;
   created_at: string;
   author: ProfileRow;
 };
@@ -233,10 +237,10 @@ export function isCommunityBackendConfigured(): boolean {
 }
 
 /**
- * Uses published Community rows when Supabase is available. Fixtures remain a
- * deliberate read-only fallback until the migration and environment are live.
+ * Returns the two permanent conversations in a stable ACB/BCL order. Fixtures
+ * remain a deliberate read-only fallback until the migration is live.
  */
-export async function listCommunityTopics(): Promise<CommunityTopic[]> {
+export async function listCommunityRootTopics(): Promise<CommunityTopic[]> {
   const supabase = await createSupabaseServerClient();
   if (!supabase) return communityTopics;
 
@@ -247,7 +251,7 @@ export async function listCommunityTopics(): Promise<CommunityTopic[]> {
         "id, slug, space_slug, title, body, reply_count, last_activity_at, created_at, author:community_profiles!community_topics_author_id_fkey(id, display_name, username)",
       )
       .eq("is_visible", true)
-      .order("last_activity_at", { ascending: false });
+      .in("slug", Object.values(communityRootTopicSlugs));
 
     if (error || !data) throw error;
 
@@ -261,18 +265,49 @@ export async function listCommunityTopics(): Promise<CommunityTopic[]> {
       supabase,
       rows.flatMap((row) => [row.title, row.body]),
     );
-    return rows.map((row) => ({
+    const topics = rows.map((row) => ({
       ...mapTopic(row, followStatuses.get(row.id)),
       mentions,
     }));
+    const orderedTopics: CommunityTopic[] = [];
+    for (const slug of Object.values(communityRootTopicSlugs)) {
+      const topic = topics.find((candidate) => candidate.slug === slug);
+      if (topic) orderedTopics.push(topic);
+    }
+    return orderedTopics;
   } catch {
     return communityTopics;
+  }
+}
+
+/** Resolves a legacy topic URL before rendering its canonical root thread. */
+export async function getCommunityTopicRedirectSlug(
+  slug: string,
+): Promise<string | undefined> {
+  if (isCommunityRootTopicSlug(slug)) return undefined;
+
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return undefined;
+
+  try {
+    const { data, error } = await supabase
+      .from("community_topic_legacy_routes")
+      .select("canonical_slug")
+      .eq("legacy_slug", slug)
+      .maybeSingle();
+
+    if (error || !data || !isCommunityRootTopicSlug(data.canonical_slug)) return undefined;
+    return data.canonical_slug;
+  } catch {
+    return undefined;
   }
 }
 
 export async function getCommunityTopicBySlug(
   slug: string,
 ): Promise<CommunityTopic | undefined> {
+  if (!isCommunityRootTopicSlug(slug)) return undefined;
+
   const supabase = await createSupabaseServerClient();
   if (!supabase) return getCommunityFixtureTopic(slug);
 
@@ -308,11 +343,13 @@ export async function getCommunityTopicBySlug(
     const { data: postData, error: postError } = await supabase
       .from("community_posts")
       .select(
-        "id, body, created_at, author:community_profiles!community_posts_author_id_fkey(id, display_name, username)",
+        "id, body, legacy_topic_title, legacy_message_order, created_at, author:community_profiles!community_posts_author_id_fkey(id, display_name, username)",
       )
       .eq("topic_id", row.id)
       .eq("is_visible", true)
-      .order("created_at", { ascending: true });
+      .order("created_at", { ascending: true })
+      .order("legacy_message_order", { ascending: true })
+      .order("id", { ascending: true });
 
     if (postError) throw postError;
     const replies: CommunityMessage[] = (postData as PostRow[] | null ?? []).map((post) => {
@@ -325,18 +362,28 @@ export async function getCommunityTopicBySlug(
         publishedAt: fullDateLabel(post.created_at),
         body: post.body,
         authorMention: authorMention(post.author),
+        ...(post.legacy_topic_title ? { legacyTitle: post.legacy_topic_title } : {}),
       };
     });
 
     const mentions = await getCommunityMentions(
       supabase,
-      [row.title, openingMessage.body, ...replies.map((reply) => reply.body)],
+      [
+        row.title,
+        openingMessage.body,
+        ...replies.flatMap((reply) => [reply.legacyTitle ?? "", reply.body]),
+      ],
     );
     topic.mentions = mentions;
     openingMessage.mentions = mentions;
     replies.forEach((reply) => { reply.mentions = mentions; });
 
-    return { ...topic, messages: [openingMessage, ...replies] };
+    return {
+      ...topic,
+      // The canonical row is a container for the permanent conversation. Its
+      // generated body is intentionally not a faux member message.
+      messages: isCommunityRootTopicSlug(row.slug) ? replies : [openingMessage, ...replies],
+    };
   } catch {
     return getCommunityFixtureTopic(slug);
   }

@@ -1,22 +1,23 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import type { CommunitySpace } from "@/data/community";
+import type { CommunitySpace, CommunityTopic } from "@/data/community";
+import { getCommunityRootTopicSlug } from "@/data/community";
 
 type CommunitySpaceCardProps = {
   space: CommunitySpace;
-  topicCount: number;
+  topic?: CommunityTopic;
 };
 
 export default function CommunitySpaceCard({
   space,
-  topicCount,
+  topic,
 }: CommunitySpaceCardProps) {
   const isAcb = space.slug === "acb";
 
   return (
     <Link
-      href={`/comunidad/${space.slug}`}
+      href={`/comunidad/tema/${topic?.slug ?? getCommunityRootTopicSlug(space.slug)}`}
       className="premium-hover group relative min-h-[330px] overflow-hidden rounded-3xl border border-red-900/30 bg-gradient-to-br from-[#140303] via-black to-[#220505] p-7 shadow-[0_10px_40px_rgba(122,12,12,0.18)] sm:p-9"
     >
       <div className="premium-overlay" />
@@ -65,9 +66,11 @@ export default function CommunitySpaceCard({
         </div>
 
         <div className="mt-8 flex items-center justify-between gap-4 border-t border-white/10 pt-5 text-sm font-semibold">
-          <span className="text-white/55">{topicCount} conversaciones</span>
+          <span className="text-white/55">
+            {topic ? `${topic.replies} ${topic.replies === 1 ? "respuesta" : "respuestas"}` : "Conversación abierta"}
+          </span>
           <span className="text-white transition-colors group-hover:text-orange-300">
-            Entrar al espacio <span aria-hidden="true">→</span>
+            Abrir conversación <span aria-hidden="true">→</span>
           </span>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 
 import CommunityTopicConversation from "@/components/community/CommunityTopicConversation";
 import CommunityTopicFollow from "@/components/community/CommunityTopicFollow";
@@ -10,6 +10,7 @@ import { formatCommunityReplyCount } from "@/lib/community-format";
 import { formatCommunityMentionText } from "@/lib/community-mentions";
 import {
   getCommunityTopicBySlug,
+  getCommunityTopicRedirectSlug,
   getCommunityViewer,
   isCommunityBackendConfigured,
   listCommunityMentionableProfiles,
@@ -24,6 +25,14 @@ export async function generateMetadata({
   params,
 }: CommunityTopicPageProps): Promise<Metadata> {
   const { slug } = await params;
+  const redirectSlug = await getCommunityTopicRedirectSlug(slug);
+  if (redirectSlug) {
+    return createMetadata({
+      title: "Comunidad | Cast To Cast Baloncesto",
+      description: "Conversación de la Comunidad CTC sobre el UCAM Murcia.",
+      path: `/comunidad/tema/${redirectSlug}`,
+    });
+  }
   const topic = await getCommunityTopicBySlug(slug);
 
   if (!topic) {
@@ -41,6 +50,9 @@ export default async function CommunityTopicPage({
   params,
 }: CommunityTopicPageProps) {
   const { slug } = await params;
+  const redirectSlug = await getCommunityTopicRedirectSlug(slug);
+  if (redirectSlug) permanentRedirect(`/comunidad/tema/${redirectSlug}`);
+
   const topic = await getCommunityTopicBySlug(slug);
 
   if (!topic) notFound();
@@ -55,7 +67,7 @@ export default async function CommunityTopicPage({
       <nav aria-label="Migas de pan" className="mb-8 flex flex-wrap items-center gap-2 text-sm text-white/55">
         <Link href="/comunidad" className="transition-colors hover:text-orange-300">Comunidad</Link>
         <span aria-hidden="true">/</span>
-        <Link href={`/comunidad/${topic.space}`} className="transition-colors hover:text-orange-300">{space?.title}</Link>
+        <span>{space?.title}</span>
       </nav>
 
       <section className="relative mb-10 overflow-hidden rounded-3xl border border-red-900/30 bg-gradient-to-br from-[#140303] via-black to-[#220505] px-6 py-10 shadow-[0_10px_40px_rgba(122,12,12,0.22)] sm:px-10 sm:py-12">
@@ -67,7 +79,7 @@ export default async function CommunityTopicPage({
           </h1>
           <div className="mt-6 flex flex-wrap items-center gap-3 text-sm text-white/60">
             <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5">
-              Iniciado por {topic.author}
+              Conversación principal
             </span>
             <span>{formatCommunityReplyCount(topic.replies)}</span>
             <span>Última actividad {topic.lastActivity.toLowerCase()}</span>
