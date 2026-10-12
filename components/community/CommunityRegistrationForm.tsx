@@ -61,9 +61,17 @@ export default function CommunityRegistrationForm({ next }: CommunityRegistratio
       </div>
 
       {state.message && (
-        <p className={state.status === "error" ? "text-sm text-red-200" : "text-sm text-emerald-200"} aria-live="polite">
-          {state.message}
-        </p>
+        <div
+          className={state.status === "error" ? "text-sm text-red-200" : "space-y-2 text-sm text-emerald-200"}
+          role={state.status === "error" ? "alert" : "status"}
+        >
+          <p>{state.message}</p>
+          {state.status === "success" && (
+            <p className="rounded-xl border border-orange-400/20 bg-orange-400/[0.06] px-3 py-2 text-xs leading-relaxed text-orange-100/80">
+              El correo de verificación puede llegar a la carpeta de spam o no deseados. Revísala si no lo ves en unos minutos.
+            </p>
+          )}
+        </div>
       )}
 
       <button type="submit" disabled={pending} className="w-full rounded-xl border border-red-900/40 bg-gradient-to-r from-[#7a0c0c]/80 to-[#e01310]/80 px-6 py-3 font-semibold text-white transition-all duration-300 hover:-translate-y-1 hover:text-orange-300 disabled:cursor-not-allowed disabled:opacity-60">

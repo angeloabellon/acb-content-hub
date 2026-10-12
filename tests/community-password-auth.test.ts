@@ -104,6 +104,9 @@ test("confirmation, recovery, aliases, and password login redirects are present"
   assert.match(actions, /auth\.signOut\(\{ scope: "local" \}\)/);
   assert.match(actions, /redirect\("\/comunidad\/acceso\?actualizada=1"\)/);
   assert.match(registration, /passwordConfirmation/);
+  assert.match(registration, /state\.status === "success"/);
+  assert.match(registration, /El correo de verificación puede llegar a la carpeta de spam o no deseados\./);
+  assert.match(registration, /role=\{state\.status === "error" \? "alert" : "status"\}/);
   assert.match(recovery, /name="email"/);
   assert.match(replacement, /name="passwordConfirmation"/);
   assert.match(migration, /community_username_aliases/);
@@ -117,4 +120,15 @@ test("confirmation, recovery, aliases, and password login redirects are present"
   assert.match(recoveryCallback, /completeCommunityAuthCallback\(request, "password-recovery"\)/);
   assert.match(confirmed, /Correo confirmado correctamente\. Ya puedes acceder a Comunidad CTC con tu usuario y contraseña\./);
   assert.match(confirmed, /href="\/comunidad\/acceso"/);
+});
+
+test("Supabase reset-password template preserves the secure URL and CTC guidance", async () => {
+  const supabaseGuide = await readFile(new URL("../docs/community-supabase.md", import.meta.url), "utf8");
+
+  assert.match(supabaseGuide, /Subject: `Restablece tu contraseña de Comunidad Cast To Cast`/);
+  assert.match(supabaseGuide, /<html lang="es">/);
+  assert.match(supabaseGuide, /Comunidad Cast To Cast/);
+  assert.match(supabaseGuide, /<h1[^>]*>Restablece tu contraseña<\/h1>/);
+  assert.match(supabaseGuide, /<a href="\{\{ \.ConfirmationURL \}\}"[^>]*>Crear una nueva contraseña<\/a>/);
+  assert.match(supabaseGuide, /Si no solicitaste este cambio, ignora este correo\./);
 });

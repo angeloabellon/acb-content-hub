@@ -42,14 +42,47 @@ Para desarrollo local se puede añadir también `http://localhost:3000/comunidad
 
    **Reset Password**
 
-   - Subject: `Restablece tu contraseña de Comunidad CTC`
+   - Subject: `Restablece tu contraseña de Comunidad Cast To Cast`
    - HTML:
 
    ```html
-   <h2>Restablece tu contraseña</h2>
-   <p>Hemos recibido una solicitud para cambiar la contraseña de tu cuenta de Comunidad CTC.</p>
-   <p><a href="{{ .ConfirmationURL }}">Elegir una nueva contraseña</a></p>
-   <p>Si no has solicitado este cambio, puedes ignorar este correo.</p>
+   <!doctype html>
+   <html lang="es">
+     <head>
+       <meta charset="utf-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1">
+       <title>Restablece tu contraseña | Comunidad Cast To Cast</title>
+     </head>
+     <body style="margin:0;padding:0;background-color:#090909;color:#ffffff;font-family:Arial,Helvetica,sans-serif;">
+       <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;margin:0;padding:0;background-color:#090909;">
+         <tr>
+           <td align="center" style="padding:32px 16px;">
+             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;max-width:600px;background:linear-gradient(135deg,#140303 0%,#080808 52%,#220505 100%);border:1px solid #4a1111;border-radius:24px;overflow:hidden;">
+               <tr>
+                 <td style="height:5px;background:linear-gradient(90deg,#7a0c0c 0%,#e01310 100%);font-size:0;line-height:0;">&nbsp;</td>
+               </tr>
+               <tr>
+                 <td style="padding:40px 32px 32px;">
+                   <p style="margin:0 0 20px;color:#fca5a5;font-size:12px;font-weight:700;letter-spacing:2px;line-height:18px;text-transform:uppercase;">Comunidad Cast To Cast</p>
+                   <h1 style="margin:0;color:#ffffff;font-size:30px;line-height:38px;font-weight:800;">Restablece tu contraseña</h1>
+                   <p style="margin:24px 0 0;color:#d1d5db;font-size:16px;line-height:25px;">Hemos recibido una solicitud para cambiar la contraseña de tu cuenta. Usa el siguiente enlace para crear una nueva contraseña segura.</p>
+                   <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:30px 0;">
+                     <tr>
+                       <td align="center" bgcolor="#e01310" style="border-radius:12px;">
+                         <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:14px 22px;border:1px solid #e01310;border-radius:12px;background-color:#e01310;color:#ffffff;font-size:16px;font-weight:700;line-height:20px;text-decoration:none;">Crear una nueva contraseña</a>
+                       </td>
+                     </tr>
+                   </table>
+                   <p style="margin:0;padding-top:22px;border-top:1px solid #3a1616;color:#fbbf24;font-size:14px;line-height:22px;">Si no solicitaste este cambio, ignora este correo. Tu contraseña actual seguirá siendo válida.</p>
+                 </td>
+               </tr>
+             </table>
+             <p style="margin:18px 0 0;color:#8b8b8b;font-size:12px;line-height:18px;">Cast To Cast · Baloncesto, conversación y comunidad</p>
+           </td>
+         </tr>
+       </table>
+     </body>
+   </html>
    ```
 
 ## Modelo y permisos
