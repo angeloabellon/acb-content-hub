@@ -136,6 +136,8 @@ test("community cards pair every club with its domestic and European competition
   assert.ok(communityConversations.every((conversation) => conversation.competitions.length === 2));
   assert.doesNotMatch(JSON.stringify(communityConversations), /Actualidad del equipo|Baloncesto femenino/i);
   assert.match(card, /conversation\.competitions\.map/);
+  assert.match(card, /grid grid-cols-2 gap-3 border-b border-white\/10 pb-7 max-\[359px\]:grid-cols-1/);
+  assert.match(card, /my-auto pt-9/);
   assert.doesNotMatch(card, /conversation\.eyebrow|competitionLogo/);
 });
 

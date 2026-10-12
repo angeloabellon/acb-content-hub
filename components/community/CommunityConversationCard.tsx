@@ -22,19 +22,19 @@ export default function CommunityConversationCard({
       <div className={`absolute -right-12 -top-8 h-52 w-52 rounded-full blur-3xl ${conversation.theme.cardGlow}`} />
 
       <div className="relative z-10 flex h-full flex-col">
-        <div className="grid gap-2 min-[460px]:grid-cols-2">
+        <div className="grid grid-cols-2 gap-3 border-b border-white/10 pb-7 max-[359px]:grid-cols-1">
           {conversation.competitions.map((competition) => (
             <div
               key={competition.name}
-              className="flex min-w-0 items-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-2.5 backdrop-blur-sm"
+              className="flex min-w-0 flex-col items-start gap-2 rounded-2xl border border-white/10 bg-black/20 p-3 backdrop-blur-sm"
             >
-              <div className="flex h-11 w-16 shrink-0 items-center justify-center rounded-lg bg-white/95 p-1.5 shadow-[0_3px_12px_rgba(0,0,0,0.2)]">
+              <div className="flex h-10 w-full items-center justify-center rounded-lg bg-white/95 px-2 py-1.5 shadow-[0_3px_12px_rgba(0,0,0,0.2)]">
                 <Image
                   src={competition.src}
                   alt={competition.alt}
                   width={competition.width}
                   height={competition.height}
-                  className="max-h-8 w-full object-contain"
+                  className="max-h-7 max-w-[104px] object-contain"
                 />
               </div>
               <p className={`min-w-0 text-xs font-semibold leading-snug ${conversation.theme.competitionText}`}>
@@ -44,7 +44,7 @@ export default function CommunityConversationCard({
           ))}
         </div>
 
-        <div className="my-auto pt-8">
+        <div className="my-auto pt-9">
           <Image
             src={conversation.logo.src}
             alt={conversation.logo.alt}
