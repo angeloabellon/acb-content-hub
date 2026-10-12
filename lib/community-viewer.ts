@@ -4,6 +4,8 @@ export type CommunityViewerIdentity = {
 };
 
 type CommunityViewerLabelSource = {
+  username?: string;
+  displayName?: string;
   email?: string;
 };
 
@@ -14,7 +16,8 @@ type CommunityViewerLabelSource = {
 export function getCommunityViewerIdentity(
   viewer: CommunityViewerLabelSource,
 ): CommunityViewerIdentity {
-  const localPart = viewer.email?.split("@", 1)[0]?.trim();
+  const preferredLabel = viewer.displayName?.trim() || viewer.username?.trim();
+  const localPart = preferredLabel || viewer.email?.split("@", 1)[0]?.trim();
   if (!localPart) return { initials: "C", label: "Mi cuenta" };
 
   const characters = Array.from(localPart);

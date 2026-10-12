@@ -20,3 +20,15 @@ test("header identity truncates long local parts and has a safe fallback", () =>
     { initials: "C", label: "Mi cuenta" },
   );
 });
+
+test("header prefers the public Community identity over an email-derived label", () => {
+  assert.deepEqual(
+    getCommunityViewerIdentity({
+      id: "viewer-4",
+      username: "angel.otalora",
+      displayName: "Ángel Otalora",
+      email: "private@example.com",
+    }),
+    { initials: "Á", label: "Ángel Otalora" },
+  );
+});

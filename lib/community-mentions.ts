@@ -9,7 +9,7 @@ export type ResolvedCommunityMention = {
 
 // Usernames are deliberately restricted to the same public format enforced by
 // the database. Requiring a boundary before @ prevents matching email fragments.
-const mentionPattern = /(^|[^a-z0-9_@])@([a-z0-9][a-z0-9_-]{2,23})(?![a-z0-9_-])/gi;
+const mentionPattern = /(^|[^a-z0-9_@])@([a-z0-9](?:[a-z0-9._-]{1,22}[a-z0-9]))(?![a-z0-9._-])/gi;
 
 /** Extracts unique, normalized @handles without treating email addresses as mentions. */
 export function extractCommunityMentionHandles(value: string): string[] {

@@ -7,9 +7,17 @@ import { revalidatePath } from "next/cache";
 import {
   getCommunityViewer,
 } from "@/lib/community";
+import {
+  COMMUNITY_LOGIN_FAILURE,
+  isValidCommunityEmail,
+  normalizeCommunityUsername,
+  validateCommunityPassword,
+  validateCommunityUsername,
+} from "@/lib/community-auth";
 import { isCommunityRootTopicSlug } from "@/data/community";
 import { getSafeCommunityPath } from "@/lib/community-validation";
 import type { CommunityActionState } from "@/lib/community-action-state";
+import { resolveCommunityLoginEmail } from "@/lib/supabase/admin";
 import { createSupabaseServerClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { siteConfig } from "@/config/site";
 
@@ -18,13 +26,26 @@ function textValue(formData: FormData, key: string): string {
   return typeof value === "string" ? value.trim() : "";
 }
 
-function safeEmail(value: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+function rawValue(formData: FormData, key: string): string {
+  const value = formData.get(key);
+  return typeof value === "string" ? value : "";
 }
 
-function originForMagicLink(requestHeaders: Headers): string {
+function communityAuthOrigin(requestHeaders: Headers): string {
   const origin = requestHeaders.get("origin");
-  if (origin) return origin;
+  if (!origin) return siteConfig.url;
+
+  try {
+    const candidate = new URL(origin);
+    const production = new URL(siteConfig.url);
+    const isProductionOrigin = candidate.origin === production.origin;
+    const isLocalOrigin = candidate.protocol === "http:"
+      && ["localhost", "127.0.0.1"].includes(candidate.hostname);
+    if (isProductionOrigin || isLocalOrigin) return candidate.origin;
+  } catch {
+    // The canonical site URL below is deliberately used for malformed input.
+  }
+
   return siteConfig.url;
 }
 
@@ -182,7 +203,14 @@ export async function markAllCommunityNotificationsRead(): Promise<CommunityNoti
   return { ok: true };
 }
 
-export async function requestCommunitySignIn(
+function communityAuthCallback(origin: string, next: string): string {
+  const callback = new URL("/comunidad/auth/callback", origin);
+  callback.searchParams.set("next", next);
+  return callback.toString();
+}
+
+/** Logs in by a public username without ever returning its backing email. */
+export async function signInCommunityWithPassword(
   _: CommunityActionState,
   formData: FormData,
 ): Promise<CommunityActionState> {
@@ -197,9 +225,10 @@ export async function requestCommunitySignIn(
     redirect("/comunidad");
   }
 
-  const email = textValue(formData, "email").toLowerCase();
-  if (!safeEmail(email)) {
-    return { status: "error", message: "Introduce un correo electrónico válido." };
+  const username = normalizeCommunityUsername(textValue(formData, "username"));
+  const password = rawValue(formData, "password");
+  if (!username || !password) {
+    return { status: "error", message: COMMUNITY_LOGIN_FAILURE };
   }
 
   const next = getSafeCommunityPath(textValue(formData, "next"));
@@ -208,22 +237,130 @@ export async function requestCommunitySignIn(
     return { status: "error", message: "No se pudo preparar el acceso de Comunidad." };
   }
 
-  const callback = new URL("/comunidad/auth/callback", originForMagicLink(await headers()));
-  callback.searchParams.set("next", next);
+  // The resolver is service-role-only. A non-existent username intentionally
+  // performs the same password attempt with a sink address, then receives the
+  // exact same generic error as a wrong password.
+  const resolvedEmail = await resolveCommunityLoginEmail(username);
+  const loginEmail = resolvedEmail ?? "unknown-community-login@invalid.example";
 
-  const { error } = await supabase.auth.signInWithOtp({
-    email,
-    options: { emailRedirectTo: callback.toString() },
+  const { error } = await supabase.auth.signInWithPassword({
+    email: loginEmail,
+    password,
   });
 
   if (error) {
-    return { status: "error", message: "No se ha podido enviar el enlace de acceso. Inténtalo de nuevo." };
+    return { status: "error", message: COMMUNITY_LOGIN_FAILURE };
+  }
+
+  redirect(next);
+}
+
+export async function registerCommunityAccount(
+  _: CommunityActionState,
+  formData: FormData,
+): Promise<CommunityActionState> {
+  if (!isSupabaseConfigured()) {
+    return { status: "error", message: "El acceso de Comunidad aún no está configurado." };
+  }
+  if (await getCommunityViewer()) redirect("/comunidad");
+
+  const username = normalizeCommunityUsername(textValue(formData, "username"));
+  const usernameError = validateCommunityUsername(username);
+  if (usernameError) return { status: "error", message: usernameError };
+
+  const email = textValue(formData, "email").toLowerCase();
+  if (!isValidCommunityEmail(email)) {
+    return { status: "error", message: "Introduce un correo electrónico válido." };
+  }
+
+  const password = rawValue(formData, "password");
+  const passwordConfirmation = rawValue(formData, "passwordConfirmation");
+  const passwordError = validateCommunityPassword(password);
+  if (passwordError) return { status: "error", message: passwordError };
+  if (password !== passwordConfirmation) {
+    return { status: "error", message: "Las contraseñas no coinciden." };
+  }
+
+  const next = getSafeCommunityPath(textValue(formData, "next"));
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return { status: "error", message: "No se pudo preparar el registro." };
+
+  const callback = communityAuthCallback(communityAuthOrigin(await headers()), next);
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: callback,
+      data: { username, display_name: username },
+    },
+  });
+
+  if (error) {
+    return {
+      status: "error",
+      message: "No se ha podido crear la cuenta. Comprueba que el usuario esté disponible e inténtalo de nuevo.",
+    };
   }
 
   return {
     status: "success",
-    message: "Te hemos enviado un enlace de acceso. Revisa tu correo para continuar.",
+    message: "Revisa tu correo para confirmar la cuenta antes de acceder.",
   };
+}
+
+export async function requestCommunityPasswordReset(
+  _: CommunityActionState,
+  formData: FormData,
+): Promise<CommunityActionState> {
+  if (!isSupabaseConfigured()) {
+    return { status: "error", message: "El acceso de Comunidad aún no está configurado." };
+  }
+
+  const email = textValue(formData, "email").toLowerCase();
+  if (!isValidCommunityEmail(email)) {
+    return { status: "error", message: "Introduce un correo electrónico válido." };
+  }
+
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return { status: "error", message: "No se pudo preparar la recuperación." };
+
+  const callback = communityAuthCallback(
+    communityAuthOrigin(await headers()),
+    "/comunidad/nueva-contrasena",
+  );
+  await supabase.auth.resetPasswordForEmail(email, { redirectTo: callback });
+
+  // Supabase deliberately does not disclose whether the address is registered.
+  return {
+    status: "success",
+    message: "Si existe una cuenta con ese correo, recibirás instrucciones para restablecer la contraseña.",
+  };
+}
+
+export async function updateCommunityPassword(
+  _: CommunityActionState,
+  formData: FormData,
+): Promise<CommunityActionState> {
+  if (!await getCommunityViewer()) {
+    return { status: "error", message: "El enlace de recuperación no es válido o ha caducado." };
+  }
+
+  const password = rawValue(formData, "password");
+  const passwordConfirmation = rawValue(formData, "passwordConfirmation");
+  const passwordError = validateCommunityPassword(password);
+  if (passwordError) return { status: "error", message: passwordError };
+  if (password !== passwordConfirmation) {
+    return { status: "error", message: "Las contraseñas no coinciden." };
+  }
+
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return { status: "error", message: "No se pudo actualizar la contraseña." };
+
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) return { status: "error", message: "No se ha podido actualizar la contraseña. Inténtalo de nuevo." };
+
+  revalidatePath("/", "layout");
+  redirect("/comunidad");
 }
 
 /** Ends only the session in this browser and clears its Supabase cookies. */

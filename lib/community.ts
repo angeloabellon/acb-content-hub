@@ -52,6 +52,11 @@ type MentionProfileRow = {
   display_name: string | null;
 };
 
+type MentionAliasRow = {
+  username: string;
+  profile: MentionProfileRow | MentionProfileRow[] | null;
+};
+
 type FollowStatusRow = {
   topic_id: string;
   unread_reply_count: number | string | null;
@@ -59,6 +64,8 @@ type FollowStatusRow = {
 
 export type CommunityViewer = {
   id: string;
+  username?: string;
+  displayName?: string;
   email?: string;
 };
 
@@ -177,17 +184,39 @@ async function getCommunityMentions(
   const handles = [...new Set(bodies.flatMap(extractCommunityMentionHandles))];
   if (!handles.length) return [];
 
-  const { data, error } = await supabase
-    .from("community_profiles")
-    .select("username, display_name")
-    .in("username", handles);
+  const [profilesResult, aliasesResult] = await Promise.all([
+    supabase
+      .from("community_profiles")
+      .select("username, display_name")
+      .in("username", handles),
+    supabase
+      .from("community_username_aliases")
+      .select("username, profile:community_profiles!community_username_aliases_profile_id_fkey(username, display_name)")
+      .in("username", handles),
+  ]);
 
-  if (error || !data) return [];
-  return (data as MentionProfileRow[])
-    .flatMap((profile) => profile.username ? [{
-      username: profile.username.toLowerCase(),
-      displayName: profile.display_name?.trim() || "Miembro de la Comunidad",
-    }] : []);
+  const mentions = new Map<string, CommunityMention>();
+  if (!profilesResult.error && profilesResult.data) {
+    for (const profile of profilesResult.data as MentionProfileRow[]) {
+      if (!profile.username) continue;
+      mentions.set(profile.username.toLowerCase(), {
+        username: profile.username.toLowerCase(),
+        displayName: profile.display_name?.trim() || "Miembro de la Comunidad",
+      });
+    }
+  }
+  if (!aliasesResult.error && aliasesResult.data) {
+    for (const alias of aliasesResult.data as MentionAliasRow[]) {
+      const profile = Array.isArray(alias.profile) ? alias.profile[0] : alias.profile;
+      if (!profile || !alias.username) continue;
+      mentions.set(alias.username.toLowerCase(), {
+        username: alias.username.toLowerCase(),
+        displayName: profile.display_name?.trim() || "Miembro de la Comunidad",
+      });
+    }
+  }
+
+  return [...mentions.values()];
 }
 
 /** Lists a bounded set of public names for local, incremental composer search. */
@@ -228,8 +257,23 @@ export async function getCommunityViewer(): Promise<CommunityViewer | undefined>
   const subject = data?.claims?.sub;
   if (error || typeof subject !== "string" || !subject) return undefined;
 
+  const { data: profile } = await supabase
+    .from("community_profiles")
+    .select("username, display_name")
+    .eq("id", subject)
+    .maybeSingle();
+  const username = profile?.username?.trim();
+  const displayName = profile?.display_name?.trim();
   const email = data.claims.email;
-  return { id: subject, ...(typeof email === "string" ? { email } : {}) };
+
+  return {
+    id: subject,
+    ...(username ? { username } : {}),
+    ...(displayName ? { displayName } : {}),
+    // This fallback only supports a profile that was just created but has not
+    // become visible yet; normal UI uses the public profile name above.
+    ...(!username && !displayName && typeof email === "string" ? { email } : {}),
+  };
 }
 
 export function isCommunityBackendConfigured(): boolean {
