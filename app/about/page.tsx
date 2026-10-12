@@ -38,22 +38,25 @@ export default function AboutPage() {
       <section className="relative overflow-hidden rounded-3xl border border-red-900/30 bg-gradient-to-br from-[#140303] via-black to-[#220505] px-5 py-12 sm:px-8 sm:py-16 md:px-14 md:py-24 mb-24 shadow-[0_10px_40px_rgba(122,12,12,0.22)]">
         <div className="absolute inset-0 bg-gradient-to-r from-[#7a0c0c]/35 via-transparent to-[#e01310]/15 pointer-events-none" />
 
-        <div className="relative z-10 text-center">
-          <p className="uppercase tracking-[0.18em] text-red-300/80 text-sm font-semibold mb-5">
-            Cast To Cast Baloncesto
-          </p>
-
-          <h1 className="text-3xl sm:text-5xl md:text-7xl font-extrabold leading-[1.02] mb-8">
-            Baloncesto desde la perspectiva
-            <span className="block text-red-500">de sus aficionados</span>
-          </h1>
-
-          <p className="text-lg md:text-xl text-white/70 max-w-4xl mx-auto leading-relaxed">
-            Cast To Cast es una plataforma multimedia independiente dedicada al
-            análisis, actualidad y debate sobre baloncesto, con especial
-            atención al UCAM Murcia CB, Unicaja Málaga, Hozono Global Jairis y
-            el baloncesto FEB.
-          </p>
+        <div className="relative z-10 flex min-h-48 items-center justify-center py-4 sm:min-h-64">
+          <h1 className="sr-only">Cast To Cast Baloncesto</h1>
+          <div className="flex items-center justify-center gap-6 sm:gap-10">
+            <Image
+              src="/logoCTC.jpg"
+              alt="Logotipo del micrófono de Cast To Cast"
+              width={400}
+              height={400}
+              loading="eager"
+              className="h-24 w-24 rounded-3xl object-cover shadow-[0_12px_32px_rgba(224,19,16,0.25)] sm:h-32 sm:w-32"
+            />
+            <Image
+              src="/ctc_transparente.png"
+              alt="Logotipo Cast To Cast"
+              width={1024}
+              height={1024}
+              className="h-24 w-40 object-contain sm:h-32 sm:w-56"
+            />
+          </div>
         </div>
       </section>
 
