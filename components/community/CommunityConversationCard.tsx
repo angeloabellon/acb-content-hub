@@ -28,13 +28,13 @@ export default function CommunityConversationCard({
               key={competition.name}
               className="flex min-w-0 flex-col items-start gap-2 rounded-2xl border border-white/10 bg-black/20 p-3 backdrop-blur-sm"
             >
-              <div className="flex h-10 w-full items-center justify-center rounded-lg bg-white/95 px-2 py-1.5 shadow-[0_3px_12px_rgba(0,0,0,0.2)]">
+              <div className="flex h-10 w-full items-center justify-center">
                 <Image
                   src={competition.src}
                   alt={competition.alt}
                   width={competition.width}
                   height={competition.height}
-                  className="max-h-7 max-w-[104px] object-contain"
+                  className="max-h-7 max-w-[104px] object-contain drop-shadow-[0_0_4px_rgba(255,255,255,0.3)]"
                 />
               </div>
               <p className={`min-w-0 text-xs font-semibold leading-snug ${conversation.theme.competitionText}`}>
