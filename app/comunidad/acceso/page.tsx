@@ -13,12 +13,12 @@ export const metadata: Metadata = createMetadata({
   path: "/comunidad/acceso",
 });
 
-type PageProps = { searchParams: Promise<{ next?: string; error?: string }> };
+type PageProps = { searchParams: Promise<{ next?: string; error?: string; actualizada?: string }> };
 
 export const dynamic = "force-dynamic";
 
 export default async function CommunityAccessPage({ searchParams }: PageProps) {
-  const { next, error } = await searchParams;
+  const { next, error, actualizada } = await searchParams;
   const safeNext = getSafeCommunityPath(next);
   const backendConfigured = isCommunityBackendConfigured();
   const viewer = backendConfigured ? await getCommunityViewer() : undefined;
@@ -37,6 +37,7 @@ export default async function CommunityAccessPage({ searchParams }: PageProps) {
         {backendConfigured ? (
           <>
             {error && <p className="mt-5 text-sm text-red-200" role="alert">El enlace no es válido o ha caducado. Solicita uno nuevo si estabas recuperando tu contraseña.</p>}
+            {actualizada === "1" && <p className="mt-5 text-sm text-emerald-200" role="status">Contraseña actualizada. Accede con tu usuario y tu nueva contraseña.</p>}
             <CommunitySignInForm next={safeNext} />
           </>
         ) : (

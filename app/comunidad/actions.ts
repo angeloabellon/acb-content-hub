@@ -17,6 +17,7 @@ import {
 import { isCommunityRootTopicSlug } from "@/data/community";
 import { getSafeCommunityPath } from "@/lib/community-validation";
 import type { CommunityActionState } from "@/lib/community-action-state";
+import { getCommunityAuthCallbackUrl } from "@/lib/community-auth-callback";
 import { resolveCommunityLoginEmail } from "@/lib/supabase/admin";
 import { createSupabaseServerClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { siteConfig } from "@/config/site";
@@ -203,12 +204,6 @@ export async function markAllCommunityNotificationsRead(): Promise<CommunityNoti
   return { ok: true };
 }
 
-function communityAuthCallback(origin: string, next: string): string {
-  const callback = new URL("/comunidad/auth/callback", origin);
-  callback.searchParams.set("next", next);
-  return callback.toString();
-}
-
 /** Logs in by a public username without ever returning its backing email. */
 export async function signInCommunityWithPassword(
   _: CommunityActionState,
@@ -281,11 +276,13 @@ export async function registerCommunityAccount(
     return { status: "error", message: "Las contraseñas no coinciden." };
   }
 
-  const next = getSafeCommunityPath(textValue(formData, "next"));
   const supabase = await createSupabaseServerClient();
   if (!supabase) return { status: "error", message: "No se pudo preparar el registro." };
 
-  const callback = communityAuthCallback(communityAuthOrigin(await headers()), next);
+  const callback = getCommunityAuthCallbackUrl(
+    communityAuthOrigin(await headers()),
+    "confirmation",
+  );
   const { error } = await supabase.auth.signUp({
     email,
     password,
@@ -324,9 +321,9 @@ export async function requestCommunityPasswordReset(
   const supabase = await createSupabaseServerClient();
   if (!supabase) return { status: "error", message: "No se pudo preparar la recuperación." };
 
-  const callback = communityAuthCallback(
+  const callback = getCommunityAuthCallbackUrl(
     communityAuthOrigin(await headers()),
-    "/comunidad/nueva-contrasena",
+    "password-recovery",
   );
   await supabase.auth.resetPasswordForEmail(email, { redirectTo: callback });
 
@@ -359,8 +356,9 @@ export async function updateCommunityPassword(
   const { error } = await supabase.auth.updateUser({ password });
   if (error) return { status: "error", message: "No se ha podido actualizar la contraseña. Inténtalo de nuevo." };
 
+  await supabase.auth.signOut({ scope: "local" });
   revalidatePath("/", "layout");
-  redirect("/comunidad");
+  redirect("/comunidad/acceso?actualizada=1");
 }
 
 /** Ends only the session in this browser and clears its Supabase cookies. */
