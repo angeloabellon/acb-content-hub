@@ -13,6 +13,8 @@ export default function CommunityConversationCard({
   conversation,
   topic,
 }: CommunityConversationCardProps) {
+  const hasSingleCompetition = conversation.competitions.length === 1;
+
   return (
     <Link
       href={`/comunidad/tema/${topic?.slug ?? getCommunityRootTopicSlug(conversation.key)}`}
@@ -22,19 +24,25 @@ export default function CommunityConversationCard({
       <div className={`absolute -right-12 -top-8 h-52 w-52 rounded-full blur-3xl ${conversation.theme.cardGlow}`} />
 
       <div className="relative z-10 flex h-full flex-col">
-        <div className="grid grid-cols-2 gap-3 border-b border-white/10 pb-7 max-[359px]:grid-cols-1">
+        <div className={`grid gap-3 border-b border-white/10 pb-7 ${hasSingleCompetition ? "grid-cols-1" : "grid-cols-2 max-[359px]:grid-cols-1"}`}>
           {conversation.competitions.map((competition) => (
             <div
               key={competition.name}
-              className="flex min-w-0 flex-col items-start gap-2 rounded-2xl border border-white/10 bg-black/20 p-3 backdrop-blur-sm"
+              className={`flex min-w-0 flex-col gap-2 rounded-2xl border border-white/10 bg-black/20 p-3 backdrop-blur-sm ${hasSingleCompetition ? "items-center text-center" : "items-start"}`}
             >
-              <div className="flex h-10 w-full items-center justify-center">
+              <div
+                className={`flex w-full items-center justify-center ${
+                  hasSingleCompetition ? "h-12" : "h-10"
+                }`}
+              >
                 <Image
                   src={competition.src}
                   alt={competition.alt}
                   width={competition.width}
                   height={competition.height}
-                  className="max-h-7 max-w-[104px] object-contain drop-shadow-[0_0_4px_rgba(255,255,255,0.3)]"
+                  className={`object-contain drop-shadow-[0_0_4px_rgba(255,255,255,0.3)] ${
+                    hasSingleCompetition ? "max-h-10 max-w-[96px]" : "max-h-7 max-w-[104px]"
+                  }`}
                 />
               </div>
               <p className={`min-w-0 text-xs font-semibold leading-snug ${conversation.theme.competitionText}`}>

@@ -81,23 +81,27 @@ test("merged follows deduplicate conservatively and legacy routes target their r
   ]);
 });
 
-test("exactly three permanent conversations are available in the UI fallback", () => {
+test("four permanent conversations are available in the UI fallback", () => {
   assert.deepEqual(communityConversations.map(({ title }) => title), [
     "UCAM Murcia",
     "Unicaja Málaga",
     "Hozono Global Jairis",
+    "Albacete Basket",
   ]);
   assert.deepEqual(communityTopics.map(({ slug }) => slug), [
     communityRootTopicSlugs.acb,
     communityRootTopicSlugs["unicaja-malaga"],
     communityRootTopicSlugs["hozono-global-jairis"],
+    communityRootTopicSlugs["albacete-basket"],
   ]);
   assert.equal(getCommunityRootTopicSlug("acb"), "ucam-murcia-en-acb");
   assert.equal(getCommunityRootTopicSlug("unicaja-malaga"), "unicaja-malaga");
   assert.equal(getCommunityRootTopicSlug("hozono-global-jairis"), "hozono-global-jairis");
+  assert.equal(getCommunityRootTopicSlug("albacete-basket"), "albacete-basket");
   assert.equal(isCommunityRootTopicSlug("ucam-murcia-en-bcl"), false);
   assert.equal(isCommunityRootTopicSlug("unicaja-malaga"), true);
   assert.equal(isCommunityRootTopicSlug("hozono-global-jairis"), true);
+  assert.equal(isCommunityRootTopicSlug("albacete-basket"), true);
   assert.equal(isCommunityRootTopicSlug("previa-acb"), false);
 });
 
@@ -105,9 +109,11 @@ test("each permanent conversation carries its own contained CTC accent theme", (
   assert.match(communityConversationThemes.acb.heroSurface, /#140303/);
   assert.match(communityConversationThemes["unicaja-malaga"].heroSurface, /#03170d/);
   assert.match(communityConversationThemes["hozono-global-jairis"].heroSurface, /#211603/);
+  assert.match(communityConversationThemes["albacete-basket"].heroSurface, /#0a2f1b/);
   assert.equal(communityConversations[0]?.theme, communityConversationThemes.acb);
   assert.equal(communityConversations[1]?.theme, communityConversationThemes["unicaja-malaga"]);
   assert.equal(communityConversations[2]?.theme, communityConversationThemes["hozono-global-jairis"]);
+  assert.equal(communityConversations[3]?.theme, communityConversationThemes["albacete-basket"]);
 });
 
 test("community cards pair every club with its domestic and European competitions", async () => {
@@ -132,11 +138,17 @@ test("community cards pair every club with its domestic and European competition
       title: "Hozono Global Jairis",
       competitions: ["Liga Femenina Endesa", "EuroCup Women"],
     },
+    {
+      title: "Albacete Basket",
+      competitions: ["Primera FEB"],
+    },
   ]);
-  assert.ok(communityConversations.every((conversation) => conversation.competitions.length === 2));
+  assert.ok(communityConversations.slice(0, 3).every((conversation) => conversation.competitions.length === 2));
+  assert.equal(communityConversations[3]?.competitions.length, 1);
   assert.doesNotMatch(JSON.stringify(communityConversations), /Actualidad del equipo|Baloncesto femenino/i);
   assert.match(card, /conversation\.competitions\.map/);
-  assert.match(card, /grid grid-cols-2 gap-3 border-b border-white\/10 pb-7 max-\[359px\]:grid-cols-1/);
+  assert.match(card, /hasSingleCompetition/);
+  assert.match(card, /grid-cols-1/);
   assert.match(card, /my-auto pt-9/);
   assert.doesNotMatch(card, /bg-white/);
   assert.doesNotMatch(card, /conversation\.eyebrow|competitionLogo/);
@@ -148,6 +160,18 @@ test("club card descriptions are distinct and do not duplicate competition names
   assert.equal(new Set(descriptions).size, communityConversations.length);
   assert.equal(communityConversations[0]?.description, "Un punto de encuentro para seguir la actualidad, los partidos y el día a día del UCAM Murcia.");
   assert.doesNotMatch(communityConversations[0]?.description ?? "", /Liga Endesa/i);
+});
+
+test("Albacete Basket migration and production reset retain its permanent root", async () => {
+  const [migration, reset] = await Promise.all([
+    readFile(new URL("../supabase/migrations/202610120007_add_albacete_basket_community.sql", import.meta.url), "utf8"),
+    readFile(new URL("../supabase/manual/reset_community_production.sql", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(migration, /albacete-basket/i);
+  assert.match(migration, /Albacete Basket/);
+  assert.match(migration, /signed in users reply in permanent community conversations/);
+  assert.match(reset, /albacete-basket/i);
 });
 
 test("UCAM keeps its technical ACB keys while both Community records use the shorter visible title", async () => {
@@ -165,7 +189,7 @@ test("UCAM keeps its technical ACB keys while both Community records use the sho
   assert.doesNotMatch(sql, /alter table|delete from|insert into/i);
 });
 
-test("three-root migration removes the retired root and preserves member reply features", async () => {
+test("legacy migration removes the retired root and preserves member reply features", async () => {
   const sql = await readFile(
     new URL("../supabase/migrations/202610120004_remove_bcl_permanent_root.sql", import.meta.url),
     "utf8",
@@ -186,7 +210,7 @@ test("three-root migration removes the retired root and preserves member reply f
   assert.match(sql, /slug in \([\s\S]*'unicaja-malaga'[\s\S]*'hozono-global-jairis'/i);
 });
 
-test("manual reset clears user-derived data but retains the three system roots", async () => {
+test("manual reset clears user-derived data but retains the four system roots", async () => {
   const sql = await readFile(
     new URL("../supabase/manual/reset_community_production.sql", import.meta.url),
     "utf8",
@@ -255,6 +279,7 @@ test("legacy routes and retired entry points redirect to canonical conversations
   assert.match(homePage, /logoUCAM\.png/);
   assert.match(homePage, /logoUnicaja\.png/);
   assert.match(homePage, /logoJairis\.png/);
+  assert.match(homePage, /logoAlbaceteBasket\.png/);
   assert.doesNotMatch(homePage, />\s*UCAM\s*<\/span>/);
   assert.doesNotMatch(homePage, />\s*Unicaja\s*<\/span>/);
   assert.doesNotMatch(homePage, />\s*Jairis\s*<\/span>/);

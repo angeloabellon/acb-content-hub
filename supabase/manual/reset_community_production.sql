@@ -6,7 +6,7 @@
 --
 -- It permanently removes every Community profile and every auth.users account
 -- in this Supabase project, plus posts, follows, notifications, aliases and
--- historical topic-route data. It retains only the three system-owned roots.
+-- historical topic-route data. It retains only the four system-owned roots.
 -- Take a backup first. Do not use it if auth.users contains accounts unrelated
 -- to Comunidad CTC.
 
@@ -33,10 +33,11 @@ begin
     where slug in (
       'ucam-murcia-en-acb',
       'unicaja-malaga',
-      'hozono-global-jairis'
+      'hozono-global-jairis',
+      'albacete-basket'
     )
-  ) <> 3 then
-    raise exception 'Reset cancelled: the three permanent roots are missing. Apply migration 202610120004 first.';
+  ) <> 4 then
+    raise exception 'Reset cancelled: the four permanent roots are missing. Apply migration 202610120007 first.';
   end if;
 end;
 $$;
@@ -52,7 +53,7 @@ union all select 'before', 'community_username_aliases', count(*) from public.co
 union all select 'before', 'community_topics', count(*) from public.community_topics
 order by entity;
 
--- Delete dependent, user-derived data before the people who own it. The three
+-- Delete dependent, user-derived data before the people who own it. The four
 -- root conversation rows have NULL author_id after 202610120005, so deleting
 -- Community/Auth users cannot violate their foreign key.
 delete from public.community_notifications;
@@ -64,7 +65,8 @@ delete from public.community_topics
 where slug not in (
   'ucam-murcia-en-acb',
   'unicaja-malaga',
-  'hozono-global-jairis'
+  'hozono-global-jairis',
+  'albacete-basket'
 );
 delete from public.community_username_aliases;
 delete from public.community_profiles;
@@ -94,7 +96,8 @@ from (
   values
     ('ucam-murcia-en-acb'::text, 'UCAM Murcia'::text, 'Conversación principal permanente de la Comunidad CTC sobre el UCAM Murcia en Liga Endesa.'::text),
     ('unicaja-malaga'::text, 'Unicaja Málaga'::text, 'Conversación principal permanente de la Comunidad CTC sobre Unicaja Málaga.'::text),
-    ('hozono-global-jairis'::text, 'Hozono Global Jairis'::text, 'Conversación principal permanente de la Comunidad CTC sobre Hozono Global Jairis.'::text)
+    ('hozono-global-jairis'::text, 'Hozono Global Jairis'::text, 'Conversación principal permanente de la Comunidad CTC sobre Hozono Global Jairis.'::text),
+    ('albacete-basket'::text, 'Albacete Basket'::text, 'Conversación principal permanente de la Comunidad CTC sobre Albacete Basket en Primera FEB.'::text)
 ) as roots(slug, title, body)
 where topic.slug = roots.slug;
 
@@ -124,7 +127,8 @@ left join public.community_notifications as notification on notification.topic_i
 where topic.slug in (
   'ucam-murcia-en-acb',
   'unicaja-malaga',
-  'hozono-global-jairis'
+  'hozono-global-jairis',
+  'albacete-basket'
 )
 group by topic.id, topic.slug, topic.author_id, topic.reply_count
 order by topic.slug;

@@ -1,7 +1,8 @@
-export function isCommunityConversationKey(value: string): value is "acb" | "unicaja-malaga" | "hozono-global-jairis" {
+export function isCommunityConversationKey(value: string): value is "acb" | "unicaja-malaga" | "hozono-global-jairis" | "albacete-basket" {
   return value === "acb"
     || value === "unicaja-malaga"
-    || value === "hozono-global-jairis";
+    || value === "hozono-global-jairis"
+    || value === "albacete-basket";
 }
 
 /** Retired Community URLs remain safe entry points, never active conversations. */

@@ -1,7 +1,8 @@
 export type CommunityConversationKey =
   | "acb"
   | "unicaja-malaga"
-  | "hozono-global-jairis";
+  | "hozono-global-jairis"
+  | "albacete-basket";
 
 /**
  * Visual tokens keep every club page in the Cast To Cast visual system while
@@ -77,12 +78,29 @@ export const communityConversationThemes = {
     focusRing: "focus:border-amber-200/65 focus:ring-amber-200/65",
     logoShadow: "drop-shadow-[0_12px_20px_rgba(251,191,36,0.3)]",
   },
+  "albacete-basket": {
+    heroSurface: "border-green-700/40 bg-gradient-to-br from-[#0a2f1b] via-[#06130b] to-[#166534] shadow-[0_10px_40px_rgba(34,197,94,0.2)]",
+    heroGlow: "bg-green-400/20",
+    cardSurface: "border-green-700/40 bg-gradient-to-br from-[#0a2f1b] via-[#06130b] to-[#166534] shadow-[0_10px_40px_rgba(34,197,94,0.14)]",
+    cardGlow: "bg-green-400/20",
+    competitionText: "text-green-50",
+    accentText: "text-lime-200",
+    groupHoverText: "group-hover:text-lime-200",
+    hoverText: "hover:text-lime-200",
+    accentBorder: "border-green-600/45",
+    accentBadge: "border-lime-300/40 bg-lime-300/10 text-lime-100",
+    avatar: "border-green-400/45 bg-green-950/50 text-green-50",
+    primaryButton: "border-green-700/50 bg-gradient-to-r from-[#17733b]/85 to-[#4caf50]/80 hover:text-lime-50",
+    secondaryButton: "border-green-700/45 bg-white/[0.06] hover:border-lime-300/55 hover:text-lime-100",
+    focusRing: "focus:border-lime-200/65 focus:ring-lime-200/65",
+    logoShadow: "drop-shadow-[0_12px_20px_rgba(74,222,128,0.35)]",
+  },
 } as const satisfies Record<CommunityConversationKey, CommunityConversationTheme>;
 
 export const defaultCommunityConversationTheme = communityConversationThemes.acb;
 
 /**
- * Presentation data for the three fixed conversations. `space_slug` remains a
+ * Presentation data for the fixed conversations. `space_slug` remains a
  * database compatibility field, but the product deliberately exposes only
  * conversations—there is no public space or sub-topic level.
  */
@@ -178,12 +196,23 @@ export const communityConversations: CommunityConversation[] = [
       { name: "EuroCup Women", src: "/logoEuroCupWomen.png", alt: "Logotipo de EuroCup Women", width: 1726, height: 778 },
     ],
   },
+  {
+    key: "albacete-basket",
+    title: "Albacete Basket",
+    description: "Sigue de cerca la actualidad, los partidos y el camino de Albacete Basket en Primera FEB.",
+    theme: communityConversationThemes["albacete-basket"],
+    logo: { src: "/logoAlbaceteBasket.png", alt: "Albacete Basket", width: 250, height: 167, className: "h-16 w-24" },
+    competitions: [
+      { name: "Primera FEB", src: "/logoPrimeraFEB.png", alt: "Logotipo de Primera FEB", width: 316, height: 316 },
+    ],
+  },
 ];
 
 export const communityRootTopicSlugs = {
   acb: "ucam-murcia-en-acb",
   "unicaja-malaga": "unicaja-malaga",
   "hozono-global-jairis": "hozono-global-jairis",
+  "albacete-basket": "albacete-basket",
 } as const satisfies Record<CommunityConversationKey, string>;
 
 export function isCommunityRootTopicSlug(value: string): value is typeof communityRootTopicSlugs[CommunityConversationKey] {

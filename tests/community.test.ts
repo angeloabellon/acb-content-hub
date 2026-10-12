@@ -17,10 +17,11 @@ import {
   isSupabaseConfigured,
 } from "../lib/supabase/config.ts";
 
-test("community conversation keys accept exactly the three permanent conversations", () => {
+test("community conversation keys accept every permanent conversation", () => {
   assert.equal(isCommunityConversationKey("acb"), true);
   assert.equal(isCommunityConversationKey("unicaja-malaga"), true);
   assert.equal(isCommunityConversationKey("hozono-global-jairis"), true);
+  assert.equal(isCommunityConversationKey("albacete-basket"), true);
   assert.equal(isCommunityConversationKey("bcl"), false);
   assert.equal(isCommunityConversationKey("other"), false);
 });
