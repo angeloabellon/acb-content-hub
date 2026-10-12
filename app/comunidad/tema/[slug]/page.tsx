@@ -86,7 +86,11 @@ export default async function CommunityTopicPage({
         <div className="premium-overlay" />
         <div className={`pointer-events-none absolute -right-24 -top-20 h-72 w-72 rounded-full blur-3xl ${theme.heroGlow}`} />
         <div className="relative z-10">
-          <p className={`mb-4 text-xs font-semibold uppercase tracking-[0.2em] ${theme.eyebrow}`}>{conversation?.eyebrow}</p>
+          {conversation && (
+            <p className={`mb-4 text-xs font-semibold uppercase tracking-[0.16em] ${theme.competitionText}`}>
+              {conversation.competitions.map((competition) => competition.name).join(" · ")}
+            </p>
+          )}
           <h1 className="max-w-3xl text-3xl font-extrabold leading-tight sm:text-4xl md:text-5xl">
             <CommunityMentionText value={topic.title} mentions={topic.mentions} />
           </h1>

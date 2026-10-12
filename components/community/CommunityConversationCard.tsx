@@ -16,28 +16,35 @@ export default function CommunityConversationCard({
   return (
     <Link
       href={`/comunidad/tema/${topic?.slug ?? getCommunityRootTopicSlug(conversation.key)}`}
-      className={`premium-hover group relative min-h-[330px] overflow-hidden rounded-3xl border p-7 ${conversation.theme.cardSurface} sm:p-9`}
+      className={`premium-hover group relative min-h-[420px] overflow-hidden rounded-3xl border p-7 ${conversation.theme.cardSurface} sm:p-9`}
     >
       <div className="premium-overlay" />
       <div className={`absolute -right-12 -top-8 h-52 w-52 rounded-full blur-3xl ${conversation.theme.cardGlow}`} />
 
       <div className="relative z-10 flex h-full flex-col">
-        <div className="flex items-start justify-between gap-5">
-          <p className={`uppercase tracking-[0.2em] text-xs font-semibold ${conversation.theme.eyebrow}`}>
-            {conversation.eyebrow}
-          </p>
-          {conversation.competitionLogo ? (
-            <Image
-              src={conversation.competitionLogo.src}
-              alt={conversation.competitionLogo.alt}
-              width={conversation.competitionLogo.width}
-              height={conversation.competitionLogo.height}
-              className={`${conversation.competitionLogo.className} w-auto object-contain opacity-90`}
-            />
-          ) : null}
+        <div className="grid gap-2 min-[460px]:grid-cols-2">
+          {conversation.competitions.map((competition) => (
+            <div
+              key={competition.name}
+              className="flex min-w-0 items-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-2.5 backdrop-blur-sm"
+            >
+              <div className="flex h-11 w-16 shrink-0 items-center justify-center rounded-lg bg-white/95 p-1.5 shadow-[0_3px_12px_rgba(0,0,0,0.2)]">
+                <Image
+                  src={competition.src}
+                  alt={competition.alt}
+                  width={competition.width}
+                  height={competition.height}
+                  className="max-h-8 w-full object-contain"
+                />
+              </div>
+              <p className={`min-w-0 text-xs font-semibold leading-snug ${conversation.theme.competitionText}`}>
+                {competition.name}
+              </p>
+            </div>
+          ))}
         </div>
 
-        <div className="my-auto pt-10">
+        <div className="my-auto pt-8">
           <Image
             src={conversation.logo.src}
             alt={conversation.logo.alt}

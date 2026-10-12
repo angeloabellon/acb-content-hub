@@ -110,6 +110,35 @@ test("each permanent conversation carries its own contained CTC accent theme", (
   assert.equal(communityConversations[2]?.theme, communityConversationThemes["hozono-global-jairis"]);
 });
 
+test("community cards pair every club with its domestic and European competitions", async () => {
+  const card = await readFile(
+    new URL("../components/community/CommunityConversationCard.tsx", import.meta.url),
+    "utf8",
+  );
+
+  assert.deepEqual(communityConversations.map((conversation) => ({
+    title: conversation.title,
+    competitions: conversation.competitions.map((competition) => competition.name),
+  })), [
+    {
+      title: "UCAM Murcia",
+      competitions: ["Liga Endesa", "Basketball Champions League"],
+    },
+    {
+      title: "Unicaja Málaga",
+      competitions: ["Liga Endesa", "Basketball Champions League"],
+    },
+    {
+      title: "Hozono Global Jairis",
+      competitions: ["Liga Femenina Endesa", "EuroCup Women"],
+    },
+  ]);
+  assert.ok(communityConversations.every((conversation) => conversation.competitions.length === 2));
+  assert.doesNotMatch(JSON.stringify(communityConversations), /Actualidad del equipo|Baloncesto femenino/i);
+  assert.match(card, /conversation\.competitions\.map/);
+  assert.doesNotMatch(card, /conversation\.eyebrow|competitionLogo/);
+});
+
 test("UCAM keeps its technical ACB keys while both Community records use the shorter visible title", async () => {
   const sql = await readFile(
     new URL("../supabase/migrations/202610120006_rename_ucam_community_space.sql", import.meta.url),

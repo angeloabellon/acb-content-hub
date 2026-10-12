@@ -12,7 +12,7 @@ export type CommunityConversationTheme = {
   heroGlow: string;
   cardSurface: string;
   cardGlow: string;
-  eyebrow: string;
+  competitionText: string;
   accentText: string;
   groupHoverText: string;
   hoverText: string;
@@ -31,7 +31,7 @@ export const communityConversationThemes = {
     heroGlow: "bg-red-600/15",
     cardSurface: "border-red-900/30 bg-gradient-to-br from-[#140303] via-black to-[#220505] shadow-[0_10px_40px_rgba(122,12,12,0.14)]",
     cardGlow: "bg-red-800/15",
-    eyebrow: "text-red-300/70",
+    competitionText: "text-red-100",
     accentText: "text-orange-300",
     groupHoverText: "group-hover:text-orange-300",
     hoverText: "hover:text-orange-300",
@@ -48,7 +48,7 @@ export const communityConversationThemes = {
     heroGlow: "bg-emerald-500/15",
     cardSurface: "border-emerald-900/35 bg-gradient-to-br from-[#03170d] via-black to-[#062315] shadow-[0_10px_40px_rgba(5,98,61,0.14)]",
     cardGlow: "bg-emerald-700/15",
-    eyebrow: "text-emerald-300/75",
+    competitionText: "text-emerald-50",
     accentText: "text-emerald-300",
     groupHoverText: "group-hover:text-emerald-300",
     hoverText: "hover:text-emerald-300",
@@ -65,7 +65,7 @@ export const communityConversationThemes = {
     heroGlow: "bg-amber-300/15",
     cardSurface: "border-amber-800/40 bg-gradient-to-br from-[#211603] via-black to-[#2a1b03] shadow-[0_10px_40px_rgba(146,94,8,0.14)]",
     cardGlow: "bg-amber-500/15",
-    eyebrow: "text-amber-200/80",
+    competitionText: "text-amber-50",
     accentText: "text-amber-200",
     groupHoverText: "group-hover:text-amber-200",
     hoverText: "hover:text-amber-200",
@@ -88,7 +88,6 @@ export const defaultCommunityConversationTheme = communityConversationThemes.acb
  */
 export type CommunityConversation = {
   key: CommunityConversationKey;
-  eyebrow: string;
   title: string;
   description: string;
   theme: CommunityConversationTheme;
@@ -99,13 +98,13 @@ export type CommunityConversation = {
     height: number;
     className: string;
   };
-  competitionLogo?: {
+  competitions: {
+    name: string;
     src: string;
     alt: string;
     width: number;
     height: number;
-    className: string;
-  };
+  }[];
 };
 
 /** A resolved mention retains its canonical match key but displays a friendly name. */
@@ -148,29 +147,36 @@ export type CommunityTopic = {
 export const communityConversations: CommunityConversation[] = [
   {
     key: "acb",
-    eyebrow: "Liga Endesa",
     title: "UCAM Murcia",
     description: "La conversación continua para seguir la actualidad, los partidos y el día a día del UCAM Murcia en Liga Endesa.",
     theme: communityConversationThemes.acb,
     logo: { src: "/logoUCAM.png", alt: "UCAM Murcia", width: 82, height: 82, className: "h-16 w-16" },
-    competitionLogo: { src: "/logoEndesa.png", alt: "Liga Endesa", width: 76, height: 36, className: "h-9" },
+    competitions: [
+      { name: "Liga Endesa", src: "/logoEndesa.png", alt: "Logotipo de Liga Endesa", width: 160, height: 92 },
+      { name: "Basketball Champions League", src: "/logoBCL.png", alt: "Logotipo de Basketball Champions League", width: 2048, height: 666 },
+    ],
   },
   {
     key: "unicaja-malaga",
-    eyebrow: "Actualidad del equipo",
     title: "Unicaja Málaga",
     description: "La conversación continua para comentar la actualidad, los partidos y la temporada del Unicaja Málaga.",
     theme: communityConversationThemes["unicaja-malaga"],
     logo: { src: "/logoUnicaja.png", alt: "Unicaja Málaga", width: 82, height: 82, className: "h-16 w-16" },
+    competitions: [
+      { name: "Liga Endesa", src: "/logoEndesa.png", alt: "Logotipo de Liga Endesa", width: 160, height: 92 },
+      { name: "Basketball Champions League", src: "/logoBCL.png", alt: "Logotipo de Basketball Champions League", width: 2048, height: 666 },
+    ],
   },
   {
     key: "hozono-global-jairis",
-    eyebrow: "Baloncesto femenino",
     title: "Hozono Global Jairis",
     description: "La conversación continua para seguir la actualidad, los partidos y la temporada del Hozono Global Jairis.",
     theme: communityConversationThemes["hozono-global-jairis"],
     logo: { src: "/logoJairis.png", alt: "Hozono Global Jairis", width: 82, height: 82, className: "h-16 w-16" },
-    competitionLogo: { src: "/logoFemenina.png", alt: "Liga Femenina Endesa", width: 76, height: 36, className: "h-9" },
+    competitions: [
+      { name: "Liga Femenina Endesa", src: "/logoFemenina.png", alt: "Logotipo de Liga Femenina Endesa", width: 192, height: 128 },
+      { name: "EuroCup Women", src: "/logoEuroCupWomen.png", alt: "Logotipo de EuroCup Women", width: 1726, height: 778 },
+    ],
   },
 ];
 
