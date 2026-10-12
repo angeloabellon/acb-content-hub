@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 
-import ArticleCard from "@/components/ArticleCard";
 import NewsSourceCard from "@/components/NewsSourceCard";
 import RecommendedReadingsSection from "@/components/sections/RecommendedReadingsSection";
 import SectionHeader from "@/components/ui/SectionHeader";
@@ -11,28 +10,10 @@ import { getBasketballNews } from "@/lib/news";
 export const metadata: Metadata = createMetadata({
   title: "Actualidad",
   description:
-    "Actualidad seleccionada sobre baloncesto, UCAM Murcia, Unicaja Málaga, Hozono Global Jairis, ACB y competiciones FEB.",
+    "Actualidad seleccionada sobre baloncesto, UCAM Murcia, Unicaja Málaga, Hozono Global Jairis, Albacete Basket, ACB y competiciones FEB.",
   path: "/news",
   image: "/og/news-cover.jpg",
 });
-
-const officialSocialLinks = [
-  {
-    image: "/logoUCAM.png",
-    category: "UCAM Murcia",
-    url: "https://x.com/UCAMMurcia",
-  },
-  {
-    image: "/logoJairis.png",
-    category: "Hozono Global Jairis",
-    url: "https://x.com/CBJairis",
-  },
-  {
-    image: "/logoUnicaja.png",
-    category: "Unicaja Málaga",
-    url: "https://x.com/unicajaCB",
-  },
-];
 
 export default async function NewsPage() {
   const basketballNews = await getBasketballNews();
@@ -47,6 +28,10 @@ export default async function NewsPage() {
 
   const jairisNews = basketballNews.filter(
     (news) => news.source === "Hozono Global Jairis"
+  );
+
+  const albaceteNews = basketballNews.filter(
+    (news) => news.source === "Albacete Basket"
   );
 
   return (
@@ -70,8 +55,8 @@ export default async function NewsPage() {
 
     <p className="text-lg text-white/70 max-w-3xl mx-auto leading-relaxed">
       Una selección de actualidad, fuentes oficiales y lecturas recomendadas
-      sobre UCAM Murcia CB, Hozono Global Jairis, Unicaja Málaga, ACB y
-      competiciones FEB.
+      sobre UCAM Murcia CB, Hozono Global Jairis, Unicaja Málaga, Albacete
+      Basket, ACB y competiciones FEB.
     </p>
   </div>
 </section>
@@ -88,7 +73,7 @@ export default async function NewsPage() {
         <SectionHeader
           eyebrow="Noticias oficiales"
           title="Fuentes de actualidad por club"
-          description="Últimas publicaciones procedentes de las webs oficiales de UCAM Murcia CB, Hozono Global Jairis y Unicaja Málaga."
+          description="Últimas publicaciones procedentes de las webs oficiales de UCAM Murcia CB, Hozono Global Jairis, Unicaja Málaga y Albacete Basket."
         />
 
         <div className="grid gap-8">
@@ -112,25 +97,13 @@ export default async function NewsPage() {
             logo="/logoJairis.png"
             news={jairisNews}
           />
-        </div>
-      </section>
-            {/* RRSS OFICIALES */}
-      <section className="mb-24">
-        <SectionHeader
-          eyebrow="Redes oficiales"
-          title="Canales de los clubes"
-          description="Accede rápidamente a los perfiles oficiales de los clubes que seguimos en Cast To Cast."
-        />
 
-        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
-          {officialSocialLinks.map((article) => (
-            <ArticleCard
-              key={article.category}
-              image={article.image}
-              category={article.category}
-              url={article.url}
-            />
-          ))}
+          <NewsSourceCard
+            title="Albacete Basket"
+            description="Últimas noticias publicadas por el club en su web oficial."
+            logo="/logoAlbaceteBasket.png"
+            news={albaceteNews}
+          />
         </div>
       </section>
     </main>

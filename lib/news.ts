@@ -1,18 +1,13 @@
 import { fetchExternal } from "@/lib/external-fetch";
+import { extractAlbaceteNews } from "./news-parsers";
 
-export type NewsItem = {
-  title: string;
-  slug: string;
-  url: string;
-  externalUrl: string;
-  source: string;
-  content: string;
-  pubDate: string;
-};
+export type { NewsItem } from "./news-parsers";
+import type { NewsItem } from "./news-parsers";
 
 const UCAM_NEWS_URL = "https://www.ucamdeportes.com/ucamcb/noticias";
 const UNICAJA_NEWS_URL = "https://www.unicajabaloncesto.com/noticia";
 const JAIRIS_NEWS_URL = "https://www.hozonojairis.com/noticias/";
+const ALBACETE_NEWS_URL = "https://albacetebasket.es/noticias/";
 
 function cleanText(text: string) {
   return text
@@ -157,8 +152,9 @@ export async function getBasketballNews(): Promise<NewsItem[]> {
     fetchExternal(UCAM_NEWS_URL, { revalidate: 3600 }),
     fetchExternal(UNICAJA_NEWS_URL, { revalidate: 3600 }),
     fetchExternal(JAIRIS_NEWS_URL, { revalidate: 3600 }),
+    fetchExternal(ALBACETE_NEWS_URL, { revalidate: 3600 }),
   ]);
-  const [ucamHtml, unicajaHtml, jairisHtml] = await Promise.all(
+  const [ucamHtml, unicajaHtml, jairisHtml, albaceteHtml] = await Promise.all(
     responses.map(async (response) => response ? response.text() : ""),
   );
 
@@ -166,6 +162,7 @@ export async function getBasketballNews(): Promise<NewsItem[]> {
     ...extractUcamNews(ucamHtml),
     ...extractUnicajaNews(unicajaHtml),
     ...extractJairisNews(jairisHtml),
+    ...extractAlbaceteNews(albaceteHtml),
   ];
 }
 

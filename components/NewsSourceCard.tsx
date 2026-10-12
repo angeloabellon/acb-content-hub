@@ -17,6 +17,7 @@ const sourceStyles = {
   ucam: "from-red-950/90 via-red-900/80 to-red-700/60 border-red-700/40",
   jairis: "from-yellow-900/80 via-amber-700/70 to-yellow-500/40 border-yellow-400/40",
   unicaja: "from-green-950/90 via-green-900/80 to-emerald-600/60 border-green-600/40",
+  albacete: "from-blue-950/90 via-blue-800/80 to-sky-500/50 border-sky-400/40",
   default: "from-gray-900/80 via-gray-800/70 to-gray-700/60 border-white/20",
 };
 
@@ -35,6 +36,10 @@ function getSourceStyle(title: string) {
     return sourceStyles.unicaja;
   }
 
+  if (normalizedTitle.includes("albacete")) {
+    return sourceStyles.albacete;
+  }
+
   return sourceStyles.default;
 }
 
@@ -46,6 +51,20 @@ export default function NewsSourceCard({
 }: NewsSourceCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const sourceStyle = getSourceStyle(title);
+
+  const formatPublicationDate = (value: string) => {
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+      return undefined;
+    }
+
+    return new Intl.DateTimeFormat("es-ES", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(date);
+  };
 
   return (
     <div
@@ -107,6 +126,12 @@ export default function NewsSourceCard({
                 <p className="text-sm text-white/60 mt-2">
                   {item.source}
                 </p>
+
+                {item.pubDate && (
+                  <p className="text-sm text-white/60 mt-1">
+                    {formatPublicationDate(item.pubDate)}
+                  </p>
+                )}
               </a>
             ))
           ) : (

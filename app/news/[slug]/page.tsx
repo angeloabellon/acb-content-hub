@@ -29,11 +29,13 @@ export async function generateMetadata({
     openGraph: {
       title: news.title,
       description: `Noticia de ${news.source} enlazada desde Cast To Cast Baloncesto.`,
+      images: news.imageUrl ? [news.imageUrl] : undefined,
     },
     twitter: {
       card: "summary_large_image",
       title: news.title,
       description: `Noticia de ${news.source} enlazada desde Cast To Cast Baloncesto.`,
+      images: news.imageUrl ? [news.imageUrl] : undefined,
     },
   };
 }
