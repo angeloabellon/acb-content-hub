@@ -32,9 +32,9 @@ export default async function Home() {
       </p>
 
       <h1 className="text-3xl sm:text-5xl md:text-7xl font-extrabold leading-[1.05] mb-8 break-words">
-        El baloncesto en la Región de Murcia y en Málaga,
+        El baloncesto
         <span className="block text-red-500">
-          desde la perspectiva de sus aficionados
+          desde la perspectiva de los aficionados
         </span>
       </h1>
 
