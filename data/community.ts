@@ -70,7 +70,7 @@ export const communityConversations: CommunityConversation[] = [
   {
     key: "acb",
     eyebrow: "Liga Endesa",
-    title: "UCAM Murcia en ACB",
+    title: "UCAM Murcia",
     description: "La conversación continua para seguir la actualidad, los partidos y el día a día del UCAM Murcia en Liga Endesa.",
     logo: { src: "/logoUCAM.png", alt: "UCAM Murcia", width: 82, height: 82, className: "h-16 w-16" },
     competitionLogo: { src: "/logoEndesa.png", alt: "Liga Endesa", width: 76, height: 36, className: "h-9" },

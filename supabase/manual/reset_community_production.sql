@@ -2,7 +2,7 @@
 --
 -- This file is NOT a Supabase migration and must never be added to an automated
 -- deployment or migration runner. Run it manually in the Supabase SQL Editor,
--- as a database owner, only AFTER migration 202610120004 has succeeded.
+-- as a database owner, only AFTER migration 202610120005 has succeeded.
 --
 -- It permanently removes every Community profile and every auth.users account
 -- in this Supabase project, plus posts, follows, notifications, aliases and
@@ -53,7 +53,7 @@ union all select 'before', 'community_topics', count(*) from public.community_to
 order by entity;
 
 -- Delete dependent, user-derived data before the people who own it. The three
--- root conversation rows have NULL author_id after 202610120004, so deleting
+-- root conversation rows have NULL author_id after 202610120005, so deleting
 -- Community/Auth users cannot violate their foreign key.
 delete from public.community_notifications;
 delete from public.community_topic_follows;
@@ -85,7 +85,7 @@ set
   last_activity_at = now()
 from (
   values
-    ('ucam-murcia-en-acb'::text, 'UCAM Murcia en ACB'::text, 'Conversación principal permanente de la Comunidad CTC sobre el UCAM Murcia en Liga Endesa.'::text),
+    ('ucam-murcia-en-acb'::text, 'UCAM Murcia'::text, 'Conversación principal permanente de la Comunidad CTC sobre el UCAM Murcia en Liga Endesa.'::text),
     ('unicaja-malaga'::text, 'Unicaja Málaga'::text, 'Conversación principal permanente de la Comunidad CTC sobre Unicaja Málaga.'::text),
     ('hozono-global-jairis'::text, 'Hozono Global Jairis'::text, 'Conversación principal permanente de la Comunidad CTC sobre Hozono Global Jairis.'::text)
 ) as roots(slug, title, body)

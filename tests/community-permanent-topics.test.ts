@@ -82,7 +82,7 @@ test("merged follows deduplicate conservatively and legacy routes target their r
 
 test("exactly three permanent conversations are available in the UI fallback", () => {
   assert.deepEqual(communityConversations.map(({ title }) => title), [
-    "UCAM Murcia en ACB",
+    "UCAM Murcia",
     "Unicaja Málaga",
     "Hozono Global Jairis",
   ]);
@@ -98,6 +98,18 @@ test("exactly three permanent conversations are available in the UI fallback", (
   assert.equal(isCommunityRootTopicSlug("unicaja-malaga"), true);
   assert.equal(isCommunityRootTopicSlug("hozono-global-jairis"), true);
   assert.equal(isCommunityRootTopicSlug("previa-acb"), false);
+});
+
+test("UCAM keeps its technical ACB slug while using the shorter visible title", async () => {
+  const sql = await readFile(
+    new URL("../supabase/migrations/202610120005_rename_ucam_conversation.sql", import.meta.url),
+    "utf8",
+  );
+
+  assert.equal(getCommunityRootTopicSlug("acb"), "ucam-murcia-en-acb");
+  assert.match(sql, /update public\.community_topics/i);
+  assert.match(sql, /title = 'UCAM Murcia'/i);
+  assert.match(sql, /where slug = 'ucam-murcia-en-acb'/i);
 });
 
 test("three-root migration removes the retired root and preserves member reply features", async () => {
