@@ -37,13 +37,15 @@ export default function HeaderClient({ viewer, notificationSummary }: HeaderClie
       }`}
     >
       <div className="site-header-content">
-        <Image
-          src="/logoCTC.jpg"
-          alt="Logo CTC"
-          className="site-header-image"
-          width={100}
-          height={100}
-        />
+        <Link href="/" aria-label="Ir a Inicio">
+          <Image
+            src="/logoCTC.jpg"
+            alt="Logo CTC"
+            className="site-header-image"
+            width={100}
+            height={100}
+          />
+        </Link>
         <Image
           src="/ctc_transparente.png"
           alt="CTC"
