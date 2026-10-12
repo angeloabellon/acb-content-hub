@@ -68,7 +68,7 @@ export default async function ComunidadPage() {
           </div>
 
           <div className="mx-auto grid w-full max-w-sm grid-cols-3 gap-3 sm:gap-4 lg:max-w-none">
-            <div className="group flex flex-col items-center gap-3">
+            <div className="group flex items-center justify-center">
               <div className="relative flex h-24 w-full items-center justify-center overflow-hidden rounded-2xl border border-red-400/40 bg-gradient-to-br from-red-500/35 via-[#300407] to-black shadow-[0_12px_32px_rgba(224,19,16,0.22)] sm:h-28">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
                 <Image
@@ -79,12 +79,9 @@ export default async function ComunidadPage() {
                   className="relative h-20 w-20 object-contain drop-shadow-[0_8px_12px_rgba(224,19,16,0.45)] sm:h-24 sm:w-24"
                 />
               </div>
-              <span className="text-center text-[10px] font-bold uppercase tracking-[0.16em] text-red-200 sm:text-xs">
-                UCAM
-              </span>
             </div>
 
-            <div className="group flex flex-col items-center gap-3">
+            <div className="group flex items-center justify-center">
               <div className="relative flex h-24 w-full items-center justify-center overflow-hidden rounded-2xl border border-emerald-400/40 bg-gradient-to-br from-emerald-500/30 via-[#03170d] to-black shadow-[0_12px_32px_rgba(16,185,129,0.18)] sm:h-28">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
                 <Image
@@ -95,12 +92,9 @@ export default async function ComunidadPage() {
                   className="relative h-20 w-20 object-contain drop-shadow-[0_8px_12px_rgba(16,185,129,0.4)] sm:h-24 sm:w-24"
                 />
               </div>
-              <span className="text-center text-[10px] font-bold uppercase tracking-[0.12em] text-emerald-200 sm:text-xs">
-                Unicaja
-              </span>
             </div>
 
-            <div className="group flex flex-col items-center gap-3">
+            <div className="group flex items-center justify-center">
               <div className="relative flex h-24 w-full items-center justify-center overflow-hidden rounded-2xl border border-amber-300/45 bg-gradient-to-br from-amber-300/30 via-[#211603] to-black shadow-[0_12px_32px_rgba(251,191,36,0.17)] sm:h-28">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
                 <Image
@@ -111,9 +105,6 @@ export default async function ComunidadPage() {
                   className="relative h-20 w-20 object-contain drop-shadow-[0_8px_12px_rgba(251,191,36,0.4)] sm:h-24 sm:w-24"
                 />
               </div>
-              <span className="text-center text-[10px] font-bold uppercase tracking-[0.1em] text-amber-200 sm:text-xs">
-                Jairis
-              </span>
             </div>
           </div>
         </div>

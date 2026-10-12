@@ -16,6 +16,7 @@ import {
 } from "@/lib/supabase/server";
 import type { CommunityFollowStatus } from "@/lib/community-follow";
 import { extractCommunityMentionHandles } from "@/lib/community-mentions";
+import { formatCommunityMessageDate, formatCommunityShortDate } from "@/lib/community-format";
 export {
   getCommunityViewerIdentity,
   type CommunityViewerIdentity,
@@ -126,18 +127,11 @@ function dateLabel(value: string): string {
   if (hours < 24) return `Hace ${hours} h`;
   const days = Math.floor(hours / 24);
   if (days < 7) return `Hace ${days} días`;
-  return new Intl.DateTimeFormat("es-ES", { day: "numeric", month: "short" }).format(date);
+  return formatCommunityShortDate(value);
 }
 
 function fullDateLabel(value: string): string {
-  const date = new Date(value);
-  if (Number.isNaN(date.valueOf())) return "Recientemente";
-  return new Intl.DateTimeFormat("es-ES", {
-    day: "numeric",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date);
+  return formatCommunityMessageDate(value);
 }
 
 function mapTopic(

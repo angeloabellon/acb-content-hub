@@ -6,7 +6,12 @@ import {
   getSafeCommunityPath,
   isCommunityConversationKey,
 } from "../lib/community-validation.ts";
-import { formatCommunityReplyCount } from "../lib/community-format.ts";
+import {
+  COMMUNITY_TIME_ZONE,
+  formatCommunityMessageDate,
+  formatCommunityReplyCount,
+  formatCommunityShortDate,
+} from "../lib/community-format.ts";
 import {
   getSupabasePublicConfig,
   isSupabaseConfigured,
@@ -35,6 +40,13 @@ test("community reply counts use the singular only for one reply", () => {
   assert.equal(formatCommunityReplyCount(0), "0 respuestas");
   assert.equal(formatCommunityReplyCount(1), "1 respuesta");
   assert.equal(formatCommunityReplyCount(2), "2 respuestas");
+});
+
+test("community timestamps consistently use the Europe/Madrid time zone", () => {
+  assert.equal(COMMUNITY_TIME_ZONE, "Europe/Madrid");
+  assert.equal(formatCommunityMessageDate("2026-10-12T12:11:00.000Z"), "12 oct, 14:11");
+  assert.equal(formatCommunityMessageDate("2026-01-12T12:11:00.000Z"), "12 ene, 13:11");
+  assert.equal(formatCommunityShortDate("2026-10-12T12:11:00.000Z"), "12 oct");
 });
 
 test("Supabase public configuration requires a valid URL and publishable key", () => {

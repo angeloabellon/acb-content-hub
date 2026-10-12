@@ -4,6 +4,7 @@ import test from "node:test";
 
 import {
   communityConversations,
+  communityConversationThemes,
   communityRootTopicSlugs,
   communityTopics,
   getCommunityRootTopicSlug,
@@ -98,6 +99,15 @@ test("exactly three permanent conversations are available in the UI fallback", (
   assert.equal(isCommunityRootTopicSlug("unicaja-malaga"), true);
   assert.equal(isCommunityRootTopicSlug("hozono-global-jairis"), true);
   assert.equal(isCommunityRootTopicSlug("previa-acb"), false);
+});
+
+test("each permanent conversation carries its own contained CTC accent theme", () => {
+  assert.match(communityConversationThemes.acb.heroSurface, /#140303/);
+  assert.match(communityConversationThemes["unicaja-malaga"].heroSurface, /#03170d/);
+  assert.match(communityConversationThemes["hozono-global-jairis"].heroSurface, /#211603/);
+  assert.equal(communityConversations[0]?.theme, communityConversationThemes.acb);
+  assert.equal(communityConversations[1]?.theme, communityConversationThemes["unicaja-malaga"]);
+  assert.equal(communityConversations[2]?.theme, communityConversationThemes["hozono-global-jairis"]);
 });
 
 test("UCAM keeps its technical ACB keys while both Community records use the shorter visible title", async () => {
@@ -205,4 +215,7 @@ test("legacy routes and retired entry points redirect to canonical conversations
   assert.match(homePage, /logoUCAM\.png/);
   assert.match(homePage, /logoUnicaja\.png/);
   assert.match(homePage, /logoJairis\.png/);
+  assert.doesNotMatch(homePage, />\s*UCAM\s*<\/span>/);
+  assert.doesNotMatch(homePage, />\s*Unicaja\s*<\/span>/);
+  assert.doesNotMatch(homePage, />\s*Jairis\s*<\/span>/);
 });

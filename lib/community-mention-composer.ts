@@ -24,6 +24,11 @@ export const emptyCommunityMentionComposer = (): CommunityMentionComposerState =
   tokens: [],
 });
 
+/** Clears the visible draft and all hidden mention metadata after publishing. */
+export function resetCommunityMentionComposer(): CommunityMentionComposerState {
+  return emptyCommunityMentionComposer();
+}
+
 function tokenMatchesValue(token: CommunityMentionToken, value: string): boolean {
   return value.slice(token.start, token.end) === `@${token.displayName}`;
 }

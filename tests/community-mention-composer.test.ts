@@ -8,6 +8,7 @@ import {
   getCommunityMentionQuery,
   insertCommunityMention,
   nextCommunityMentionSuggestionIndex,
+  resetCommunityMentionComposer,
   updateCommunityMentionComposer,
 } from "../lib/community-mention-composer.ts";
 
@@ -68,6 +69,15 @@ test("the composer does not duplicate an automatic reply mention and drops metad
   assert.equal(canonicalCommunityMentionValue(edited), "Hola");
 });
 
+test("clearing a published reply removes its draft and every stored mention token", () => {
+  const query = getCommunityMentionQuery("@cas", 4);
+  assert.ok(query);
+  const selected = insertCommunityMention({ value: "@cas", tokens: [] }, query, profiles[1]);
+
+  assert.deepEqual(resetCommunityMentionComposer(), { value: "", tokens: [] });
+  assert.notEqual(canonicalCommunityMentionValue(selected.state), "");
+});
+
 test("keyboard navigation wraps through suggestion options", () => {
   assert.equal(nextCommunityMentionSuggestionIndex(0, 3, 1), 1);
   assert.equal(nextCommunityMentionSuggestionIndex(0, 3, -1), 2);
@@ -75,9 +85,10 @@ test("keyboard navigation wraps through suggestion options", () => {
 });
 
 test("the UI exposes an accessible public-name autocomplete and reply action without self-mentions", async () => {
-  const [field, conversation] = await Promise.all([
+  const [field, conversation, replyForm] = await Promise.all([
     readFile(new URL("../components/community/CommunityMentionField.tsx", import.meta.url), "utf8"),
     readFile(new URL("../components/community/CommunityTopicConversation.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../components/community/CommunityReplyForm.tsx", import.meta.url), "utf8"),
   ]);
 
   assert.match(field, /role: "combobox"/);
@@ -92,4 +103,8 @@ test("the UI exposes an accessible public-name autocomplete and reply action wit
   assert.match(conversation, />\s*Responder\s*</);
   assert.match(conversation, /message\.authorId !== viewer\.id/);
   assert.match(conversation, /requestedMention/);
+  assert.match(field, /resetCommunityMentionComposer/);
+  assert.match(field, /handledRequest\.current = requestedMention\?\.id/);
+  assert.match(replyForm, /state\.status === "success"/);
+  assert.match(replyForm, /setResetKey/);
 });

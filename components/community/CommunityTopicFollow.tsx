@@ -9,12 +9,14 @@ import {
   unfollowCommunityTopic,
 } from "@/app/comunidad/actions";
 import { formatCommunityUnreadReplyCount } from "@/lib/community-follow";
+import type { CommunityConversationTheme } from "@/data/community";
 
 type CommunityTopicFollowProps = {
   topicId: string;
   topicSlug: string;
   isFollowing: boolean;
   unreadReplies: number;
+  theme: CommunityConversationTheme;
 };
 
 export default function CommunityTopicFollow({
@@ -22,6 +24,7 @@ export default function CommunityTopicFollow({
   topicSlug,
   isFollowing,
   unreadReplies,
+  theme,
 }: CommunityTopicFollowProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -62,7 +65,7 @@ export default function CommunityTopicFollow({
         type="button"
         onClick={toggleFollow}
         disabled={isPending}
-        className="rounded-xl border border-red-900/40 bg-white/[0.06] px-4 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-orange-400/40 hover:text-orange-300 disabled:cursor-not-allowed disabled:opacity-60"
+        className={`rounded-xl border px-4 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60 ${theme.secondaryButton}`}
       >
         {isPending ? "Actualizando…" : isFollowing ? "Dejar de seguir" : "Seguir tema"}
       </button>

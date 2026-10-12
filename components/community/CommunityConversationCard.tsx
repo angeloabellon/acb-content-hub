@@ -16,14 +16,14 @@ export default function CommunityConversationCard({
   return (
     <Link
       href={`/comunidad/tema/${topic?.slug ?? getCommunityRootTopicSlug(conversation.key)}`}
-      className="premium-hover group relative min-h-[330px] overflow-hidden rounded-3xl border border-red-900/30 bg-gradient-to-br from-[#140303] via-black to-[#220505] p-7 shadow-[0_10px_40px_rgba(122,12,12,0.18)] sm:p-9"
+      className={`premium-hover group relative min-h-[330px] overflow-hidden rounded-3xl border p-7 ${conversation.theme.cardSurface} sm:p-9`}
     >
       <div className="premium-overlay" />
-      <div className="absolute -right-12 -top-8 h-52 w-52 rounded-full bg-red-800/15 blur-3xl" />
+      <div className={`absolute -right-12 -top-8 h-52 w-52 rounded-full blur-3xl ${conversation.theme.cardGlow}`} />
 
       <div className="relative z-10 flex h-full flex-col">
         <div className="flex items-start justify-between gap-5">
-          <p className="uppercase tracking-[0.2em] text-xs font-semibold text-red-300/70">
+          <p className={`uppercase tracking-[0.2em] text-xs font-semibold ${conversation.theme.eyebrow}`}>
             {conversation.eyebrow}
           </p>
           {conversation.competitionLogo ? (
@@ -43,10 +43,10 @@ export default function CommunityConversationCard({
             alt={conversation.logo.alt}
             width={conversation.logo.width}
             height={conversation.logo.height}
-            className={`${conversation.logo.className} mb-7 object-contain drop-shadow-[0_12px_20px_rgba(224,19,16,0.3)]`}
+            className={`${conversation.logo.className} ${conversation.theme.logoShadow} mb-7 object-contain`}
           />
 
-          <h2 className="text-3xl font-extrabold leading-tight transition-colors duration-300 group-hover:text-orange-300">
+          <h2 className={`text-3xl font-extrabold leading-tight transition-colors duration-300 ${conversation.theme.groupHoverText}`}>
             {conversation.title}
           </h2>
 
@@ -59,7 +59,7 @@ export default function CommunityConversationCard({
           <span className="text-white/55">
             {topic ? `${topic.replies} ${topic.replies === 1 ? "respuesta" : "respuestas"}` : "Conversación abierta"}
           </span>
-          <span className="text-white transition-colors group-hover:text-orange-300">
+          <span className={`text-white transition-colors ${conversation.theme.groupHoverText}`}>
             Abrir conversación <span aria-hidden="true">→</span>
           </span>
         </div>

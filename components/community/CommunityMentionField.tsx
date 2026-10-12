@@ -10,6 +10,7 @@ import {
   getCommunityMentionQuery,
   insertCommunityMention,
   nextCommunityMentionSuggestionIndex,
+  resetCommunityMentionComposer,
   updateCommunityMentionComposer,
 } from "@/lib/community-mention-composer";
 
@@ -29,11 +30,13 @@ type CommunityMentionFieldProps = {
   multiline?: boolean;
   rows?: number;
   requestedMention?: MentionRequest;
+  resetKey?: number;
+  focusClassName?: string;
 };
 
 type TextControl = HTMLInputElement | HTMLTextAreaElement;
 
-const inputClassName = "w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-white outline-none transition placeholder:text-white/30 focus:border-orange-400/60";
+const inputClassName = "w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-white outline-none transition placeholder:text-white/30";
 
 export default function CommunityMentionField({
   id,
@@ -46,6 +49,8 @@ export default function CommunityMentionField({
   multiline = false,
   rows,
   requestedMention,
+  resetKey,
+  focusClassName = "focus:ring-orange-300/60",
 }: CommunityMentionFieldProps) {
   const [composer, setComposer] = useState(emptyCommunityMentionComposer);
   const [query, setQuery] = useState<ReturnType<typeof getCommunityMentionQuery>>();
@@ -83,6 +88,17 @@ export default function CommunityMentionField({
     setQuery(undefined);
     setCursor(result.cursor);
   }, [composer, requestedMention]);
+
+  useEffect(() => {
+    if (!resetKey) return;
+    const resetTimer = window.setTimeout(() => {
+      setComposer(resetCommunityMentionComposer());
+      setQuery(undefined);
+      setActiveIndex(0);
+      handledRequest.current = requestedMention?.id;
+    }, 0);
+    return () => window.clearTimeout(resetTimer);
+  }, [resetKey, requestedMention?.id]);
 
   function updateQuery(value: string, cursor: number) {
     const nextQuery = getCommunityMentionQuery(value, cursor);
@@ -131,7 +147,7 @@ export default function CommunityMentionField({
     "aria-controls": suggestions.length ? listboxId : undefined,
     "aria-expanded": suggestions.length > 0,
     "aria-activedescendant": activeSuggestion ? `${listboxId}-${activeIndex}` : undefined,
-    className: `${inputClassName}${multiline ? " resize-y" : ""}`,
+    className: `${inputClassName} ${focusClassName}${multiline ? " resize-y" : ""}`,
   };
 
   return (

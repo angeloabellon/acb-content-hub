@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 
-import type { CommunityMessage } from "@/data/community";
+import type { CommunityConversationTheme, CommunityMessage } from "@/data/community";
 import type { CommunityMentionableProfile, CommunityViewer } from "@/lib/community";
 import CommunityMessageBody from "@/components/community/CommunityMessageBody";
 import CommunityReplyForm from "@/components/community/CommunityReplyForm";
@@ -15,6 +15,7 @@ type CommunityTopicConversationProps = {
   backendConfigured: boolean;
   viewer?: CommunityViewer;
   profiles: CommunityMentionableProfile[];
+  theme: CommunityConversationTheme;
 };
 
 export default function CommunityTopicConversation({
@@ -24,6 +25,7 @@ export default function CommunityTopicConversation({
   backendConfigured,
   viewer,
   profiles,
+  theme,
 }: CommunityTopicConversationProps) {
   const [requestedMention, setRequestedMention] = useState<{
     profile: CommunityMentionableProfile;
@@ -52,9 +54,9 @@ export default function CommunityTopicConversation({
             && (!viewer || message.authorId !== viewer.id),
           );
           return (
-            <article key={message.id ?? `${message.author}-${index}`} className="rounded-3xl border border-red-900/30 bg-gradient-to-br from-[#140303] via-black to-[#220505] p-6 shadow-[0_10px_40px_rgba(122,12,12,0.14)] sm:p-8">
+            <article key={message.id ?? `${message.author}-${index}`} className={`rounded-3xl border p-6 sm:p-8 ${theme.cardSurface}`}>
               <div className="flex gap-4">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-red-700/40 bg-red-950/50 text-xs font-bold text-red-100">
+                <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full border text-xs font-bold ${theme.avatar}`}>
                   {message.initials}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -71,7 +73,7 @@ export default function CommunityTopicConversation({
                     <button
                       type="button"
                       onClick={() => replyTo(message.authorMention!)}
-                      className="mt-4 inline-flex items-center rounded-lg px-2 py-1 text-sm font-medium text-white/55 transition hover:bg-white/[0.06] hover:text-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-300/60"
+                      className={`mt-4 inline-flex items-center rounded-lg px-2 py-1 text-sm font-medium text-white/55 transition hover:bg-white/[0.06] ${theme.accentText} focus:outline-none focus:ring-2 ${theme.focusRing}`}
                       aria-label={`Responder a ${message.authorMention!.displayName}`}
                     >
                       Responder
@@ -84,18 +86,18 @@ export default function CommunityTopicConversation({
         })}
       </section>
 
-      <section id="community-reply" className="mt-8 rounded-3xl border border-white/10 bg-white/[0.03] p-6 text-center sm:p-8">
+      <section id="community-reply" className={`mt-8 rounded-3xl border bg-white/[0.03] p-6 text-center sm:p-8 ${theme.accentBorder}`}>
         {!backendConfigured ? (
           <p className="text-sm leading-relaxed text-white/60">La participación se activará cuando se conecte la Comunidad CTC a su proyecto de datos.</p>
         ) : !viewer ? (
           <>
             <p className="text-sm leading-relaxed text-white/60">Inicia sesión para participar en la conversación.</p>
-            <Link href={`/comunidad/acceso?next=/comunidad/tema/${topicSlug}`} className="mt-5 inline-flex rounded-xl border border-red-900/40 bg-white/[0.05] px-5 py-3 text-sm font-semibold text-white transition-all hover:-translate-y-1 hover:border-orange-400/40 hover:text-orange-300">
+            <Link href={`/comunidad/acceso?next=/comunidad/tema/${topicSlug}`} className={`mt-5 inline-flex rounded-xl border bg-white/[0.05] px-5 py-3 text-sm font-semibold text-white transition-all hover:-translate-y-1 ${theme.secondaryButton}`}>
               Acceder para responder
             </Link>
           </>
         ) : topicId ? (
-          <CommunityReplyForm topicId={topicId} topicSlug={topicSlug} profiles={profiles} requestedMention={requestedMention} />
+          <CommunityReplyForm topicId={topicId} topicSlug={topicSlug} profiles={profiles} requestedMention={requestedMention} theme={theme} />
         ) : (
           <p className="text-sm leading-relaxed text-white/60">Esta conversación es una muestra visual. La participación se activará cuando se conecte la Comunidad CTC a su proyecto de datos.</p>
         )}

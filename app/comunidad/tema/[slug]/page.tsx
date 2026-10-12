@@ -5,7 +5,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import CommunityTopicConversation from "@/components/community/CommunityTopicConversation";
 import CommunityTopicFollow from "@/components/community/CommunityTopicFollow";
 import { CommunityMentionText } from "@/components/community/CommunityMessageBody";
-import { getCommunityConversation } from "@/data/community";
+import { defaultCommunityConversationTheme, getCommunityConversation } from "@/data/community";
 import { formatCommunityReplyCount } from "@/lib/community-format";
 import { formatCommunityMentionText } from "@/lib/community-mentions";
 import {
@@ -69,6 +69,7 @@ export default async function CommunityTopicPage({
   if (!topic) notFound();
 
   const conversation = getCommunityConversation(topic.conversation);
+  const theme = conversation?.theme ?? defaultCommunityConversationTheme;
   const viewer = await getCommunityViewer();
   const backendConfigured = isCommunityBackendConfigured();
   const profiles = viewer ? await listCommunityMentionableProfiles() : [];
@@ -76,15 +77,16 @@ export default async function CommunityTopicPage({
   return (
     <main className="mx-auto max-w-4xl px-6 py-12 sm:py-16">
       <nav aria-label="Migas de pan" className="mb-8 flex flex-wrap items-center gap-2 text-sm text-white/55">
-        <Link href="/comunidad" className="transition-colors hover:text-orange-300">Comunidad</Link>
+        <Link href="/comunidad" className={`transition-colors ${theme.hoverText}`}>Comunidad</Link>
         <span aria-hidden="true">/</span>
         <span>{conversation?.title}</span>
       </nav>
 
-      <section className="relative mb-10 overflow-hidden rounded-3xl border border-red-900/30 bg-gradient-to-br from-[#140303] via-black to-[#220505] px-6 py-10 shadow-[0_10px_40px_rgba(122,12,12,0.22)] sm:px-10 sm:py-12">
+      <section className={`relative mb-10 overflow-hidden rounded-3xl border px-6 py-10 sm:px-10 sm:py-12 ${theme.heroSurface}`}>
         <div className="premium-overlay" />
+        <div className={`pointer-events-none absolute -right-24 -top-20 h-72 w-72 rounded-full blur-3xl ${theme.heroGlow}`} />
         <div className="relative z-10">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-red-300/70">{conversation?.eyebrow}</p>
+          <p className={`mb-4 text-xs font-semibold uppercase tracking-[0.2em] ${theme.eyebrow}`}>{conversation?.eyebrow}</p>
           <h1 className="max-w-3xl text-3xl font-extrabold leading-tight sm:text-4xl md:text-5xl">
             <CommunityMentionText value={topic.title} mentions={topic.mentions} />
           </h1>
@@ -95,7 +97,7 @@ export default async function CommunityTopicPage({
             <span>{formatCommunityReplyCount(topic.replies)}</span>
             <span>Última actividad {topic.lastActivity.toLowerCase()}</span>
             {topic.unreadReplies && topic.unreadReplies > 0 ? (
-              <span className="rounded-full border border-orange-400/35 bg-orange-300/10 px-3 py-1.5 font-semibold text-orange-200">
+              <span className={`rounded-full border px-3 py-1.5 font-semibold ${theme.accentBadge}`}>
                 {topic.unreadReplies} {topic.unreadReplies === 1 ? "nueva" : "nuevas"}
               </span>
             ) : null}
@@ -106,6 +108,7 @@ export default async function CommunityTopicPage({
               topicSlug={topic.slug}
               isFollowing={Boolean(topic.following)}
               unreadReplies={topic.unreadReplies ?? 0}
+              theme={theme}
             />
           )}
         </div>
@@ -118,6 +121,7 @@ export default async function CommunityTopicPage({
         backendConfigured={backendConfigured}
         viewer={viewer}
         profiles={profiles}
+        theme={theme}
       />
     </main>
   );
