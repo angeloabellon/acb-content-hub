@@ -100,16 +100,19 @@ test("exactly three permanent conversations are available in the UI fallback", (
   assert.equal(isCommunityRootTopicSlug("previa-acb"), false);
 });
 
-test("UCAM keeps its technical ACB slug while using the shorter visible title", async () => {
+test("UCAM keeps its technical ACB keys while both Community records use the shorter visible title", async () => {
   const sql = await readFile(
-    new URL("../supabase/migrations/202610120005_rename_ucam_conversation.sql", import.meta.url),
+    new URL("../supabase/migrations/202610120006_rename_ucam_community_space.sql", import.meta.url),
     "utf8",
   );
 
   assert.equal(getCommunityRootTopicSlug("acb"), "ucam-murcia-en-acb");
+  assert.match(sql, /update public\.community_spaces/i);
+  assert.match(sql, /where slug = 'acb'/i);
   assert.match(sql, /update public\.community_topics/i);
   assert.match(sql, /title = 'UCAM Murcia'/i);
   assert.match(sql, /where slug = 'ucam-murcia-en-acb'/i);
+  assert.doesNotMatch(sql, /alter table|delete from|insert into/i);
 });
 
 test("three-root migration removes the retired root and preserves member reply features", async () => {

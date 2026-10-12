@@ -2,7 +2,7 @@
 --
 -- This file is NOT a Supabase migration and must never be added to an automated
 -- deployment or migration runner. Run it manually in the Supabase SQL Editor,
--- as a database owner, only AFTER migration 202610120005 has succeeded.
+-- as a database owner, only AFTER migration 202610120006 has succeeded.
 --
 -- It permanently removes every Community profile and every auth.users account
 -- in this Supabase project, plus posts, follows, notifications, aliases and
@@ -69,6 +69,13 @@ where slug not in (
 delete from public.community_username_aliases;
 delete from public.community_profiles;
 delete from auth.users;
+
+-- Keep the legacy technical `acb` key aligned with the visible conversation
+-- name. The key itself is never changed because existing data depends on it.
+update public.community_spaces
+set title = 'UCAM Murcia'
+where slug = 'acb'
+  and title is distinct from 'UCAM Murcia';
 
 -- Return each retained root to an empty system-owned conversation. No fake
 -- human author is introduced, and no reply/follow/notification is recreated.
