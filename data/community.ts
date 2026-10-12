@@ -1,11 +1,10 @@
 export type CommunityConversationKey =
   | "acb"
-  | "bcl"
   | "unicaja-malaga"
   | "hozono-global-jairis";
 
 /**
- * Presentation data for the four fixed conversations. `space_slug` remains a
+ * Presentation data for the three fixed conversations. `space_slug` remains a
  * database compatibility field, but the product deliberately exposes only
  * conversations—there is no public space or sub-topic level.
  */
@@ -77,14 +76,6 @@ export const communityConversations: CommunityConversation[] = [
     competitionLogo: { src: "/logoEndesa.png", alt: "Liga Endesa", width: 76, height: 36, className: "h-9" },
   },
   {
-    key: "bcl",
-    eyebrow: "Basketball Champions League",
-    title: "UCAM Murcia en BCL",
-    description: "La conversación continua para vivir las previas, análisis y noches europeas del UCAM Murcia.",
-    logo: { src: "/logoUCAM.png", alt: "UCAM Murcia", width: 82, height: 82, className: "h-16 w-16" },
-    competitionLogo: { src: "/logoBCL.png", alt: "Basketball Champions League", width: 118, height: 38, className: "h-8 max-w-[7.5rem]" },
-  },
-  {
     key: "unicaja-malaga",
     eyebrow: "Actualidad del equipo",
     title: "Unicaja Málaga",
@@ -103,7 +94,6 @@ export const communityConversations: CommunityConversation[] = [
 
 export const communityRootTopicSlugs = {
   acb: "ucam-murcia-en-acb",
-  bcl: "ucam-murcia-en-bcl",
   "unicaja-malaga": "unicaja-malaga",
   "hozono-global-jairis": "hozono-global-jairis",
 } as const satisfies Record<CommunityConversationKey, string>;

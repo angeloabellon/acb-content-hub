@@ -9,7 +9,7 @@ import { createMetadata } from "@/lib/seo";
 export const metadata: Metadata = createMetadata({
   title: "Comunidad",
   description:
-    "La comunidad de Cast To Cast para seguir y comentar al UCAM Murcia en ACB y Basketball Champions League.",
+    "La comunidad de Cast To Cast para seguir y comentar al UCAM Murcia, Unicaja Málaga y Hozono Global Jairis.",
   path: "/comunidad",
 });
 
@@ -52,7 +52,7 @@ export default async function ComunidadPage() {
               <span className="block text-red-500">se habla aquí</span>
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/70">
-              Cuatro conversaciones permanentes para seguir al UCAM Murcia, Unicaja
+              Tres conversaciones permanentes para seguir al UCAM Murcia, Unicaja
               Málaga y Hozono Global Jairis. Entra, lee y responde en el hilo que
               quieras seguir.
             </p>

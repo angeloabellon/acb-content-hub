@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  getRetiredCommunityPath,
   getSafeCommunityPath,
   isCommunityConversationKey,
 } from "../lib/community-validation.ts";
@@ -11,12 +12,17 @@ import {
   isSupabaseConfigured,
 } from "../lib/supabase/config.ts";
 
-test("community conversation keys accept all four permanent conversations", () => {
+test("community conversation keys accept exactly the three permanent conversations", () => {
   assert.equal(isCommunityConversationKey("acb"), true);
-  assert.equal(isCommunityConversationKey("bcl"), true);
   assert.equal(isCommunityConversationKey("unicaja-malaga"), true);
   assert.equal(isCommunityConversationKey("hozono-global-jairis"), true);
+  assert.equal(isCommunityConversationKey("bcl"), false);
   assert.equal(isCommunityConversationKey("other"), false);
+});
+
+test("retired Community topic URLs return to the Community landing page", () => {
+  assert.equal(getRetiredCommunityPath("ucam-murcia-en-bcl"), "/comunidad");
+  assert.equal(getRetiredCommunityPath("ucam-murcia-en-acb"), undefined);
 });
 
 test("community redirect targets remain inside the community", () => {

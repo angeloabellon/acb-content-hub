@@ -2,11 +2,11 @@
 --
 -- This file is NOT a Supabase migration and must never be added to an automated
 -- deployment or migration runner. Run it manually in the Supabase SQL Editor,
--- as a database owner, only AFTER migration 202610120003 has succeeded.
+-- as a database owner, only AFTER migration 202610120004 has succeeded.
 --
 -- It permanently removes every Community profile and every auth.users account
 -- in this Supabase project, plus posts, follows, notifications, aliases and
--- historical topic-route data. It retains only the four system-owned roots.
+-- historical topic-route data. It retains only the three system-owned roots.
 -- Take a backup first. Do not use it if auth.users contains accounts unrelated
 -- to Comunidad CTC.
 
@@ -32,12 +32,11 @@ begin
     from public.community_topics
     where slug in (
       'ucam-murcia-en-acb',
-      'ucam-murcia-en-bcl',
       'unicaja-malaga',
       'hozono-global-jairis'
     )
-  ) <> 4 then
-    raise exception 'Reset cancelled: the four permanent roots are missing. Apply migration 202610120003 first.';
+  ) <> 3 then
+    raise exception 'Reset cancelled: the three permanent roots are missing. Apply migration 202610120004 first.';
   end if;
 end;
 $$;
@@ -53,8 +52,8 @@ union all select 'before', 'community_username_aliases', count(*) from public.co
 union all select 'before', 'community_topics', count(*) from public.community_topics
 order by entity;
 
--- Delete dependent, user-derived data before the people who own it. The four
--- root conversation rows have NULL author_id after 202610120003, so deleting
+-- Delete dependent, user-derived data before the people who own it. The three
+-- root conversation rows have NULL author_id after 202610120004, so deleting
 -- Community/Auth users cannot violate their foreign key.
 delete from public.community_notifications;
 delete from public.community_topic_follows;
@@ -64,7 +63,6 @@ delete from public.community_posts;
 delete from public.community_topics
 where slug not in (
   'ucam-murcia-en-acb',
-  'ucam-murcia-en-bcl',
   'unicaja-malaga',
   'hozono-global-jairis'
 );
@@ -88,13 +86,12 @@ set
 from (
   values
     ('ucam-murcia-en-acb'::text, 'UCAM Murcia en ACB'::text, 'Conversación principal permanente de la Comunidad CTC sobre el UCAM Murcia en Liga Endesa.'::text),
-    ('ucam-murcia-en-bcl'::text, 'UCAM Murcia en BCL'::text, 'Conversación principal permanente de la Comunidad CTC sobre el UCAM Murcia en Basketball Champions League.'::text),
     ('unicaja-malaga'::text, 'Unicaja Málaga'::text, 'Conversación principal permanente de la Comunidad CTC sobre Unicaja Málaga.'::text),
     ('hozono-global-jairis'::text, 'Hozono Global Jairis'::text, 'Conversación principal permanente de la Comunidad CTC sobre Hozono Global Jairis.'::text)
 ) as roots(slug, title, body)
 where topic.slug = roots.slug;
 
--- POST-RESET CHECKS: expected values are 0 for every user/activity row and 4
+-- POST-RESET CHECKS: expected values are 0 for every user/activity row and 3
 -- for topics. The second query verifies that every retained root has no author
 -- and no replies, follows or notifications.
 select 'after' as phase, 'auth.users' as entity, count(*) as count from auth.users
@@ -119,7 +116,6 @@ left join public.community_topic_follows as follow on follow.topic_id = topic.id
 left join public.community_notifications as notification on notification.topic_id = topic.id
 where topic.slug in (
   'ucam-murcia-en-acb',
-  'ucam-murcia-en-bcl',
   'unicaja-malaga',
   'hozono-global-jairis'
 )

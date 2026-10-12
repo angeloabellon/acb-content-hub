@@ -90,13 +90,13 @@ Para desarrollo local se puede añadir también `http://localhost:3000/comunidad
 - `community_spaces`: claves técnicas heredadas para compatibilidad de datos; ya no se muestran como nivel de navegación ni permiten crear subtemas.
 - `community_profiles`: perfil público mínimo enlazado a `auth.users`. `username` es el identificador público real, normalizado en minúsculas, único y usado por las menciones.
 - `community_username_aliases`: conserva handles técnicos anteriores para que menciones históricas y sus avisos continúen resolviendo al mismo perfil. No se ofrecen como sugerencias nuevas.
-- `community_topics`: exactamente cuatro conversaciones principales: `ucam-murcia-en-acb`, `ucam-murcia-en-bcl`, `unicaja-malaga` y `hozono-global-jairis`. Son contenedores de sistema, sin autor humano (`author_id` nulo), para que sobrevivan a un reinicio de usuarios.
+- `community_topics`: exactamente tres conversaciones principales: `ucam-murcia-en-acb`, `unicaja-malaga` y `hozono-global-jairis`. Son contenedores de sistema, sin autor humano (`author_id` nulo), para que sobrevivan a un reinicio de usuarios.
 - `community_posts`: todos los mensajes de cada conversación; cada respuesta mantiene un autor real y obligatorio. Las aperturas de los antiguos temas conservan el título original en `legacy_topic_title`, que se muestra destacado de forma segura antes de su texto.
 - `community_topic_follows`: seguimiento privado de cada persona, incluida su última lectura.
 
 La migración de reforma guarda las URLs anteriores en `community_topic_legacy_routes`, conserva un registro técnico en `community_topic_migrations`, unifica los seguimientos por hilo raíz y remapea los avisos relacionados con respuestas. Las menciones permanecen en el cuerpo original y se resuelven igual que antes. El estado de lectura combinado usa la fecha más antigua para no ocultar respuestas que antes estuvieran sin leer.
 
-Las políticas RLS permiten leer únicamente contenido visible. Una persona autenticada ya no puede crear temas: solo puede responder con su propio `auth.uid()` en una de las cuatro conversaciones principales, siempre que no esté bloqueada. Los seguimientos y sus marcas de lectura son privados: cada persona solo puede consultarlos, crearlos, actualizarlos o eliminarlos para su propio `auth.uid()`. No hay permisos de edición ni de moderación expuestos desde la interfaz todavía.
+Las políticas RLS permiten leer únicamente contenido visible. Una persona autenticada ya no puede crear temas: solo puede responder con su propio `auth.uid()` en una de las tres conversaciones principales, siempre que no esté bloqueada. Los seguimientos y sus marcas de lectura son privados: cada persona solo puede consultarlos, crearlos, actualizarlos o eliminarlos para su propio `auth.uid()`. No hay permisos de edición ni de moderación expuestos desde la interfaz todavía.
 
 ## Acceso
 
@@ -110,15 +110,15 @@ La aplicación verifica la identidad con `getClaims()` en servidor; no confía e
 
 Sin las variables de Supabase, las pantallas siguen funcionando con conversaciones de muestra, pero la publicación permanece desactivada de forma explícita.
 
-## Reforma de cuatro conversaciones y reset total en producción
+## Modelo de tres conversaciones y reset total en producción
 
 El reset es intencionadamente manual y destructivo: no está dentro de `supabase/migrations` y no se ejecuta en despliegues futuros. Borra todos los `auth.users` del proyecto, así que solo es válido si Supabase no alberga cuentas ajenas a Comunidad CTC.
 
 1. Crea un backup o una rama de la base de datos. Confirma también que `auth.users` contiene solo cuentas de Comunidad.
-2. Aplica el historial de migraciones pendiente, incluida [`202610120003_expand_community_permanent_roots.sql`](../supabase/migrations/202610120003_expand_community_permanent_roots.sql). Va **antes** del reset: convierte las raíces en registros de sistema sin autor humano y añade Unicaja Málaga y Hozono Global Jairis.
+2. Aplica el historial de migraciones pendiente, incluida la última migración [`202610120004_remove_bcl_permanent_root.sql`](../supabase/migrations/202610120004_remove_bcl_permanent_root.sql). Debe ejecutarse después de `202610120003`: elimina de forma segura la raíz retirada y ajusta constraints y RLS al modelo de tres conversaciones.
 3. Ejecuta las consultas de recuento de la sección siguiente y conserva el resultado como comprobación previa.
 4. Abre [`reset_community_production.sql`](../supabase/manual/reset_community_production.sql) en el SQL Editor de Supabase. Lee el aviso, sustituye manualmente `__REPLACE_WITH_YES_DELETE_ALL_COMMUNITY_USERS__` por `YES_DELETE_ALL_COMMUNITY_USERS` y ejecútalo completo. Si no se edita ese texto, la transacción aborta antes de borrar nada.
-5. Comprueba los dos resultados finales del propio script: usuarios, perfiles, posts, follows, notificaciones y aliases deben ser `0`; topics debe ser `4`; los cuatro roots deben tener `author_id` nulo y cero posts/follows/notificaciones.
+5. Comprueba los dos resultados finales del propio script: usuarios, perfiles, posts, follows, notificaciones y aliases deben ser `0`; topics debe ser `3`; las tres raíces deben tener `author_id` nulo y cero posts/follows/notificaciones.
 6. Configura o revisa **Confirm email**, las plantillas de correo y `SUPABASE_SERVICE_ROLE_KEY` exclusivamente en secretos de servidor. Registra de nuevo una cuenta de prueba con username, email y contraseña, confirma el correo, entra y prueba respuesta, seguimiento, mención y recuperación de contraseña.
 
 ### Consultas de comprobación independientes
@@ -136,7 +136,7 @@ union all select 'community_topics', count(*) from public.community_topics
 order by entity;
 ```
 
-Después del reset, deben devolverse cuatro filas con `is_system_owned = true`, `reply_count = 0` y los tres recuentos a `0`:
+Después del reset, deben devolverse tres filas con `is_system_owned = true`, `reply_count = 0` y los tres recuentos a `0`:
 
 ```sql
 select
@@ -150,7 +150,7 @@ from public.community_topics as topic
 left join public.community_posts as post on post.topic_id = topic.id
 left join public.community_topic_follows as follow on follow.topic_id = topic.id
 left join public.community_notifications as notification on notification.topic_id = topic.id
-where topic.slug in ('ucam-murcia-en-acb', 'ucam-murcia-en-bcl', 'unicaja-malaga', 'hozono-global-jairis')
+where topic.slug in ('ucam-murcia-en-acb', 'unicaja-malaga', 'hozono-global-jairis')
 group by topic.id, topic.slug, topic.author_id, topic.reply_count
 order by topic.slug;
 ```

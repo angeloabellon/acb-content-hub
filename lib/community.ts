@@ -20,7 +20,11 @@ export {
   getCommunityViewerIdentity,
   type CommunityViewerIdentity,
 } from "@/lib/community-viewer";
-export { getSafeCommunityPath, isCommunityConversationKey } from "@/lib/community-validation";
+export {
+  getRetiredCommunityPath,
+  getSafeCommunityPath,
+  isCommunityConversationKey,
+} from "@/lib/community-validation";
 
 type ProfileRow =
   | { id: string; display_name: string | null; username: string | null }
@@ -282,7 +286,7 @@ export function isCommunityBackendConfigured(): boolean {
 }
 
 /**
- * Returns the four permanent conversations in their deliberate card order. Fixtures
+ * Returns the three permanent conversations in their deliberate card order. Fixtures
  * remain a deliberate read-only fallback until the migration is live.
  */
 export async function listCommunityRootTopics(): Promise<CommunityTopic[]> {

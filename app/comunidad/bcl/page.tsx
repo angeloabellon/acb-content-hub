@@ -1,8 +1,6 @@
 import { permanentRedirect } from "next/navigation";
 
-import { getCommunityRootTopicSlug } from "@/data/community";
-
-/** Legacy space URL retained for links shared before the Community reform. */
+/** Retired URL retained for links shared before the three-conversation model. */
 export default function ComunidadBclPage() {
-  permanentRedirect(`/comunidad/tema/${getCommunityRootTopicSlug("bcl")}`);
+  permanentRedirect("/comunidad");
 }

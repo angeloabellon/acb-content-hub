@@ -12,6 +12,7 @@ import {
   getCommunityTopicBySlug,
   getCommunityTopicRedirectSlug,
   getCommunityViewer,
+  getRetiredCommunityPath,
   isCommunityBackendConfigured,
   listCommunityMentionableProfiles,
 } from "@/lib/community";
@@ -25,6 +26,14 @@ export async function generateMetadata({
   params,
 }: CommunityTopicPageProps): Promise<Metadata> {
   const { slug } = await params;
+  const retiredPath = getRetiredCommunityPath(slug);
+  if (retiredPath) {
+    return createMetadata({
+      title: "Comunidad | Cast To Cast Baloncesto",
+      description: "Conversaciones de la Comunidad CTC.",
+      path: retiredPath,
+    });
+  }
   const redirectSlug = await getCommunityTopicRedirectSlug(slug);
   if (redirectSlug) {
     return createMetadata({
@@ -50,6 +59,8 @@ export default async function CommunityTopicPage({
   params,
 }: CommunityTopicPageProps) {
   const { slug } = await params;
+  const retiredPath = getRetiredCommunityPath(slug);
+  if (retiredPath) permanentRedirect(retiredPath);
   const redirectSlug = await getCommunityTopicRedirectSlug(slug);
   if (redirectSlug) permanentRedirect(`/comunidad/tema/${redirectSlug}`);
 
