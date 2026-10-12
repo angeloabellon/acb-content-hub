@@ -142,6 +142,14 @@ test("community cards pair every club with its domestic and European competition
   assert.doesNotMatch(card, /conversation\.eyebrow|competitionLogo/);
 });
 
+test("club card descriptions are distinct and do not duplicate competition names", () => {
+  const descriptions = communityConversations.map((conversation) => conversation.description);
+
+  assert.equal(new Set(descriptions).size, communityConversations.length);
+  assert.equal(communityConversations[0]?.description, "Un punto de encuentro para seguir la actualidad, los partidos y el día a día del UCAM Murcia.");
+  assert.doesNotMatch(communityConversations[0]?.description ?? "", /Liga Endesa/i);
+});
+
 test("UCAM keeps its technical ACB keys while both Community records use the shorter visible title", async () => {
   const sql = await readFile(
     new URL("../supabase/migrations/202610120006_rename_ucam_community_space.sql", import.meta.url),

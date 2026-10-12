@@ -148,7 +148,7 @@ export const communityConversations: CommunityConversation[] = [
   {
     key: "acb",
     title: "UCAM Murcia",
-    description: "La conversación continua para seguir la actualidad, los partidos y el día a día del UCAM Murcia en Liga Endesa.",
+    description: "Un punto de encuentro para seguir la actualidad, los partidos y el día a día del UCAM Murcia.",
     theme: communityConversationThemes.acb,
     logo: { src: "/logoUCAM.png", alt: "UCAM Murcia", width: 82, height: 82, className: "h-16 w-16" },
     competitions: [
@@ -159,7 +159,7 @@ export const communityConversations: CommunityConversation[] = [
   {
     key: "unicaja-malaga",
     title: "Unicaja Málaga",
-    description: "La conversación continua para comentar la actualidad, los partidos y la temporada del Unicaja Málaga.",
+    description: "Comparte análisis, sensaciones y todo lo que deje la temporada del Unicaja Málaga.",
     theme: communityConversationThemes["unicaja-malaga"],
     logo: { src: "/logoUnicaja.png", alt: "Unicaja Málaga", width: 82, height: 82, className: "h-16 w-16" },
     competitions: [
@@ -170,7 +170,7 @@ export const communityConversations: CommunityConversation[] = [
   {
     key: "hozono-global-jairis",
     title: "Hozono Global Jairis",
-    description: "La conversación continua para seguir la actualidad, los partidos y la temporada del Hozono Global Jairis.",
+    description: "Toda la actualidad del Hozono Global Jairis: partidos, protagonistas y el pulso de la temporada.",
     theme: communityConversationThemes["hozono-global-jairis"],
     logo: { src: "/logoJairis.png", alt: "Hozono Global Jairis", width: 82, height: 82, className: "h-16 w-16" },
     competitions: [
