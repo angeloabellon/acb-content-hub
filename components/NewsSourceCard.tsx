@@ -17,7 +17,7 @@ const sourceStyles = {
   ucam: "from-red-950/90 via-red-900/80 to-red-700/60 border-red-700/40",
   jairis: "from-yellow-900/80 via-amber-700/70 to-yellow-500/40 border-yellow-400/40",
   unicaja: "from-green-950/90 via-green-900/80 to-emerald-600/60 border-green-600/40",
-  albacete: "from-blue-950/90 via-blue-800/80 to-sky-500/50 border-sky-400/40",
+  albacete: "from-green-900/90 via-green-700/80 to-emerald-400/60 border-emerald-300/50",
   default: "from-gray-900/80 via-gray-800/70 to-gray-700/60 border-white/20",
 };
 
