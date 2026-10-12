@@ -196,4 +196,10 @@ test("legacy routes and retired entry points redirect to canonical conversations
   assert.match(newTopicPage, /permanentRedirect\("\/comunidad"\)/);
   assert.match(homePage, /communityConversations/);
   assert.doesNotMatch(homePage, /communitySpaces/);
+  assert.match(homePage, /El baloncesto/);
+  assert.match(homePage, /se habla aquí/);
+  assert.match(homePage, /competición nacional y europea/);
+  assert.match(homePage, /logoUCAM\.png/);
+  assert.match(homePage, /logoUnicaja\.png/);
+  assert.match(homePage, /logoJairis\.png/);
 });

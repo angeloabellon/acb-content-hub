@@ -23,9 +23,11 @@ export default async function ComunidadPage() {
     <main className="mx-auto max-w-6xl px-6 py-12 sm:py-16">
       <section className="relative mb-16 overflow-hidden rounded-3xl border border-red-900/30 bg-gradient-to-br from-[#140303] via-black to-[#220505] px-5 py-12 shadow-[0_10px_40px_rgba(122,12,12,0.22)] sm:px-8 sm:py-16 md:px-14 md:py-20">
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#7a0c0c]/35 via-transparent to-[#e01310]/15" />
-        <div className="absolute -right-24 -top-16 h-80 w-80 rounded-full bg-red-600/10 blur-3xl" />
+        <div className="pointer-events-none absolute -right-24 -top-16 h-80 w-80 rounded-full bg-red-600/15 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-28 right-[15%] h-72 w-72 rounded-full bg-emerald-500/10 blur-3xl" />
+        <div className="pointer-events-none absolute right-[34%] top-1/3 h-52 w-52 rounded-full bg-amber-300/10 blur-3xl" />
 
-        <div className="relative z-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_220px] lg:items-center">
+        <div className="relative z-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-center lg:gap-14">
           <div>
             <div className="mb-6 flex items-center gap-3">
               <Image
@@ -48,13 +50,15 @@ export default async function ComunidadPage() {
               Comunidad Cast To Cast
             </p>
             <h1 className="max-w-3xl text-3xl font-extrabold leading-tight sm:text-4xl md:text-6xl">
-              El baloncesto
-              <span className="block text-red-500">se habla aquí</span>
+              El baloncesto {" "}
+              <span className="bg-gradient-to-r from-red-400 via-red-500 to-orange-400 bg-clip-text text-transparent">
+                se habla aquí
+              </span>
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/70">
-              Tres conversaciones permanentes para seguir al UCAM Murcia, Unicaja
-              Málaga y Hozono Global Jairis. Entra, lee y responde en el hilo que
-              quieras seguir.
+              UCAM Murcia, Unicaja Málaga y Hozono Global Jairis: toda la actualidad,
+              los partidos y las noches de competición nacional y europea. Entra, lee
+              y responde en la conversación que quieras seguir.
             </p>
             <p className="mt-8 text-sm text-white/45">
               {backendConfigured
@@ -63,15 +67,53 @@ export default async function ComunidadPage() {
             </p>
           </div>
 
-          <div className="hidden justify-center lg:flex">
-            <div className="relative flex h-48 w-48 items-center justify-center rounded-full border border-red-900/30 bg-black/30 shadow-[0_0_80px_rgba(224,19,16,0.18)]">
-              <Image
-                src="/logoUCAM.png"
-                alt="UCAM Murcia"
-                width={132}
-                height={132}
-                className="h-32 w-32 object-contain"
-              />
+          <div className="mx-auto grid w-full max-w-sm grid-cols-3 gap-3 sm:gap-4 lg:max-w-none">
+            <div className="group flex flex-col items-center gap-3">
+              <div className="relative flex h-24 w-full items-center justify-center overflow-hidden rounded-2xl border border-red-400/40 bg-gradient-to-br from-red-500/35 via-[#300407] to-black shadow-[0_12px_32px_rgba(224,19,16,0.22)] sm:h-28">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
+                <Image
+                  src="/logoUCAM.png"
+                  alt="Escudo del UCAM Murcia"
+                  width={96}
+                  height={96}
+                  className="relative h-20 w-20 object-contain drop-shadow-[0_8px_12px_rgba(224,19,16,0.45)] sm:h-24 sm:w-24"
+                />
+              </div>
+              <span className="text-center text-[10px] font-bold uppercase tracking-[0.16em] text-red-200 sm:text-xs">
+                UCAM
+              </span>
+            </div>
+
+            <div className="group flex flex-col items-center gap-3">
+              <div className="relative flex h-24 w-full items-center justify-center overflow-hidden rounded-2xl border border-emerald-400/40 bg-gradient-to-br from-emerald-500/30 via-[#03170d] to-black shadow-[0_12px_32px_rgba(16,185,129,0.18)] sm:h-28">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
+                <Image
+                  src="/logoUnicaja.png"
+                  alt="Escudo del Unicaja Málaga"
+                  width={96}
+                  height={96}
+                  className="relative h-20 w-20 object-contain drop-shadow-[0_8px_12px_rgba(16,185,129,0.4)] sm:h-24 sm:w-24"
+                />
+              </div>
+              <span className="text-center text-[10px] font-bold uppercase tracking-[0.12em] text-emerald-200 sm:text-xs">
+                Unicaja
+              </span>
+            </div>
+
+            <div className="group flex flex-col items-center gap-3">
+              <div className="relative flex h-24 w-full items-center justify-center overflow-hidden rounded-2xl border border-amber-300/45 bg-gradient-to-br from-amber-300/30 via-[#211603] to-black shadow-[0_12px_32px_rgba(251,191,36,0.17)] sm:h-28">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
+                <Image
+                  src="/logoJairis.png"
+                  alt="Escudo del Hozono Global Jairis"
+                  width={96}
+                  height={96}
+                  className="relative h-20 w-20 object-contain drop-shadow-[0_8px_12px_rgba(251,191,36,0.4)] sm:h-24 sm:w-24"
+                />
+              </div>
+              <span className="text-center text-[10px] font-bold uppercase tracking-[0.1em] text-amber-200 sm:text-xs">
+                Jairis
+              </span>
             </div>
           </div>
         </div>
