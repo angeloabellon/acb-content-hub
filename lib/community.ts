@@ -2,6 +2,7 @@ import type {
   CommunityMention,
   CommunityMessage,
   CommunityTopic,
+  CommunityConversationKey,
 } from "@/data/community";
 import {
   communityTopics,
@@ -19,7 +20,7 @@ export {
   getCommunityViewerIdentity,
   type CommunityViewerIdentity,
 } from "@/lib/community-viewer";
-export { getSafeCommunityPath, isCommunitySpace } from "@/lib/community-validation";
+export { getSafeCommunityPath, isCommunityConversationKey } from "@/lib/community-validation";
 
 type ProfileRow =
   | { id: string; display_name: string | null; username: string | null }
@@ -29,7 +30,7 @@ type ProfileRow =
 type TopicRow = {
   id: string;
   slug: string;
-  space_slug: "acb" | "bcl";
+  space_slug: CommunityConversationKey;
   title: string;
   body: string;
   reply_count: number;
@@ -143,7 +144,7 @@ function mapTopic(
   return {
     id: row.id,
     slug: row.slug,
-    space: row.space_slug,
+    conversation: row.space_slug,
     title: row.title,
     excerpt: excerptFor(row.body),
     author,
@@ -281,7 +282,7 @@ export function isCommunityBackendConfigured(): boolean {
 }
 
 /**
- * Returns the two permanent conversations in a stable ACB/BCL order. Fixtures
+ * Returns the four permanent conversations in their deliberate card order. Fixtures
  * remain a deliberate read-only fallback until the migration is live.
  */
 export async function listCommunityRootTopics(): Promise<CommunityTopic[]> {

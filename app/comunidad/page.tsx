@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 
-import CommunitySpaceCard from "@/components/community/CommunitySpaceCard";
-import { communitySpaces } from "@/data/community";
+import CommunityConversationCard from "@/components/community/CommunityConversationCard";
+import { communityConversations } from "@/data/community";
 import { isCommunityBackendConfigured, listCommunityRootTopics } from "@/lib/community";
 import { createMetadata } from "@/lib/seo";
 
@@ -48,13 +48,13 @@ export default async function ComunidadPage() {
               Comunidad Cast To Cast
             </p>
             <h1 className="max-w-3xl text-3xl font-extrabold leading-tight sm:text-4xl md:text-6xl">
-              El UCAM Murcia
+              El baloncesto
               <span className="block text-red-500">se habla aquí</span>
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/70">
-              Dos conversaciones permanentes para seguir al equipo en Liga Endesa
-              y Basketball Champions League. Entra, lee y responde en el hilo que
-              corresponda.
+              Cuatro conversaciones permanentes para seguir al UCAM Murcia, Unicaja
+              Málaga y Hozono Global Jairis. Entra, lee y responde en el hilo que
+              quieras seguir.
             </p>
             <p className="mt-8 text-sm text-white/45">
               {backendConfigured
@@ -88,11 +88,11 @@ export default async function ComunidadPage() {
         </div>
 
         <div className="grid gap-7 lg:grid-cols-2">
-          {communitySpaces.map((space) => (
-            <CommunitySpaceCard
-              key={space.slug}
-              space={space}
-              topic={topics.find((topic) => topic.space === space.slug)}
+          {communityConversations.map((conversation) => (
+            <CommunityConversationCard
+              key={conversation.key}
+              conversation={conversation}
+              topic={topics.find((topic) => topic.conversation === conversation.key)}
             />
           ))}
         </div>

@@ -41,6 +41,11 @@ export default function CommunityTopicConversation({
   return (
     <>
       <section aria-label="Mensajes del tema" className="space-y-5">
+        {messages.length === 0 ? (
+          <p className="rounded-3xl border border-white/10 bg-white/[0.03] px-6 py-8 text-center text-sm leading-relaxed text-white/60">
+            Aún no hay respuestas. Sé la primera persona en participar en esta conversación.
+          </p>
+        ) : null}
         {messages.map((message, index) => {
           const canReplyToMessage = Boolean(
             message.authorMention

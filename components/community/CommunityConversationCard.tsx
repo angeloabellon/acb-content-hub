@@ -1,23 +1,21 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import type { CommunitySpace, CommunityTopic } from "@/data/community";
+import type { CommunityConversation, CommunityTopic } from "@/data/community";
 import { getCommunityRootTopicSlug } from "@/data/community";
 
-type CommunitySpaceCardProps = {
-  space: CommunitySpace;
+type CommunityConversationCardProps = {
+  conversation: CommunityConversation;
   topic?: CommunityTopic;
 };
 
-export default function CommunitySpaceCard({
-  space,
+export default function CommunityConversationCard({
+  conversation,
   topic,
-}: CommunitySpaceCardProps) {
-  const isAcb = space.slug === "acb";
-
+}: CommunityConversationCardProps) {
   return (
     <Link
-      href={`/comunidad/tema/${topic?.slug ?? getCommunityRootTopicSlug(space.slug)}`}
+      href={`/comunidad/tema/${topic?.slug ?? getCommunityRootTopicSlug(conversation.key)}`}
       className="premium-hover group relative min-h-[330px] overflow-hidden rounded-3xl border border-red-900/30 bg-gradient-to-br from-[#140303] via-black to-[#220505] p-7 shadow-[0_10px_40px_rgba(122,12,12,0.18)] sm:p-9"
     >
       <div className="premium-overlay" />
@@ -26,42 +24,34 @@ export default function CommunitySpaceCard({
       <div className="relative z-10 flex h-full flex-col">
         <div className="flex items-start justify-between gap-5">
           <p className="uppercase tracking-[0.2em] text-xs font-semibold text-red-300/70">
-            {space.eyebrow}
+            {conversation.eyebrow}
           </p>
-          {isAcb ? (
+          {conversation.competitionLogo ? (
             <Image
-              src="/logoEndesa.png"
-              alt="Liga Endesa"
-              width={76}
-              height={36}
-              className="h-9 w-auto object-contain opacity-80"
+              src={conversation.competitionLogo.src}
+              alt={conversation.competitionLogo.alt}
+              width={conversation.competitionLogo.width}
+              height={conversation.competitionLogo.height}
+              className={`${conversation.competitionLogo.className} w-auto object-contain opacity-90`}
             />
-          ) : (
-            <Image
-              src="/logoBCL.png"
-              alt="Basketball Champions League"
-              width={118}
-              height={38}
-              className="h-8 w-auto max-w-[7.5rem] object-contain opacity-90"
-            />
-          )}
+          ) : null}
         </div>
 
         <div className="my-auto pt-10">
           <Image
-            src="/logoUCAM.png"
-            alt="UCAM Murcia"
-            width={82}
-            height={82}
-            className="mb-7 h-16 w-16 object-contain drop-shadow-[0_12px_20px_rgba(224,19,16,0.3)]"
+            src={conversation.logo.src}
+            alt={conversation.logo.alt}
+            width={conversation.logo.width}
+            height={conversation.logo.height}
+            className={`${conversation.logo.className} mb-7 object-contain drop-shadow-[0_12px_20px_rgba(224,19,16,0.3)]`}
           />
 
           <h2 className="text-3xl font-extrabold leading-tight transition-colors duration-300 group-hover:text-orange-300">
-            {space.title}
+            {conversation.title}
           </h2>
 
           <p className="mt-4 max-w-lg leading-relaxed text-white/65">
-            {space.description}
+            {conversation.description}
           </p>
         </div>
 

@@ -1,11 +1,33 @@
-export type CommunitySpaceSlug = "acb" | "bcl";
+export type CommunityConversationKey =
+  | "acb"
+  | "bcl"
+  | "unicaja-malaga"
+  | "hozono-global-jairis";
 
-export type CommunitySpace = {
-  slug: CommunitySpaceSlug;
+/**
+ * Presentation data for the four fixed conversations. `space_slug` remains a
+ * database compatibility field, but the product deliberately exposes only
+ * conversations—there is no public space or sub-topic level.
+ */
+export type CommunityConversation = {
+  key: CommunityConversationKey;
   eyebrow: string;
   title: string;
   description: string;
-  detail: string;
+  logo: {
+    src: string;
+    alt: string;
+    width: number;
+    height: number;
+    className: string;
+  };
+  competitionLogo?: {
+    src: string;
+    alt: string;
+    width: number;
+    height: number;
+    className: string;
+  };
 };
 
 /** A resolved mention retains its canonical match key but displays a friendly name. */
@@ -32,7 +54,7 @@ export type CommunityMessage = {
 export type CommunityTopic = {
   id?: string;
   slug: string;
-  space: CommunitySpaceSlug;
+  conversation: CommunityConversationKey;
   title: string;
   excerpt: string;
   author: string;
@@ -45,127 +67,75 @@ export type CommunityTopic = {
   messages: CommunityMessage[];
 };
 
-export const communitySpaces: CommunitySpace[] = [
+export const communityConversations: CommunityConversation[] = [
   {
-    slug: "acb",
+    key: "acb",
     eyebrow: "Liga Endesa",
     title: "UCAM Murcia en ACB",
-    description:
-      "El hilo principal para seguir la actualidad, los partidos y el día a día del UCAM Murcia en Liga Endesa.",
-    detail:
-      "Una conversación continua para comentar la temporada del UCAM Murcia en ACB con calma, criterio y pasión por el baloncesto.",
+    description: "La conversación continua para seguir la actualidad, los partidos y el día a día del UCAM Murcia en Liga Endesa.",
+    logo: { src: "/logoUCAM.png", alt: "UCAM Murcia", width: 82, height: 82, className: "h-16 w-16" },
+    competitionLogo: { src: "/logoEndesa.png", alt: "Liga Endesa", width: 76, height: 36, className: "h-9" },
   },
   {
-    slug: "bcl",
+    key: "bcl",
     eyebrow: "Basketball Champions League",
     title: "UCAM Murcia en BCL",
-    description:
-      "El hilo principal para vivir las previas, análisis y noches europeas del UCAM Murcia.",
-    detail:
-      "Una conversación continua para acompañar al UCAM Murcia en Europa, desde la previa hasta el último comentario tras el partido.",
+    description: "La conversación continua para vivir las previas, análisis y noches europeas del UCAM Murcia.",
+    logo: { src: "/logoUCAM.png", alt: "UCAM Murcia", width: 82, height: 82, className: "h-16 w-16" },
+    competitionLogo: { src: "/logoBCL.png", alt: "Basketball Champions League", width: 118, height: 38, className: "h-8 max-w-[7.5rem]" },
+  },
+  {
+    key: "unicaja-malaga",
+    eyebrow: "Actualidad del equipo",
+    title: "Unicaja Málaga",
+    description: "La conversación continua para comentar la actualidad, los partidos y la temporada del Unicaja Málaga.",
+    logo: { src: "/logoUnicaja.png", alt: "Unicaja Málaga", width: 82, height: 82, className: "h-16 w-16" },
+  },
+  {
+    key: "hozono-global-jairis",
+    eyebrow: "Baloncesto femenino",
+    title: "Hozono Global Jairis",
+    description: "La conversación continua para seguir la actualidad, los partidos y la temporada del Hozono Global Jairis.",
+    logo: { src: "/logoJairis.png", alt: "Hozono Global Jairis", width: 82, height: 82, className: "h-16 w-16" },
+    competitionLogo: { src: "/logoFemenina.png", alt: "Liga Femenina Endesa", width: 76, height: 36, className: "h-9" },
   },
 ];
 
 export const communityRootTopicSlugs = {
   acb: "ucam-murcia-en-acb",
   bcl: "ucam-murcia-en-bcl",
-} as const satisfies Record<CommunitySpaceSlug, string>;
+  "unicaja-malaga": "unicaja-malaga",
+  "hozono-global-jairis": "hozono-global-jairis",
+} as const satisfies Record<CommunityConversationKey, string>;
 
-export function isCommunityRootTopicSlug(value: string): value is typeof communityRootTopicSlugs[CommunitySpaceSlug] {
+export function isCommunityRootTopicSlug(value: string): value is typeof communityRootTopicSlugs[CommunityConversationKey] {
   return Object.values(communityRootTopicSlugs).includes(
-    value as typeof communityRootTopicSlugs[CommunitySpaceSlug],
+    value as typeof communityRootTopicSlugs[CommunityConversationKey],
   );
 }
 
-export function getCommunityRootTopicSlug(space: CommunitySpaceSlug): string {
-  return communityRootTopicSlugs[space];
+export function getCommunityRootTopicSlug(conversation: CommunityConversationKey): string {
+  return communityRootTopicSlugs[conversation];
 }
 
 /**
- * These read-only fixtures mirror the permanent-thread UX when Supabase is not
- * configured. Production data is loaded from the two canonical root topics.
+ * Read-only fallback for an unconfigured local environment. Root rows are
+ * system-owned containers, so their sample state intentionally has no replies.
  */
-export const communityTopics: CommunityTopic[] = [
-  {
-    slug: communityRootTopicSlugs.acb,
-    space: "acb",
-    title: "UCAM Murcia en ACB",
-    excerpt: "Conversación continua sobre el UCAM Murcia en Liga Endesa.",
-    author: "Comunidad CTC",
-    initials: "CTC",
-    replies: 3,
-    lastActivity: "Hace 28 min",
-    messages: [
-      {
-        id: "fixture-acb-3",
-        legacyTitle: "La defensa como punto de partida",
-        author: "Tiempo Muerto",
-        initials: "TM",
-        publishedAt: "Lunes, 19:03",
-        body:
-          "Cuando el equipo aprieta en primera línea, todo el partido cambia de tono. Esa energía es una de las cosas más reconocibles del UCAM Murcia.",
-      },
-      {
-        id: "fixture-acb-1",
-        legacyTitle: "¿Qué esperáis del próximo partido en ACB?",
-        author: "Pabellón Norte",
-        initials: "PN",
-        publishedAt: "Hoy, 12:16",
-        body:
-          "Me apetece ver un partido con más ritmo desde el inicio. Si el equipo encuentra continuidad atrás, tendremos muchas opciones de competir hasta el final.",
-      },
-      {
-        id: "fixture-acb-2",
-        author: "Rojo y Universitario",
-        initials: "RU",
-        publishedAt: "Hoy, 12:34",
-        body:
-          "Estoy de acuerdo. La clave para mí estará en no regalar segundas oportunidades y en correr cuando haya rebote defensivo.",
-      },
-    ],
-  },
-  {
-    slug: communityRootTopicSlugs.bcl,
-    space: "bcl",
-    title: "UCAM Murcia en BCL",
-    excerpt: "Conversación continua sobre el UCAM Murcia en Basketball Champions League.",
-    author: "Comunidad CTC",
-    initials: "CTC",
-    replies: 3,
-    lastActivity: "Hace 1 h",
-    messages: [
-      {
-        id: "fixture-bcl-3",
-        legacyTitle: "Claves para la próxima cita de BCL",
-        author: "Zona 2-3",
-        initials: "Z23",
-        publishedAt: "Ayer, 18:15",
-        body:
-          "En Europa los partidos se deciden a menudo en posesiones muy cortas. Cuidar el rebote y las pérdidas será fundamental.",
-      },
-      {
-        id: "fixture-bcl-1",
-        legacyTitle: "Una noche europea para recordar",
-        author: "Viajando con el UCAM",
-        initials: "VU",
-        publishedAt: "Hoy, 11:22",
-        body:
-          "Hay noches europeas que se viven de otra manera. Desde la presentación hasta el último minuto se notó algo especial en la grada.",
-      },
-      {
-        id: "fixture-bcl-2",
-        author: "Europa en Rojo",
-        initials: "ER",
-        publishedAt: "Hoy, 11:48",
-        body:
-          "La BCL le da un contexto distinto a cada detalle. Disfrutar de estas eliminatorias también es parte del camino.",
-      },
-    ],
-  },
-];
+export const communityTopics: CommunityTopic[] = communityConversations.map((conversation) => ({
+  slug: getCommunityRootTopicSlug(conversation.key),
+  conversation: conversation.key,
+  title: conversation.title,
+  excerpt: conversation.description,
+  author: "Comunidad CTC",
+  initials: "CTC",
+  replies: 0,
+  lastActivity: "Sin respuestas todavía",
+  messages: [],
+}));
 
-export function getCommunitySpace(slug: string) {
-  return communitySpaces.find((space) => space.slug === slug);
+export function getCommunityConversation(key: string) {
+  return communityConversations.find((conversation) => conversation.key === key);
 }
 
 export function getCommunityTopic(slug: string) {

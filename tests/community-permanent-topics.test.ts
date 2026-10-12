@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 import {
+  communityConversations,
   communityRootTopicSlugs,
   communityTopics,
   getCommunityRootTopicSlug,
@@ -14,11 +15,11 @@ test("migration plan preserves authors, timestamps, original headings, and chron
   const result = planCommunityThreadMigration(
     [
       {
-        id: "topic-a", slug: "previa-acb", space: "acb", title: "Previa ACB",
+        id: "topic-a", slug: "previa-acb", conversation: "acb", title: "Previa ACB",
         body: "Mensaje inicial ACB", authorId: "ana", createdAt: "2026-10-01T10:00:00.000Z",
       },
       {
-        id: "topic-b", slug: "post-partido-acb", space: "acb", title: "Post partido ACB",
+        id: "topic-b", slug: "post-partido-acb", conversation: "acb", title: "Post partido ACB",
         body: "Mensaje inicial posterior", authorId: "bea", createdAt: "2026-10-01T12:00:00.000Z",
       },
     ],
@@ -52,11 +53,11 @@ test("merged follows deduplicate conservatively and legacy routes target their r
   const result = planCommunityThreadMigration(
     [
       {
-        id: "topic-a", slug: "previa-acb", space: "acb", title: "Previa ACB",
+        id: "topic-a", slug: "previa-acb", conversation: "acb", title: "Previa ACB",
         body: "Mensaje inicial ACB", authorId: "ana", createdAt: "2026-10-01T10:00:00.000Z",
       },
       {
-        id: "topic-b", slug: "rotacion-acb", space: "acb", title: "Rotación ACB",
+        id: "topic-b", slug: "rotacion-acb", conversation: "acb", title: "Rotación ACB",
         body: "Otro inicio ACB", authorId: "bea", createdAt: "2026-10-01T11:00:00.000Z",
       },
     ],
@@ -79,17 +80,68 @@ test("merged follows deduplicate conservatively and legacy routes target their r
   ]);
 });
 
-test("only the two permanent conversations are available in the UI fallback", () => {
+test("all four permanent conversations are available in the UI fallback", () => {
+  assert.deepEqual(communityConversations.map(({ title }) => title), [
+    "UCAM Murcia en ACB",
+    "UCAM Murcia en BCL",
+    "Unicaja Málaga",
+    "Hozono Global Jairis",
+  ]);
   assert.deepEqual(communityTopics.map(({ slug }) => slug), [
     communityRootTopicSlugs.acb,
     communityRootTopicSlugs.bcl,
+    communityRootTopicSlugs["unicaja-malaga"],
+    communityRootTopicSlugs["hozono-global-jairis"],
   ]);
   assert.equal(getCommunityRootTopicSlug("acb"), "ucam-murcia-en-acb");
+  assert.equal(getCommunityRootTopicSlug("unicaja-malaga"), "unicaja-malaga");
+  assert.equal(getCommunityRootTopicSlug("hozono-global-jairis"), "hozono-global-jairis");
   assert.equal(isCommunityRootTopicSlug("ucam-murcia-en-bcl"), true);
+  assert.equal(isCommunityRootTopicSlug("unicaja-malaga"), true);
+  assert.equal(isCommunityRootTopicSlug("hozono-global-jairis"), true);
   assert.equal(isCommunityRootTopicSlug("previa-acb"), false);
 });
 
-test("SQL migration is idempotent and protects the two-root model", async () => {
+test("four-root migration makes roots system-owned and preserves member reply features", async () => {
+  const sql = await readFile(
+    new URL("../supabase/migrations/202610120003_expand_community_permanent_roots.sql", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(sql, /alter column author_id drop not null/i);
+  assert.match(sql, /if new\.author_id is null then/i);
+  assert.match(sql, /'unicaja-malaga'/i);
+  assert.match(sql, /'hozono-global-jairis'/i);
+  assert.match(sql, /on conflict \(slug\) do update/i);
+  assert.match(sql, /author_id = null/i);
+  assert.match(sql, /community_topics_only_permanent_conversations/i);
+  assert.match(sql, /signed in users reply in permanent community conversations/i);
+  assert.match(sql, /slug in \([\s\S]*'unicaja-malaga'[\s\S]*'hozono-global-jairis'/i);
+});
+
+test("manual reset clears user-derived data but retains the four system roots", async () => {
+  const sql = await readFile(
+    new URL("../supabase/manual/reset_community_production.sql", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(sql, /__REPLACE_WITH_YES_DELETE_ALL_COMMUNITY_USERS__/);
+  assert.match(sql, /delete from public\.community_notifications/i);
+  assert.match(sql, /delete from public\.community_topic_follows/i);
+  assert.match(sql, /delete from public\.community_posts/i);
+  assert.match(sql, /delete from public\.community_username_aliases/i);
+  assert.match(sql, /delete from public\.community_profiles/i);
+  assert.match(sql, /delete from auth\.users/i);
+  assert.match(sql, /delete from public\.community_topics\s+where slug not in/i);
+  assert.match(sql, /author_id = null/i);
+  assert.match(sql, /reply_count = 0/i);
+  assert.match(sql, /'after' as phase, 'auth\.users'/i);
+  assert.match(sql, /post_count/i);
+  assert.match(sql, /follow_count/i);
+  assert.match(sql, /notification_count/i);
+});
+
+test("historical consolidation migration remains idempotent", async () => {
   const sql = await readFile(
     new URL("../supabase/migrations/202610120001_flatten_community_into_permanent_topics.sql", import.meta.url),
     "utf8",
@@ -126,4 +178,6 @@ test("legacy routes and retired entry points redirect to canonical conversations
   assert.match(acbPage, /permanentRedirect/);
   assert.match(bclPage, /permanentRedirect/);
   assert.match(newTopicPage, /permanentRedirect\("\/comunidad"\)/);
+  assert.match(homePage, /communityConversations/);
+  assert.doesNotMatch(homePage, /communitySpaces/);
 });

@@ -5,7 +5,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import CommunityTopicConversation from "@/components/community/CommunityTopicConversation";
 import CommunityTopicFollow from "@/components/community/CommunityTopicFollow";
 import { CommunityMentionText } from "@/components/community/CommunityMessageBody";
-import { getCommunitySpace } from "@/data/community";
+import { getCommunityConversation } from "@/data/community";
 import { formatCommunityReplyCount } from "@/lib/community-format";
 import { formatCommunityMentionText } from "@/lib/community-mentions";
 import {
@@ -57,7 +57,7 @@ export default async function CommunityTopicPage({
 
   if (!topic) notFound();
 
-  const space = getCommunitySpace(topic.space);
+  const conversation = getCommunityConversation(topic.conversation);
   const viewer = await getCommunityViewer();
   const backendConfigured = isCommunityBackendConfigured();
   const profiles = viewer ? await listCommunityMentionableProfiles() : [];
@@ -67,13 +67,13 @@ export default async function CommunityTopicPage({
       <nav aria-label="Migas de pan" className="mb-8 flex flex-wrap items-center gap-2 text-sm text-white/55">
         <Link href="/comunidad" className="transition-colors hover:text-orange-300">Comunidad</Link>
         <span aria-hidden="true">/</span>
-        <span>{space?.title}</span>
+        <span>{conversation?.title}</span>
       </nav>
 
       <section className="relative mb-10 overflow-hidden rounded-3xl border border-red-900/30 bg-gradient-to-br from-[#140303] via-black to-[#220505] px-6 py-10 shadow-[0_10px_40px_rgba(122,12,12,0.22)] sm:px-10 sm:py-12">
         <div className="premium-overlay" />
         <div className="relative z-10">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-red-300/70">{space?.eyebrow}</p>
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-red-300/70">{conversation?.eyebrow}</p>
           <h1 className="max-w-3xl text-3xl font-extrabold leading-tight sm:text-4xl md:text-5xl">
             <CommunityMentionText value={topic.title} mentions={topic.mentions} />
           </h1>

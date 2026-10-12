@@ -3,7 +3,7 @@ import test from "node:test";
 
 import {
   getSafeCommunityPath,
-  isCommunitySpace,
+  isCommunityConversationKey,
 } from "../lib/community-validation.ts";
 import { formatCommunityReplyCount } from "../lib/community-format.ts";
 import {
@@ -11,10 +11,12 @@ import {
   isSupabaseConfigured,
 } from "../lib/supabase/config.ts";
 
-test("community spaces are restricted to ACB and BCL", () => {
-  assert.equal(isCommunitySpace("acb"), true);
-  assert.equal(isCommunitySpace("bcl"), true);
-  assert.equal(isCommunitySpace("other"), false);
+test("community conversation keys accept all four permanent conversations", () => {
+  assert.equal(isCommunityConversationKey("acb"), true);
+  assert.equal(isCommunityConversationKey("bcl"), true);
+  assert.equal(isCommunityConversationKey("unicaja-malaga"), true);
+  assert.equal(isCommunityConversationKey("hozono-global-jairis"), true);
+  assert.equal(isCommunityConversationKey("other"), false);
 });
 
 test("community redirect targets remain inside the community", () => {

@@ -1,12 +1,12 @@
 import {
   getCommunityRootTopicSlug,
-  type CommunitySpaceSlug,
+  type CommunityConversationKey,
 } from "../data/community.ts";
 
 export type LegacyCommunityTopic = {
   id: string;
   slug: string;
-  space: CommunitySpaceSlug;
+  conversation: CommunityConversationKey;
   title: string;
   body: string;
   authorId: string;
@@ -50,12 +50,12 @@ export function planCommunityThreadMigration(
   const topicById = new Map(topics.map((topic) => [topic.id, topic]));
   const rootForTopic = (topicId: string) => {
     const topic = topicById.get(topicId);
-    return topic ? getCommunityRootTopicSlug(topic.space) : undefined;
+    return topic ? getCommunityRootTopicSlug(topic.conversation) : undefined;
   };
 
   const messages: PlannedCommunityMessage[] = [
     ...topics.map((topic) => ({
-      rootSlug: getCommunityRootTopicSlug(topic.space),
+      rootSlug: getCommunityRootTopicSlug(topic.conversation),
       authorId: topic.authorId,
       createdAt: topic.createdAt,
       body: topic.body,
@@ -105,7 +105,7 @@ export function planCommunityThreadMigration(
     follows: [...mergedFollows.values()],
     redirects: topics.map((topic) => ({
       legacySlug: topic.slug,
-      canonicalSlug: getCommunityRootTopicSlug(topic.space),
+      canonicalSlug: getCommunityRootTopicSlug(topic.conversation),
     })),
   };
 }
